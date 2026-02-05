@@ -1,0 +1,232 @@
+import React, { useEffect, useState } from 'react';
+import { useUser } from '../contexts/UserContext';
+import { fetchAuthSession } from 'aws-amplify/auth';
+import TriageDetailsModal from '../components/TriageDetailsModal';
+
+const API_URL = import.meta.env.VITE_API_URL;
+
+const Profile = () => {
+    const { userProfile } = useUser();
+    const [history, setHistory] = useState([]);
+    const [loadingHistory, setLoadingHistory] = useState(false);
+    const [selectedSessionKey, setSelectedSessionKey] = useState(null);
+
+    useEffect(() => {
+        const fetchHistory = async () => {
+            setLoadingHistory(true);
+            try {
+                const session = await fetchAuthSession();
+                const token = session.tokens?.idToken?.toString();
+
+                const response = await fetch(`${API_URL}/history`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const sortedSessions = (data.sessions || []).sort((a, b) => {
+                        const getTimestamp = (key) => {
+                            try {
+                                const filename = key.split('/').pop();
+                                const parts = filename.split('-');
+                                if (parts.length >= 2) {
+                                    const ts = parseInt(parts[1], 10);
+                                    return isNaN(ts) ? 0 : ts;
+                                }
+                            } catch (e) {
+                                return 0;
+                            }
+                            return 0;
+                        };
+                        return getTimestamp(b.key) - getTimestamp(a.key);
+                    });
+                    setHistory(sortedSessions);
+                }
+            } catch (err) {
+                console.error("Failed to fetch history", err);
+            } finally {
+                setLoadingHistory(false);
+            }
+        };
+
+        fetchHistory();
+    }, []);
+
+    const formatDateFromKey = (key) => {
+        if (!key) return '-';
+        try {
+            // key example: default/UUID/YEAR/MONTH/DAY/session-TIMESTAMP-RANDOM.json
+            const filename = key.split('/').pop();
+            const parts = filename.split('-');
+            if (parts.length < 2) return '-';
+
+            const timestamp = parseInt(parts[1], 10);
+            if (isNaN(timestamp)) return '-';
+
+            const date = new Date(timestamp);
+            return date.toLocaleString('pt-BR', {
+                timeZone: 'America/Sao_Paulo',
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        } catch (e) {
+            console.error("Error parsing date from key", key, e);
+            return '-';
+        }
+    };
+
+
+
+    return (
+        <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '2rem' }}>
+            <h1 style={{ marginBottom: '2rem', color: '#212529' }}>Meu Perfil</h1>
+
+            {/* Section A: Personal Info */}
+            <section style={{
+                backgroundColor: '#fff',
+                borderRadius: '12px',
+                padding: '2rem',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                marginBottom: '2rem',
+                border: '1px solid #e9ecef'
+            }}>
+                <h3 style={{ marginTop: 0, marginBottom: '1.5rem', color: '#495057', fontSize: '1.2rem', borderBottom: '1px solid #f8f9fa', paddingBottom: '0.8rem' }}>
+                    Informações Pessoais
+                </h3>
+
+                {userProfile ? (
+                    <div style={{ display: 'grid', gap: '1rem' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr', alignItems: 'center' }}>
+                            <span style={{ color: '#868e96', fontWeight: 500 }}>Usuário / ID</span>
+                            <span style={{ fontWeight: 600 }}>{userProfile.username} ({userProfile.id || 'N/A'})</span>
+                        </div>
+                        <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr', alignItems: 'center' }}>
+                            <span style={{ color: '#868e96', fontWeight: 500 }}>Email</span>
+                            <span>{userProfile.email}</span>
+                        </div>
+                        <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr', alignItems: 'center' }}>
+                            <span style={{ color: '#868e96', fontWeight: 500 }}>Tenant</span>
+                            <span style={{
+                                backgroundColor: '#e9ecef',
+                                padding: '0.2rem 0.5rem',
+                                borderRadius: '4px',
+                                display: 'inline-block',
+                                width: 'fit-content'
+                            }}>{userProfile.tenant_id}</span>
+                        </div>
+                        <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr', alignItems: 'center' }}>
+                            <span style={{ color: '#868e96', fontWeight: 500 }}>Permissões</span>
+                            <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                {(userProfile.roles || []).map((role, i) => (
+                                    <span key={i} style={{
+                                        backgroundColor: '#e7f5ff',
+                                        color: '#0c85d0',
+                                        padding: '0.2rem 0.6rem',
+                                        borderRadius: '20px',
+                                        fontSize: '0.85rem',
+                                        fontWeight: 600
+                                    }}>
+                                        {role}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    <p>Carregando informações...</p>
+                )}
+            </section>
+
+            {/* Section B: History */}
+            <section style={{
+                backgroundColor: '#fff',
+                borderRadius: '12px',
+                padding: '2rem',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                border: '1px solid #e9ecef'
+            }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid #f8f9fa', paddingBottom: '0.8rem' }}>
+                    <h3 style={{ margin: 0, color: '#495057', fontSize: '1.2rem' }}>
+                        Histórico de Triagens
+                    </h3>
+                    <button
+                        onClick={() => window.location.reload()} // Simple refresh for now or implement refine fetch
+                        style={{ background: 'none', border: 'none', color: '#0d6efd', cursor: 'pointer', fontWeight: 500 }}
+                    >
+                        Atualizar
+                    </button>
+                </div>
+
+                {loadingHistory ? (
+                    <div style={{ textAlign: 'center', padding: '2rem', color: '#adb5bd' }}>Carregando histórico...</div>
+                ) : history.length === 0 ? (
+                    <div style={{ textAlign: 'center', padding: '2rem', color: '#adb5bd' }}>Nenhuma triagem encontrada.</div>
+                ) : (
+                    <div style={{ overflowX: 'auto' }}>
+                        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                            <thead>
+                                <tr style={{ borderBottom: '2px solid #f1f3f5' }}>
+                                    <th style={{ padding: '1rem', color: '#495057', fontSize: '0.9rem' }}>Data</th>
+
+                                    <th style={{ padding: '1rem', color: '#495057', fontSize: '0.9rem' }}>Ação</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {history.map((item, idx) => (
+                                    <tr key={idx} style={{ borderBottom: '1px solid #f8f9fa' }}>
+                                        <td style={{ padding: '1rem', color: '#212529', fontWeight: 500 }}>
+                                            {formatDateFromKey(item.key)}
+                                        </td>
+
+                                        <td style={{ padding: '1rem' }}>
+                                            <button
+                                                onClick={() => setSelectedSessionKey(item.key)}
+                                                style={{
+                                                    backgroundColor: '#fff',
+                                                    border: '1px solid #dee2e6',
+                                                    padding: '0.4rem 0.8rem',
+                                                    borderRadius: '6px',
+                                                    cursor: 'pointer',
+                                                    color: '#0d6efd',
+                                                    fontWeight: 500,
+                                                    transition: 'all 0.2s'
+                                                }}
+                                                onMouseEnter={(e) => {
+                                                    e.currentTarget.style.backgroundColor = '#0d6efd';
+                                                    e.currentTarget.style.color = '#fff';
+                                                    e.currentTarget.style.borderColor = '#0d6efd';
+                                                }}
+                                                onMouseLeave={(e) => {
+                                                    e.currentTarget.style.backgroundColor = '#fff';
+                                                    e.currentTarget.style.color = '#0d6efd';
+                                                    e.currentTarget.style.borderColor = '#dee2e6';
+                                                }}
+                                            >
+                                                Visualizar
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+            </section>
+
+            {/* Modal */}
+            {selectedSessionKey && (
+                <TriageDetailsModal
+                    sessionKey={selectedSessionKey}
+                    onClose={() => setSelectedSessionKey(null)}
+                />
+            )}
+        </div>
+    );
+};
+
+export default Profile;

@@ -122,10 +122,10 @@ const HistoryPage = () => {
                                     }}
                                 >
                                     <div style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>
-                                        {new Date(item.lastModified).toLocaleDateString()}
+                                        {new Date(item.lastModified).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' })}
                                     </div>
                                     <div style={{ fontSize: '0.85rem', color: '#666' }}>
-                                        {new Date(item.lastModified).toLocaleTimeString()}
+                                        {new Date(item.lastModified).toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit' })}
                                     </div>
                                     <div style={{ fontSize: '0.75rem', color: '#999', marginTop: '0.25rem' }}>
                                         ID: {item.key.split('/').pop().replace('.json', '').substring(0, 15)}...
@@ -191,7 +191,7 @@ const HistoryPage = () => {
 
                             <div style={{ display: 'flex', gap: '2rem', fontSize: '0.9rem', color: '#666' }}>
                                 <div>
-                                    <strong>Início:</strong> {selectedSession.stats?.start_time ? new Date(selectedSession.stats.start_time).toLocaleString() : '-'}
+                                    <strong>Início:</strong> {selectedSession.stats?.start_time ? new Date(selectedSession.stats.start_time).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }) : '-'}
                                 </div>
                                 <div>
                                     <strong>Duração:</strong> {selectedSession.stats?.duration_seconds}s

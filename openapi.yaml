@@ -1,0 +1,515 @@
+openapi: 3.0.0
+info:
+  title: AI Triage API
+  description: API for the AI Triage System, including protocol suggestion and decision tree traversal.
+  version: 1.0.0
+servers:
+  - url: https://o7267hgyxl.execute-api.sa-east-1.amazonaws.com
+    description: Development Server
+paths:
+  /protocol-suggest:
+    post:
+      summary: Suggest a protocol based on symptoms
+      description: Analyzes user-provided symptom text and suggests the most relevant medical protocol.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - prompt
+              properties:
+                prompt:
+                  type: string
+                  description: Description of the patient's symptoms.
+                  example: "Patient has severe chest pain radiating to the left arm."
+                node_id:
+                  type: string
+                  description: Optional node ID to start from (defaults to root).
+      responses:
+        '200':
+          description: Successful response with suggested protocol or next question.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        enum: [protocol, question, unknown]
+                      protocol:
+                        type: object
+                        description: The suggested protocol object (if type is protocol).
+                      text:
+                        type: string
+                        description: The next question text (if type is question).
+                      node_id:
+                        type: string
+                        description: The ID of the next node.
+        '400':
+          description: Invalid request body.
+        '500':
+          description: Internal server error.
+
+  /protocol-traverse:
+    post:
+      summary: Traverse a decision tree
+      description: Evaluates a single step in a decision tree based on sensor data or user input.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - decision_tree_protocol
+                - node_id
+              properties:
+                decision_tree_protocol:
+                  type: string
+                  description: The name/ID of the protocol to traverse.
+                  example: "agressao"
+                node_id:
+                  type: string
+                  description: The current node ID in the decision tree.
+                  example: "criteria_choque"
+                user_input:
+                  type: string
+                  description: User's answer to a question (if applicable).
+                blood_pressure:
+                  type: string
+                  description: Patient's blood pressure (e.g., "120/80").
+                heart_rate:
+                  type: integer
+                  description: Patient's heart rate.
+                respiratory_rate:
+                  type: integer
+                  description: Patient's respiratory rate.
+                gsc:
+                  type: integer
+                  description: Glasgow Coma Scale score.
+                oxigen_sat:
+                  type: integer
+                  description: Oxygen saturation level.
+                pain_scale:
+                  type: integer
+                  description: Pain scale (0-10).
+                temperature:
+                  type: number
+                  description: Body temperature.
+                blood_glucose:
+                  type: number
+                  description: Blood glucose level.
+      responses:
+        '200':
+          description: Successful traversal step.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [next_node, ask_user, missing_sensors, complete]
+                  current_node_id:
+                    type: string
+                  next_node_id:
+                    type: string
+                  next_node:
+                    type: object
+                    description: The next node object.
+                  node:
+                    type: object
+                    description: The current node object (returned for ask_user/missing_sensors).
+                  missing_sensors:
+                    type: array
+                    items:
+                      type: string
+                    description: List of missing mandatory sensors.
+                  result:
+                    type: object
+                    description: The final result/assignment (if status is complete).
+        '400':
+          description: Invalid request or missing fields.
+        '404':
+          description: Protocol or tree not found.
+        '500':
+          description: Internal server error.
+
+  /protocol/{protocol_name}:
+    get:
+      summary: Get protocol details
+      description: Retrieves the full content of a specific protocol.
+      parameters:
+        - in: path
+          name: protocol_name
+          schema:
+            type: string
+          required: true
+          description: The name of the protocol to retrieve.
+      responses:
+        '200':
+          description: Protocol details.
+        '500':
+          description: Internal server error.
+
+  /protocol_names:
+    get:
+      summary: List all protocols
+      description: Returns a list of all available protocol names.
+      responses:
+        '200':
+          description: List of protocols.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '500':
+          description: Internal server error.
+
+  /patient-info:
+    post:
+      summary: Update patient information
+      description: Stores or updates patient details for a specific session.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - session_id
+              properties:
+                session_id:
+                  type: string
+                name:
+                  type: string
+                age:
+                  type: integer
+                sex:
+                  type: string
+                  enum: [M, F, Other]
+      responses:
+        '200':
+          description: Patient info updated successfully.
+        '400':
+          description: Missing session_id.
+        '500':
+          description: Internal server error.
+
+  /transcription:
+    post:
+      summary: Submit audio transcription
+      description: Stores transcription text and extracts audio cues (symptoms) using LLM.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - session_id
+                - transcription
+              properties:
+                session_id:
+                  type: string
+                transcription:
+                  type: string
+      responses:
+        '200':
+          description: Transcription processed.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  detected_cues:
+                    type: array
+                    items:
+                      type: string
+        '400':
+          description: Missing fields.
+        '500':
+          description: Internal server error.
+
+  /sensor-data:
+    post:
+      summary: Submit sensor data
+      description: Stores sensor readings and extracts features based on defined rules.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - session_id
+              properties:
+                session_id:
+                  type: string
+                blood_glucose:
+                  type: number
+                blood_pressure:
+                  type: string
+                gcs:
+                  type: integer
+                heart_rate:
+                  type: integer
+                oxygen_saturation:
+                  type: integer
+                pain_scale:
+                  type: integer
+                respiratory_rate:
+                  type: integer
+                temperature:
+                  type: number
+      responses:
+        '200':
+          description: Sensor data saved and features extracted.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  features:
+                    type: array
+                    items:
+                      type: object
+        '400':
+          description: Invalid request.
+        '500':
+          description: Internal server error.
+
+  /session-summary:
+    post:
+      summary: Get session summary
+      description: Retrieves patient info, detected features, and feature logs for a session.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - session_id
+              properties:
+                session_id:
+                  type: string
+      responses:
+        '200':
+          description: Session summary retrieved.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  age:
+                    type: integer
+                  sex:
+                    type: string
+                  detected_features:
+                    type: array
+                    items:
+                      type: string
+                  features_log:
+                    type: array
+                    items:
+                      type: object
+        '404':
+          description: Session not found.
+        '500':
+          description: Internal server error.
+
+  /session-finish:
+    post:
+      summary: Finish session
+      description: Generates a JSON report of the session and saves it to S3.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - session_id
+              properties:
+                session_id:
+                  type: string
+      responses:
+        '200':
+          description: Session finished and report saved.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  s3_key:
+                    type: string
+        '404':
+          description: Session not found.
+        '500':
+          description: Internal server error.
+
+  /session-features:
+    post:
+      summary: Get session features
+      description: Retrieves all extracted features for a session, including sensor type and description.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - session_id
+              properties:
+                session_id:
+                  type: string
+      responses:
+        '200':
+          description: List of features retrieved.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  features:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        category:
+                          type: string
+                        timestamp:
+                          type: string
+                        description:
+                          type: string
+        '404':
+          description: Session not found.
+        '500':
+          description: Internal server error.
+
+  /history:
+    get:
+      summary: Get triage history
+      description: Lists past triage sessions or retrieves a specific session details. Access is restricted by user role.
+      parameters:
+        - in: query
+          name: key
+          schema:
+            type: string
+          required: false
+          description: The specific S3 key of the session to retrieve. If omitted, lists available sessions.
+      responses:
+        '200':
+          description: List of sessions or session details.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      sessions:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            key:
+                              type: string
+                            lastModified:
+                              type: string
+                            size:
+                              type: integer
+                  - type: object
+                    description: The content of the session file (if key is provided).
+        '403':
+          description: Access denied. User does not have permission to view this resource.
+        '404':
+          description: Session not found.
+        '500':
+          description: Internal server error.
+
+  /users:
+    get:
+      summary: List all users
+      description: Returns a list of all users with their tenant IDs and roles. Restricted to admins.
+      responses:
+        '200':
+          description: List of users.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        username:
+                          type: string
+                        email:
+                          type: string
+                        tenant_id:
+                          type: string
+                        roles:
+                          type: array
+                          items:
+                            type: string
+                        status:
+                          type: string
+                        enabled:
+                          type: boolean
+                        created_at:
+                          type: string
+        '403':
+          description: Access denied. Admins only.
+        '500':
+          description: Internal server error.
+
+  /me:
+    get:
+      summary: Get current profile
+      description: Returns the profile of the currently authenticated user, including ID, tenant, and roles.
+      responses:
+        '200':
+          description: User profile.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  username:
+                    type: string
+                  email:
+                    type: string
+                  tenant_id:
+                    type: string
+                  roles:
+                    type: array
+                    items:
+                      type: string
+                  effective_role:
+                    type: string
+        '401':
+          description: Unauthorized.
+        '500':
+          description: Internal server error.
