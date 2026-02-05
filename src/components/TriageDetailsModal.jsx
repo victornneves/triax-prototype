@@ -349,6 +349,178 @@ const TriageDetailsModal = ({ sessionKey, onClose }) => {
                     </div>
                 );
 
+            case 'priority':
+                const priorityRawSteps = details.decision_steps_for_priority || [];
+                // Group the interleaved steps
+                // Expected pattern: current_node -> llm_response
+                const prioritySteps = [];
+                let currentStep = null;
+
+                priorityRawSteps.forEach(item => {
+                    if (item.type === 'current_node') {
+                        if (currentStep) prioritySteps.push(currentStep);
+                        currentStep = {
+                            step: item.step,
+                            question: item.object,
+                            response: null
+                        };
+                    } else if (item.type === 'llm_response') {
+                        if (currentStep) {
+                            currentStep.response = item.object;
+                            prioritySteps.push(currentStep);
+                            currentStep = null;
+                        } else {
+                            // Edge case: Response without preceding question?
+                            // Should ideally not happen often, but could treat as standalone reasoning
+                            prioritySteps.push({
+                                step: item.step,
+                                question: { text: 'Decisão Intermediária' },
+                                response: item.object
+                            });
+                        }
+                    }
+                });
+                if (currentStep) prioritySteps.push(currentStep); // Push last if lingering
+
+                if (prioritySteps.length === 0) {
+                    return (
+                        <div style={{ textAlign: 'center', padding: '3rem', color: '#adb5bd' }}>
+                            Nenhum passo de decisão de prioridade registrado.
+                        </div>
+                    );
+                }
+
+                return (
+                    <div style={{ animation: 'fadeIn 0.3s', padding: '1rem 0' }}>
+                        <h4 style={{ margin: '0 0 2rem 0', color: '#0d6efd', fontWeight: 600, fontSize: '0.95rem', textTransform: 'uppercase', letterSpacing: '0.5px', textAlign: 'center' }}>
+                            Linha do Tempo de Prioridade
+                        </h4>
+                        <div style={{ position: 'relative', width: '100%', maxWidth: '700px', margin: '0 auto' }}>
+                            {/* Central Line */}
+                            <div style={{
+                                position: 'absolute',
+                                left: '50%',
+                                top: 0,
+                                bottom: 0,
+                                width: '4px',
+                                backgroundColor: '#e9ecef',
+                                transform: 'translateX(-50%)',
+                                borderRadius: '2px'
+                            }}></div>
+
+                            {/* Steps */}
+                            {prioritySteps.map((stepItem, index) => {
+                                const isLeft = index % 2 === 0;
+                                const questionText = stepItem.question?.text || 'Avaliação de Critério';
+                                const questionDetail = stepItem.question?.question;
+                                const priority = stepItem.question?.priority; // e.g. 'red', 'orange'
+                                const reasoning = stepItem.response?.reasoning;
+                                const outcome = stepItem.response?.chosen_branch;
+
+                                return (
+                                    <div key={index} style={{
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'flex-start',
+                                        marginBottom: '2rem',
+                                        position: 'relative'
+                                    }}>
+                                        {/* Left Side */}
+                                        <div style={{ width: '45%', display: 'flex', flexDirection: 'column', alignItems: isLeft ? 'flex-end' : 'flex-start', paddingRight: isLeft ? '2rem' : 0 }}>
+                                            {isLeft && (
+                                                <div style={{ textAlign: 'right' }}>
+                                                    <div style={{ fontWeight: 700, fontSize: '1.1rem', color: '#343a40', marginBottom: '0.2rem' }}>
+                                                        {questionText}
+                                                    </div>
+                                                    {priority && (
+                                                        <span style={{
+                                                            fontSize: '0.75rem',
+                                                            backgroundColor: getPriorityBg(priority),
+                                                            color: getPriorityColor(priority), // darker text
+                                                            // We need readable text on light bg, getPriorityColor returns distinct color
+                                                            // Better to use border style or specific styling
+                                                            border: `1px solid ${getPriorityColor(priority)}`,
+                                                            padding: '2px 6px',
+                                                            borderRadius: '4px',
+                                                            marginBottom: '0.5rem',
+                                                            display: 'inline-block',
+                                                            fontWeight: 600
+                                                        }}>
+                                                            Risco: {priority.toUpperCase()}
+                                                        </span>
+                                                    )}
+
+                                                    <div style={{ fontSize: '0.9rem', color: '#495057', backgroundColor: '#fff', border: '1px solid #dee2e6', padding: '1rem', borderRadius: '8px', boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }}>
+                                                        {questionDetail && <div style={{ marginBottom: '0.5rem', fontStyle: 'italic', color: '#6c757d' }}>"{questionDetail}"</div>}
+                                                        {reasoning}
+                                                        <div style={{ marginTop: '0.5rem', paddingTop: '0.5rem', borderTop: '1px dashed #e9ecef', fontSize: '0.85rem', fontWeight: 600, color: '#343a40' }}>
+                                                            Decisão: {outcome || 'N/A'}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* Center Node */}
+                                        <div style={{
+                                            position: 'relative',
+                                            zIndex: 2,
+                                            width: '40px',
+                                            height: '40px',
+                                            borderRadius: '50%',
+                                            backgroundColor: priority ? getPriorityColor(priority) : '#343a40',
+                                            color: '#fff',
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            fontWeight: 'bold',
+                                            fontSize: '1.1rem',
+                                            border: '4px solid #fff',
+                                            boxShadow: '0 0 0 2px #e9ecef'
+                                        }}>
+                                            {index + 1}
+                                        </div>
+
+                                        {/* Right Side */}
+                                        <div style={{ width: '45%', display: 'flex', flexDirection: 'column', alignItems: !isLeft ? 'flex-start' : 'flex-end', paddingLeft: !isLeft ? '2rem' : 0 }}>
+                                            {!isLeft && (
+                                                <div style={{ textAlign: 'left' }}>
+                                                    <div style={{ fontWeight: 700, fontSize: '1.1rem', color: '#343a40', marginBottom: '0.2rem' }}>
+                                                        {questionText}
+                                                    </div>
+                                                    {priority && (
+                                                        <span style={{
+                                                            fontSize: '0.75rem',
+                                                            backgroundColor: getPriorityBg(priority),
+                                                            color: getPriorityColor(priority),
+                                                            border: `1px solid ${getPriorityColor(priority)}`,
+                                                            padding: '2px 6px',
+                                                            borderRadius: '4px',
+                                                            marginBottom: '0.5rem',
+                                                            display: 'inline-block',
+                                                            fontWeight: 600
+                                                        }}>
+                                                            Risco: {priority.toUpperCase()}
+                                                        </span>
+                                                    )}
+
+                                                    <div style={{ fontSize: '0.9rem', color: '#495057', backgroundColor: '#fff', border: '1px solid #dee2e6', padding: '1rem', borderRadius: '8px', boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }}>
+                                                        {questionDetail && <div style={{ marginBottom: '0.5rem', fontStyle: 'italic', color: '#6c757d' }}>"{questionDetail}"</div>}
+                                                        {reasoning}
+                                                        <div style={{ marginTop: '0.5rem', paddingTop: '0.5rem', borderTop: '1px dashed #e9ecef', fontSize: '0.85rem', fontWeight: 600, color: '#343a40' }}>
+                                                            Decisão: {outcome || 'N/A'}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                );
+
             default:
                 return null;
         }
@@ -406,12 +578,13 @@ const TriageDetailsModal = ({ sessionKey, onClose }) => {
                         </button>
                     </div>
 
-                    <div style={{ display: 'flex', gap: '2rem' }}>
-                        {['triage', 'reasoning', 'protocol'].map((tab) => {
+                    <div style={{ display: 'flex', gap: '2rem', overflowX: 'auto' }}>
+                        {['triage', 'reasoning', 'protocol', 'priority'].map((tab) => {
                             const labels = {
-                                triage: 'Triagem', // Aba A
-                                reasoning: 'Raciocínio IA', // Aba B
-                                protocol: 'Seleção de Protocolo' // Aba C
+                                triage: 'Triagem',
+                                reasoning: 'Raciocínio IA',
+                                protocol: 'Seleção de Protocolo',
+                                priority: 'Seleção de Prioridade'
                             };
                             const isActive = activeTab === tab;
                             return (
@@ -428,7 +601,8 @@ const TriageDetailsModal = ({ sessionKey, onClose }) => {
                                         color: isActive ? '#0d6efd' : '#495057',
                                         cursor: 'pointer',
                                         transition: 'all 0.2s',
-                                        marginBottom: '-1px'
+                                        marginBottom: '-1px',
+                                        whiteSpace: 'nowrap'
                                     }}
                                 >
                                     {labels[tab]}
