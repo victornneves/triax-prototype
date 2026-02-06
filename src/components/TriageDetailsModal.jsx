@@ -252,11 +252,7 @@ const TriageDetailsModal = ({ sessionKey, onClose }) => {
                             {steps.map((step, index) => {
                                 const isLeft = index % 2 === 0;
                                 const isProtocol = step.type === 'protocol';
-                                // New structure uses 'text' effectively replacing the old 'chosen_branch_id' display title
-                                // Fallback to 'chosen_branch_id' if 'text' is missing for backward compat
                                 const title = step.text || formatProtocolName(step.chosen_branch_id) || 'Passo sem título';
-                                // New structure uses 'response' for the reasoning/answer explanation
-                                // Fallback to 'reasoning'
                                 const reasoning = step.response || step.reasoning;
 
                                 return (
@@ -271,7 +267,7 @@ const TriageDetailsModal = ({ sessionKey, onClose }) => {
                                         <div style={{ width: '45%', display: 'flex', flexDirection: 'column', alignItems: isLeft ? 'flex-end' : 'flex-start', paddingRight: isLeft ? '2rem' : 0 }}>
                                             {isLeft && (
                                                 <div style={{ textAlign: 'right' }}>
-                                                    <div style={{ fontWeight: 700, fontSize: '1.1rem', color: isProtocol ? '#198754' : '#343a40', marginBottom: '0.5rem' }}>
+                                                    <div style={{ fontWeight: 700, fontSize: '1.1rem', color: '#343a40', marginBottom: '0.5rem' }}>
                                                         {title}
                                                     </div>
                                                     {reasoning && (
@@ -282,12 +278,12 @@ const TriageDetailsModal = ({ sessionKey, onClose }) => {
                                                     {isProtocol && (
                                                         <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', color: '#adb5bd', textTransform: 'uppercase', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '0.5rem' }}>
                                                             <span style={{
-                                                                backgroundColor: '#e8f5e9',
-                                                                color: '#198754',
+                                                                backgroundColor: '#e9ecef',
+                                                                color: '#495057',
                                                                 padding: '2px 6px',
                                                                 borderRadius: '4px'
                                                             }}>
-                                                                Protocolo
+                                                                Protocolo Selecionado
                                                             </span>
                                                         </div>
                                                     )}
@@ -302,7 +298,7 @@ const TriageDetailsModal = ({ sessionKey, onClose }) => {
                                             width: '40px',
                                             height: '40px',
                                             borderRadius: '50%',
-                                            backgroundColor: isProtocol ? '#198754' : '#343a40',
+                                            backgroundColor: '#343a40', // Always dark/neutral
                                             color: '#fff',
                                             display: 'flex',
                                             justifyContent: 'center',
@@ -310,7 +306,8 @@ const TriageDetailsModal = ({ sessionKey, onClose }) => {
                                             fontWeight: 'bold',
                                             fontSize: '1.1rem',
                                             border: '4px solid #fff',
-                                            boxShadow: '0 0 0 2px #e9ecef'
+                                            boxShadow: isProtocol ? '0 0 0 4px #e9ecef' : '0 0 0 2px #e9ecef', // Thicker ring for protocol
+                                            transform: isProtocol ? 'scale(1.2)' : 'scale(1)' // Slight size bump
                                         }}>
                                             {step.step}
                                         </div>
@@ -319,7 +316,7 @@ const TriageDetailsModal = ({ sessionKey, onClose }) => {
                                         <div style={{ width: '45%', display: 'flex', flexDirection: 'column', alignItems: !isLeft ? 'flex-start' : 'flex-end', paddingLeft: !isLeft ? '2rem' : 0 }}>
                                             {!isLeft && (
                                                 <div style={{ textAlign: 'left' }}>
-                                                    <div style={{ fontWeight: 700, fontSize: '1.1rem', color: isProtocol ? '#198754' : '#343a40', marginBottom: '0.5rem' }}>
+                                                    <div style={{ fontWeight: 700, fontSize: '1.1rem', color: '#343a40', marginBottom: '0.5rem' }}>
                                                         {title}
                                                     </div>
                                                     {reasoning && (
@@ -330,8 +327,8 @@ const TriageDetailsModal = ({ sessionKey, onClose }) => {
                                                     {isProtocol && (
                                                         <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', color: '#adb5bd', textTransform: 'uppercase', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                                             <span style={{
-                                                                backgroundColor: '#e8f5e9',
-                                                                color: '#198754',
+                                                                backgroundColor: '#e9ecef',
+                                                                color: '#495057',
                                                                 padding: '2px 6px',
                                                                 borderRadius: '4px'
                                                             }}>

@@ -58,34 +58,24 @@ const Header = ({ signOut }) => {
                             alignItems: 'center',
                             gap: '1rem',
                             cursor: 'pointer',
-                            padding: '0.5rem 1rem',
-                            borderRadius: '8px',
-                            transition: 'background-color 0.2s',
-                            border: '1px solid transparent'
-                        }}
-                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8f9fa'}
-                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                    >
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', lineHeight: 1.2 }}>
-                            <span style={{ fontWeight: 600, fontSize: '0.9rem', color: '#212529' }}>
-                                {userProfile.username || userProfile.email}
-                            </span>
-                            <span style={{ fontSize: '0.75rem', color: '#6c757d' }}>
-                                {userProfile.tenant_id}
-                            </span>
-                        </div>
-                        <span style={{
-                            padding: '0.2rem 0.6rem',
-                            fontSize: '0.7rem',
-                            fontWeight: 700,
+                            padding: '0.4rem 1rem',
                             borderRadius: '20px',
-                            backgroundColor: getRoleBadgeColor(userProfile.effective_role),
-                            color: 'white',
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.5px'
-                        }}>
-                            {userProfile.effective_role}
-                        </span>
+                            transition: 'all 0.2s',
+                            backgroundColor: '#f1f3f5',
+                            color: '#495057',
+                            fontSize: '0.9rem',
+                            fontWeight: 600
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = '#e9ecef';
+                            e.currentTarget.style.color = '#212529';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = '#f1f3f5';
+                            e.currentTarget.style.color = '#495057';
+                        }}
+                    >
+                        Página do Usuário
                     </div>
                 ) : (
                     // Fallback if profile fails

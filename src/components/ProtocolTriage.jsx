@@ -90,21 +90,39 @@ const PainInput = ({ value, onChange }) => {
 };
 
 const GCSInput = ({ value, onChange }) => {
-    const val = value ? parseInt(value) : 15;
-    const color = val <= 8 ? '#dc3545' : (val <= 12 ? '#ffc107' : '#198754');
+    const getColor = (v) => {
+        if (!v) return '#ced4da';
+        const num = parseInt(v);
+        if (num <= 8) return '#dc3545'; // Severe
+        if (num <= 12) return '#ffc107'; // Moderate
+        return '#198754'; // Mild/Normal
+    };
+
     return (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%', minWidth: 0 }}>
-            <input
-                type="range"
-                min="3"
-                max="15"
-                value={val}
-                name="gcs"
-                onChange={onChange}
-                style={{ flex: 1, accentColor: color, minWidth: 0, cursor: 'pointer' }}
-            />
-            <span style={{ fontWeight: 'bold', width: '20px', textAlign: 'right', color: color, fontSize: '0.9rem' }}>{val}</span>
-        </div>
+        <select
+            name="gcs"
+            value={value || ""}
+            onChange={onChange}
+            style={{
+                width: '100%',
+                padding: '10px',
+                borderRadius: '4px',
+                border: `1px solid ${getColor(value)}`,
+                borderLeftWidth: '5px', // Emphasis on color
+                outline: 'none',
+                backgroundColor: '#ffffff',
+                color: value ? '#212529' : '#6c757d',
+                cursor: 'pointer',
+                fontWeight: value ? '600' : 'normal'
+            }}
+        >
+            <option value="" disabled>Selecione...</option>
+            {Array.from({ length: 13 }, (_, i) => 15 - i).map(num => (
+                <option key={num} value={num}>
+                    {num} {num === 15 ? '(Consciência Normal)' : num === 3 ? '(Coma Profundo)' : num <= 8 ? '(Trauma Grave)' : ''}
+                </option>
+            ))}
+        </select>
     );
 };
 
@@ -174,7 +192,9 @@ const PatientForm = ({ onSubmit, loading }) => {
                             padding: '10px',
                             borderRadius: '4px',
                             border: '1px solid #ced4da',
-                            boxSizing: 'border-box'
+                            boxSizing: 'border-box',
+                            backgroundColor: '#ffffff',
+                            color: '#212529'
                         }}
                     />
                 </div>
@@ -192,7 +212,9 @@ const PatientForm = ({ onSubmit, loading }) => {
                             padding: '10px',
                             borderRadius: '4px',
                             border: '1px solid #ced4da',
-                            boxSizing: 'border-box'
+                            boxSizing: 'border-box',
+                            backgroundColor: '#ffffff',
+                            color: '#212529'
                         }}
                     />
                 </div>
@@ -209,7 +231,8 @@ const PatientForm = ({ onSubmit, loading }) => {
                             borderRadius: '4px',
                             border: '1px solid #ced4da',
                             boxSizing: 'border-box',
-                            background: '#fff'
+                            backgroundColor: '#ffffff',
+                            color: '#212529'
                         }}
                     >
                         <option value="M">Masculino</option>
@@ -672,18 +695,15 @@ const ProtocolTriage = () => {
                         <h1 style={{ margin: 0, fontSize: '2.5rem', textTransform: 'uppercase' }}>
                             {triageResult.text}
                         </h1>
-                        <p style={{ margin: '0.5rem 0 0', opacity: 0.9 }}>
-                            Prioridade: {triageResult.priority}
-                        </p>
                     </div>
 
                     {triageReport && (
                         <div style={{ textAlign: 'left', marginBottom: '2rem', fontSize: '0.95rem' }}>
                             <div style={{ marginBottom: '1rem', padding: '1rem', background: '#f8f9fa', borderRadius: '8px', border: '1px solid #dee2e6' }}>
                                 <h4 style={{ marginTop: 0, marginBottom: '0.5rem', color: '#495057' }}>Estatísticas da Sessão</h4>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
-                                    <span><strong>Início:</strong> {triageReport.stats.start_time ? new Date(triageReport.stats.start_time).toLocaleTimeString() : '-'}</span>
-                                    <span><strong>Fim:</strong> {triageReport.stats.end_time ? new Date(triageReport.stats.end_time).toLocaleTimeString() : '-'}</span>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', color: '#212529' }}>
+                                    <span><strong>Início:</strong> {triageReport.stats.start_time ? new Date(triageReport.stats.start_time.endsWith('Z') ? triageReport.stats.start_time : triageReport.stats.start_time + 'Z').toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo' }) : '-'}</span>
+                                    <span><strong>Fim:</strong> {triageReport.stats.end_time ? new Date(triageReport.stats.end_time.endsWith('Z') ? triageReport.stats.end_time : triageReport.stats.end_time + 'Z').toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo' }) : '-'}</span>
                                     <span style={{ gridColumn: 'span 2' }}>
                                         <strong>Duração:</strong> {triageReport.stats.duration_seconds ? `${Math.floor(triageReport.stats.duration_seconds / 60)}m ${triageReport.stats.duration_seconds % 60}s` : '-'}
                                     </span>
@@ -1010,7 +1030,37 @@ const ProtocolTriage = () => {
                         {patientInfo ? `${patientInfo.name} (${patientInfo.age} anos, ${patientInfo.sex})` : 'Paciente'}
                     </div>
                     <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#6c757d', letterSpacing: '0.05em', marginBottom: '5px' }}>Protocolo Atual</div>
-                    <div style={{ fontSize: '1.1rem', fontWeight: 'bold', color: '#198754' }}>{suggestedProtocol ? suggestedProtocol.text : 'Aguardando...'}</div>
+                    <div style={{ fontSize: '1.1rem', fontWeight: 'bold', color: '#198754', marginBottom: '1rem' }}>{suggestedProtocol ? suggestedProtocol.text : 'Aguardando...'}</div>
+
+                    <button
+                        onClick={() => {
+                            if (window.confirm("Tem certeza que deseja cancelar esta triagem? O progresso será perdido.")) {
+                                handleNewTriage();
+                            }
+                        }}
+                        style={{
+                            width: '100%',
+                            padding: '8px',
+                            background: '#fff',
+                            color: '#dc3545',
+                            border: '1px solid #dc3545',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            fontSize: '0.9rem',
+                            fontWeight: '600',
+                            transition: 'all 0.2s'
+                        }}
+                        onMouseOver={(e) => {
+                            e.target.style.background = '#dc3545';
+                            e.target.style.color = '#fff';
+                        }}
+                        onMouseOut={(e) => {
+                            e.target.style.background = '#fff';
+                            e.target.style.color = '#dc3545';
+                        }}
+                    >
+                        Cancelar Triagem
+                    </button>
                 </div>
 
                 {/* Sensors */}
