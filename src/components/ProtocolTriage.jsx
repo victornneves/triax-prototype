@@ -544,6 +544,26 @@ const ProtocolTriage = () => {
 
     const handleTraversalResponse = (data) => {
         setLoading(false);
+
+        // Handle auto-detected sensors from backend
+        if (data.sensor_data) {
+            setSensorInputs(prev => {
+                const newData = { ...prev };
+                Object.entries(data.sensor_data).forEach(([key, value]) => {
+                    if (key === 'blood_pressure' && typeof value === 'string' && value.includes('/')) {
+                        const [sys, dia] = value.split('/');
+                        newData.bp_systolic = sys;
+                        newData.bp_diastolic = dia;
+                    } else if (key === 'gcs_scale') {
+                        newData.gcs = value;
+                    } else {
+                        newData[key] = value;
+                    }
+                });
+                return newData;
+            });
+        }
+
         if (data.status === 'complete') {
             setCurrentNode(data.result);
             setTriageResult(data.result);
@@ -581,7 +601,7 @@ const ProtocolTriage = () => {
                 const key = s === 'gcs_scale' ? 'gcs' : s;
                 return SENSOR_CONFIG[key]?.full_label || SENSOR_CONFIG[key]?.label || s;
             });
-            addMessage('system', `Preciso dos seguintes sinais vitais para continuar: ${translatedSensors.join(', ')}. Por favor, preencha o painel lateral.`);
+            addMessage('system', `Preciso dos seguintes sinais vitais para continuar: ${translatedSensors.join(', ')}. Por favor, preencha o painel lateral, ou digite os valores.`);
             setMissingSensors(data.missing_sensors);
             setCurrentNode(data.node);
         } else if (data.error) {
