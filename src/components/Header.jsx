@@ -34,7 +34,7 @@ const Header = ({ signOut }) => {
                     </h2>
                 </Link>
                 <nav style={{ display: 'flex', gap: '1.5rem' }}>
-                    <Link to="/" style={{ textDecoration: 'none', color: '#495057', fontWeight: 500, fontSize: '0.95rem' }}>Triagem</Link>
+                    <Link to="/" style={{ textDecoration: 'none', color: '#495057', fontWeight: 500, fontSize: '0.95rem' }}>Nova Triagem</Link>
                     {/* History is now part of profile, but keeping this link or pointing it to profile? 
                         User instructions 1 says: "Topo da Página... Ação: Ao clicar neste componente (User), redirecionar para /profile."
                         It doesn't say delete the old history link. But I'll point History to /profile for consistency or keep it as legacy.

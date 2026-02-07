@@ -275,7 +275,6 @@ const ProtocolTriage = () => {
     const [patientInfo, setPatientInfo] = useState(null);
 
     // Triage Logic State
-    // Triage Logic State
     const [sessionId, setSessionId] = useState(() => 'session-' + Date.now() + '-' + Math.floor(Math.random() * 1000));
     const [suggestedProtocol, setSuggestedProtocol] = useState(null);
     const [currentNode, setCurrentNode] = useState(null);
@@ -324,10 +323,10 @@ const ProtocolTriage = () => {
             fetch(`${API_URL}/protocol_names`, { headers })
                 .then(res => res.json())
                 .then(data => {
-                    const list = data.protocols || data; // Adapting to possible return format
-                    // Filter duplicates and sort
-                    const uniqueList = [...new Set(list)];
-                    setAllProtocols(uniqueList.sort((a, b) => a.localeCompare(b)));
+                    const list = data.protocols || data;
+                    // Sort by name (human readable)
+                    const sorted = list.sort((a, b) => a.name.localeCompare(b.name));
+                    setAllProtocols(sorted);
                 })
                 .catch(err => console.error("Error fetching protocols:", err));
         });
@@ -482,7 +481,7 @@ const ProtocolTriage = () => {
                 }]);
 
             } else if (data.reply.type === 'question') {
-                setCurrentNode({ id: data.reply.node_id }); // Keep track of node
+                setCurrentNode({ id: data.reply.node_id, yesNo: true }); // Keep track of node
                 addMessage('system', data.reply.text); // Ask the clarification question
                 logSystemMessage(data.reply.text);
             } else {
@@ -591,16 +590,11 @@ const ProtocolTriage = () => {
     };
 
     // ----- Render -----
-
-
-
     const [missingSensors, setMissingSensors] = useState([]);
 
     const handleSensorChange = (e) => {
         setSensorInputs(prev => ({ ...prev, [e.target.name]: e.target.value }));
     };
-
-
 
     const handleSendSensors = () => {
         console.log("handleSendSensors triggered. Inputs:", sensorInputs);
@@ -817,12 +811,12 @@ const ProtocolTriage = () => {
 
                                             <select
                                                 onChange={(e) => {
-                                                    if (e.target.value) {
-                                                        const selected = allProtocols.find(p => p.replace('protocol_', '') === e.target.value) || e.target.value;
-                                                        // Construct a protocol object similar to what suggest returns, or just ID
+                                                    const selectedId = e.target.value;
+                                                    if (selectedId) {
+                                                        const p = allProtocols.find(p => p.protocol_id === selectedId);
                                                         const pObj = {
-                                                            id: selected.startsWith('protocol_') ? selected : `protocol_${selected}`,
-                                                            text: selected.replace('protocol_', '').replace(/_/g, ' ') // Simple formatting
+                                                            id: selectedId,
+                                                            text: p ? p.name : selectedId
                                                         };
                                                         confirmProtocol(pObj);
                                                     }
@@ -832,6 +826,7 @@ const ProtocolTriage = () => {
                                                     borderRadius: '6px',
                                                     border: '1px solid #ced4da',
                                                     background: '#fff',
+                                                    color: '#212529',
                                                     cursor: 'pointer',
                                                     fontSize: '0.9rem'
                                                 }}
@@ -839,7 +834,9 @@ const ProtocolTriage = () => {
                                             >
                                                 <option value="" disabled>Mudar Protocolo...</option>
                                                 {allProtocols.map((p, idx) => (
-                                                    <option key={`${p}-${idx}`} value={p}>{p.replace('protocol_', '').replace(/_/g, ' ')}</option>
+                                                    <option key={`${p.protocol_id}-${idx}`} value={p.protocol_id}>
+                                                        {p.name}
+                                                    </option>
                                                 ))}
                                             </select>
                                         </div>
