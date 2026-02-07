@@ -27,20 +27,9 @@ const Profile = () => {
                 if (response.ok) {
                     const data = await response.json();
                     const sortedSessions = (data.sessions || []).sort((a, b) => {
-                        const getTimestamp = (key) => {
-                            try {
-                                const filename = key.split('/').pop();
-                                const parts = filename.split('-');
-                                if (parts.length >= 2) {
-                                    const ts = parseInt(parts[1], 10);
-                                    return isNaN(ts) ? 0 : ts;
-                                }
-                            } catch (e) {
-                                return 0;
-                            }
-                            return 0;
-                        };
-                        return getTimestamp(b.key) - getTimestamp(a.key);
+                        const dateA = a.created_at ? new Date(a.created_at) : new Date(0);
+                        const dateB = b.created_at ? new Date(b.created_at) : new Date(0);
+                        return dateB - dateA;
                     });
                     setHistory(sortedSessions);
                 }
@@ -172,7 +161,9 @@ const Profile = () => {
                             <thead>
                                 <tr style={{ borderBottom: '2px solid #f1f3f5' }}>
                                     <th style={{ padding: '1rem', color: '#495057', fontSize: '0.9rem' }}>Data</th>
-
+                                    <th style={{ padding: '1rem', color: '#495057', fontSize: '0.9rem' }}>Paciente</th>
+                                    <th style={{ padding: '1rem', color: '#495057', fontSize: '0.9rem' }}>Protocolo</th>
+                                    <th style={{ padding: '1rem', color: '#495057', fontSize: '0.9rem' }}>Prioridade</th>
                                     <th style={{ padding: '1rem', color: '#495057', fontSize: '0.9rem' }}>Ação</th>
                                 </tr>
                             </thead>
@@ -180,12 +171,47 @@ const Profile = () => {
                                 {history.map((item, idx) => (
                                     <tr key={idx} style={{ borderBottom: '1px solid #f8f9fa' }}>
                                         <td style={{ padding: '1rem', color: '#212529', fontWeight: 500 }}>
-                                            {formatDateFromKey(item.key)}
+                                            {item.created_at ? new Date(item.created_at).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }) : '-'}
                                         </td>
-
+                                        <td style={{ padding: '1rem', color: '#495057' }}>
+                                            <div style={{ fontWeight: 500 }}>{item.patient_info?.name || 'Anonimo'}</div>
+                                            <div style={{ fontSize: '0.8rem', color: '#868e96' }}>
+                                                {item.patient_info?.age ? `${item.patient_info.age} anos` : ''}
+                                                {item.patient_info?.sex ? ` • ${item.patient_info.sex}` : ''}
+                                            </div>
+                                        </td>
+                                        <td style={{ padding: '1rem', color: '#495057' }}>
+                                            {item.triage_result?.protocol ? item.triage_result.protocol.replace(/_/g, ' ') : '-'}
+                                        </td>
+                                        <td style={{ padding: '1rem' }}>
+                                            {(() => {
+                                                const p = item.triage_result?.priority?.toLowerCase();
+                                                const colors = {
+                                                    red: { bg: '#dc3545', text: '#fff', label: 'Vermelho' },
+                                                    orange: { bg: '#fd7e14', text: '#fff', label: 'Laranja' },
+                                                    yellow: { bg: '#ffc107', text: '#000', label: 'Amarelo' },
+                                                    green: { bg: '#198754', text: '#fff', label: 'Verde' },
+                                                    blue: { bg: '#0d6efd', text: '#fff', label: 'Azul' }
+                                                };
+                                                const style = colors[p] || { bg: '#e9ecef', text: '#495057', label: p || 'N/A' };
+                                                return (
+                                                    <span style={{
+                                                        backgroundColor: style.bg,
+                                                        color: style.text,
+                                                        padding: '4px 8px',
+                                                        borderRadius: '4px',
+                                                        fontSize: '0.85rem',
+                                                        fontWeight: 600,
+                                                        textTransform: 'uppercase'
+                                                    }}>
+                                                        {style.label}
+                                                    </span>
+                                                );
+                                            })()}
+                                        </td>
                                         <td style={{ padding: '1rem' }}>
                                             <button
-                                                onClick={() => setSelectedSessionKey(item.key)}
+                                                onClick={() => setSelectedSessionKey(item.session_id)}
                                                 style={{
                                                     backgroundColor: '#fff',
                                                     border: '1px solid #dee2e6',
@@ -215,17 +241,20 @@ const Profile = () => {
                             </tbody>
                         </table>
                     </div>
-                )}
-            </section>
+                )
+                }
+            </section >
 
             {/* Modal */}
-            {selectedSessionKey && (
-                <TriageDetailsModal
-                    sessionKey={selectedSessionKey}
-                    onClose={() => setSelectedSessionKey(null)}
-                />
-            )}
-        </div>
+            {
+                selectedSessionKey && (
+                    <TriageDetailsModal
+                        sessionKey={selectedSessionKey}
+                        onClose={() => setSelectedSessionKey(null)}
+                    />
+                )
+            }
+        </div >
     );
 };
 
