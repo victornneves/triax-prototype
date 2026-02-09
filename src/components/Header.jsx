@@ -34,13 +34,33 @@ const Header = ({ signOut }) => {
                     </h2>
                 </Link>
                 <nav style={{ display: 'flex', gap: '1.5rem' }}>
-                    <Link to="/" style={{ textDecoration: 'none', color: '#495057', fontWeight: 500, fontSize: '0.95rem' }}>Nova Triagem</Link>
-                    {/* History is now part of profile, but keeping this link or pointing it to profile? 
-                        User instructions 1 says: "Topo da Página... Ação: Ao clicar neste componente (User), redirecionar para /profile."
-                        It doesn't say delete the old history link. But I'll point History to /profile for consistency or keep it as legacy.
-                        Let's keep it pointing to /history for now as that page exists, but maybe we should deprecate it later?
-                        The user didn't ask to delete the old history page, so I'll leave the link but maybe add a link to Admin Users if admin.
-                    */}
+                    <Link
+                        to="/"
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '1rem',
+                            cursor: 'pointer',
+                            padding: '0.4rem 1rem',
+                            borderRadius: '20px',
+                            transition: 'all 0.2s',
+                            backgroundColor: '#f1f3f5',
+                            color: '#495057',
+                            fontSize: '0.9rem',
+                            fontWeight: 600,
+                            textDecoration: 'none'
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = '#e9ecef';
+                            e.currentTarget.style.color = '#212529';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = '#f1f3f5';
+                            e.currentTarget.style.color = '#495057';
+                        }}
+                    >
+                        Nova Triagem
+                    </Link>
                     {userProfile?.effective_role === 'admin' && (
                         <Link to="/admin/users" style={{ textDecoration: 'none', color: '#495057', fontWeight: 500, fontSize: '0.95rem' }}>Usuários</Link>
                     )}
@@ -75,7 +95,7 @@ const Header = ({ signOut }) => {
                             e.currentTarget.style.color = '#495057';
                         }}
                     >
-                        Página do Usuário
+                        Histórico de Triagens
                     </div>
                 ) : (
                     // Fallback if profile fails

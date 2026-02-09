@@ -152,16 +152,25 @@ const TriageDetailsModal = ({ sessionKey, onClose }) => {
                             </div>
                         </section>
 
-                        {/* 3. Discriminators */}
+                        {/* 3. Discriminator */}
                         <section style={{ marginBottom: '1.5rem' }}>
-                            <h4 style={{ margin: '0 0 0.8rem 0', color: '#0d6efd', fontWeight: 600, fontSize: '0.95rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Discriminadores</h4>
+                            <h4 style={{ margin: '0 0 0.8rem 0', color: '#0d6efd', fontWeight: 600, fontSize: '0.95rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Discriminador</h4>
                             <div style={{
                                 backgroundColor: '#fff',
                                 border: '1px solid #dee2e6',
                                 borderRadius: '8px',
                                 padding: '1rem'
                             }}>
-                                {details.triage_result?.discriminators && details.triage_result.discriminators.length > 0 ? (
+                                {details.discriminator ? (
+                                    <div>
+                                        <div style={{ fontWeight: 700, color: '#343a40', marginBottom: '0.5rem', fontSize: '1.05rem' }}>
+                                            {details.discriminator.text}
+                                        </div>
+                                        <div style={{ color: '#495057', lineHeight: '1.5' }}>
+                                            {details.discriminator.explanation}
+                                        </div>
+                                    </div>
+                                ) : details.triage_result?.discriminators && details.triage_result.discriminators.length > 0 ? (
                                     <ul style={{ margin: '0 0 0 1.2rem', padding: 0, color: '#495057' }}>
                                         {details.triage_result.discriminators.map((d, i) => <li key={i} style={{ marginBottom: '0.3rem' }}>{d}</li>)}
                                     </ul>
@@ -193,6 +202,52 @@ const TriageDetailsModal = ({ sessionKey, onClose }) => {
                                 </div>
                                 <div>
                                     <strong>Duração:</strong> {formatDuration(details.stats?.duration_seconds)}
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                );
+
+            case 'vital_signs':
+                const vs = details.vital_signs || {};
+                const getValue = (val) => {
+                    if (!val) return '-';
+                    if (typeof val === 'object') return val.parsedValue || val.source || '-';
+                    return val;
+                };
+
+                return (
+                    <div style={{ animation: 'fadeIn 0.3s' }}>
+                        <section>
+                            <h4 style={{ margin: '0 0 0.8rem 0', color: '#0d6efd', fontWeight: 600, fontSize: '0.95rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Sinais Vitais</h4>
+                            <div style={{
+                                backgroundColor: '#f8f9fa',
+                                borderRadius: '8px',
+                                padding: '1.2rem',
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+                                gap: '1.5rem',
+                                border: '1px solid #e9ecef'
+                            }}>
+                                <div>
+                                    <div style={{ fontSize: '0.8rem', color: '#868e96', marginBottom: '0.2rem' }}>Frequência Cardíaca</div>
+                                    <div style={{ fontWeight: 600, color: '#343a40', fontSize: '1.1rem' }}>{getValue(vs.heart_rate)} <span style={{ fontSize: '0.8rem', fontWeight: 400, color: '#6c757d' }}>bpm</span></div>
+                                </div>
+                                <div>
+                                    <div style={{ fontSize: '0.8rem', color: '#868e96', marginBottom: '0.2rem' }}>Pressão Arterial</div>
+                                    <div style={{ fontWeight: 600, color: '#343a40', fontSize: '1.1rem' }}>{getValue(vs.blood_pressure)} <span style={{ fontSize: '0.8rem', fontWeight: 400, color: '#6c757d' }}>mmHg</span></div>
+                                </div>
+                                <div>
+                                    <div style={{ fontSize: '0.8rem', color: '#868e96', marginBottom: '0.2rem' }}>Frequência Respiratória</div>
+                                    <div style={{ fontWeight: 600, color: '#343a40', fontSize: '1.1rem' }}>{getValue(vs.respiratory_rate)} <span style={{ fontSize: '0.8rem', fontWeight: 400, color: '#6c757d' }}>rpm</span></div>
+                                </div>
+                                <div>
+                                    <div style={{ fontSize: '0.8rem', color: '#868e96', marginBottom: '0.2rem' }}>Glicemia</div>
+                                    <div style={{ fontWeight: 600, color: '#343a40', fontSize: '1.1rem' }}>{getValue(vs.blood_glucose)} <span style={{ fontSize: '0.8rem', fontWeight: 400, color: '#6c757d' }}>mg/dL</span></div>
+                                </div>
+                                <div>
+                                    <div style={{ fontSize: '0.8rem', color: '#868e96', marginBottom: '0.2rem' }}>Escala de Glasgow</div>
+                                    <div style={{ fontWeight: 600, color: '#343a40', fontSize: '1.1rem' }}>{getValue(vs.gcs_scale)}</div>
                                 </div>
                             </div>
                         </section>
@@ -576,9 +631,16 @@ const TriageDetailsModal = ({ sessionKey, onClose }) => {
                     </div>
 
                     <div style={{ display: 'flex', gap: '2rem', overflowX: 'auto' }}>
-                        {['triage', 'reasoning', 'protocol', 'priority'].map((tab) => {
+                        {[
+                            'triage',
+                            ...(details?.vital_signs ? ['vital_signs'] : []),
+                            'reasoning',
+                            'protocol',
+                            'priority'
+                        ].map((tab) => {
                             const labels = {
                                 triage: 'Triagem',
+                                vital_signs: 'Sinais Vitais',
                                 reasoning: 'Raciocínio IA',
                                 protocol: 'Seleção de Protocolo',
                                 priority: 'Seleção de Prioridade'

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useUser } from '../contexts/UserContext';
+
 import { fetchAuthSession } from 'aws-amplify/auth';
 import TriageDetailsModal from '../components/TriageDetailsModal';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 const Profile = () => {
-    const { userProfile } = useUser();
+
     const [history, setHistory] = useState([]);
     const [loadingHistory, setLoadingHistory] = useState(false);
     const [selectedSessionKey, setSelectedSessionKey] = useState(null);
@@ -73,63 +73,6 @@ const Profile = () => {
 
     return (
         <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '2rem' }}>
-            <h1 style={{ marginBottom: '2rem', color: '#212529' }}>Meu Perfil</h1>
-
-            {/* Section A: Personal Info */}
-            <section style={{
-                backgroundColor: '#fff',
-                borderRadius: '12px',
-                padding: '2rem',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-                marginBottom: '2rem',
-                border: '1px solid #e9ecef'
-            }}>
-                <h3 style={{ marginTop: 0, marginBottom: '1.5rem', color: '#495057', fontSize: '1.2rem', borderBottom: '1px solid #f8f9fa', paddingBottom: '0.8rem' }}>
-                    Informações Pessoais
-                </h3>
-
-                {userProfile ? (
-                    <div style={{ display: 'grid', gap: '1rem' }}>
-                        <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr', alignItems: 'center' }}>
-                            <span style={{ color: '#868e96', fontWeight: 500 }}>Usuário / ID</span>
-                            <span style={{ fontWeight: 600 }}>{userProfile.username} ({userProfile.id || 'N/A'})</span>
-                        </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr', alignItems: 'center' }}>
-                            <span style={{ color: '#868e96', fontWeight: 500 }}>Email</span>
-                            <span>{userProfile.email}</span>
-                        </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr', alignItems: 'center' }}>
-                            <span style={{ color: '#868e96', fontWeight: 500 }}>Tenant</span>
-                            <span style={{
-                                backgroundColor: '#e9ecef',
-                                padding: '0.2rem 0.5rem',
-                                borderRadius: '4px',
-                                display: 'inline-block',
-                                width: 'fit-content'
-                            }}>{userProfile.tenant_id}</span>
-                        </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr', alignItems: 'center' }}>
-                            <span style={{ color: '#868e96', fontWeight: 500 }}>Permissões</span>
-                            <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                {(userProfile.roles || []).map((role, i) => (
-                                    <span key={i} style={{
-                                        backgroundColor: '#e7f5ff',
-                                        color: '#0c85d0',
-                                        padding: '0.2rem 0.6rem',
-                                        borderRadius: '20px',
-                                        fontSize: '0.85rem',
-                                        fontWeight: 600
-                                    }}>
-                                        {role}
-                                    </span>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                ) : (
-                    <p>Carregando informações...</p>
-                )}
-            </section>
 
             {/* Section B: History */}
             <section style={{
