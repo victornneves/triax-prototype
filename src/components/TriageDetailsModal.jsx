@@ -416,6 +416,14 @@ const TriageDetailsModal = ({ sessionKey, onClose }) => {
                             question: item.object,
                             response: null
                         };
+                    } else if (item.type === 'level_evaluation') {
+                        if (currentStep) prioritySteps.push(currentStep);
+                        currentStep = {
+                            step: item.step,
+                            question: { text: item.text },
+                            response: null,
+                            isLevelEvaluation: true
+                        };
                     } else if (item.type === 'llm_response') {
                         if (currentStep) {
                             currentStep.response = item.object;
@@ -423,7 +431,6 @@ const TriageDetailsModal = ({ sessionKey, onClose }) => {
                             currentStep = null;
                         } else {
                             // Edge case: Response without preceding question?
-                            // Should ideally not happen often, but could treat as standalone reasoning
                             prioritySteps.push({
                                 step: item.step,
                                 question: { text: 'Decisão Intermediária' },
@@ -479,7 +486,7 @@ const TriageDetailsModal = ({ sessionKey, onClose }) => {
                                     }}>
                                         {/* Left Side */}
                                         <div style={{ width: '45%', display: 'flex', flexDirection: 'column', alignItems: isLeft ? 'flex-end' : 'flex-start', paddingRight: isLeft ? '2rem' : 0 }}>
-                                            {isLeft && (
+                                            {isLeft && !stepItem.isLevelEvaluation && (
                                                 <div style={{ textAlign: 'right' }}>
                                                     <div style={{ fontWeight: 700, fontSize: '1.1rem', color: '#343a40', marginBottom: '0.2rem' }}>
                                                         {questionText}
@@ -514,28 +521,52 @@ const TriageDetailsModal = ({ sessionKey, onClose }) => {
                                         </div>
 
                                         {/* Center Node */}
-                                        <div style={{
-                                            position: 'relative',
-                                            zIndex: 2,
-                                            width: '40px',
-                                            height: '40px',
-                                            borderRadius: '50%',
-                                            backgroundColor: priority ? getPriorityColor(priority) : '#343a40',
-                                            color: '#fff',
-                                            display: 'flex',
-                                            justifyContent: 'center',
-                                            alignItems: 'center',
-                                            fontWeight: 'bold',
-                                            fontSize: '1.1rem',
-                                            border: '4px solid #fff',
-                                            boxShadow: '0 0 0 2px #e9ecef'
-                                        }}>
-                                            {index + 1}
-                                        </div>
+                                        {stepItem.isLevelEvaluation ? (
+                                            <div style={{
+                                                position: 'relative',
+                                                zIndex: 2,
+                                                width: 'auto',
+                                                minWidth: '40px',
+                                                height: '40px',
+                                                borderRadius: '20px',
+                                                backgroundColor: '#0d6efd',
+                                                color: '#fff',
+                                                display: 'flex',
+                                                justifyContent: 'center',
+                                                alignItems: 'center',
+                                                fontWeight: 'bold',
+                                                fontSize: '0.85rem',
+                                                padding: '0 15px',
+                                                border: '4px solid #fff',
+                                                boxShadow: '0 0 0 2px #0d6efd',
+                                                whiteSpace: 'nowrap'
+                                            }}>
+                                                {questionText}
+                                            </div>
+                                        ) : (
+                                            <div style={{
+                                                position: 'relative',
+                                                zIndex: 2,
+                                                width: '40px',
+                                                height: '40px',
+                                                borderRadius: '50%',
+                                                backgroundColor: priority ? getPriorityColor(priority) : '#343a40',
+                                                color: '#fff',
+                                                display: 'flex',
+                                                justifyContent: 'center',
+                                                alignItems: 'center',
+                                                fontWeight: 'bold',
+                                                fontSize: '1.1rem',
+                                                border: '4px solid #fff',
+                                                boxShadow: '0 0 0 2px #e9ecef'
+                                            }}>
+                                                {index + 1}
+                                            </div>
+                                        )}
 
                                         {/* Right Side */}
                                         <div style={{ width: '45%', display: 'flex', flexDirection: 'column', alignItems: !isLeft ? 'flex-start' : 'flex-end', paddingLeft: !isLeft ? '2rem' : 0 }}>
-                                            {!isLeft && (
+                                            {!isLeft && !stepItem.isLevelEvaluation && (
                                                 <div style={{ textAlign: 'left' }}>
                                                     <div style={{ fontWeight: 700, fontSize: '1.1rem', color: '#343a40', marginBottom: '0.2rem' }}>
                                                         {questionText}

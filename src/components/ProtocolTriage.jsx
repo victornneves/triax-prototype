@@ -284,6 +284,8 @@ const ProtocolTriage = () => {
     const [tooltipState, setTooltipState] = useState(null);
     const [allProtocols, setAllProtocols] = useState([]);
     const [pendingProtocol, setPendingProtocol] = useState(null);
+    const [currentReasoning, setCurrentReasoning] = useState(null);
+    const [showReasoning, setShowReasoning] = useState(false);
 
     // -- AUDIO TRANSCRIPTION --
     const {
@@ -545,6 +547,11 @@ const ProtocolTriage = () => {
     const handleTraversalResponse = (data) => {
         setLoading(false);
 
+        // Update reasoning if available
+        if (data.reasoning) {
+            setCurrentReasoning(data.reasoning);
+        }
+
         // Handle auto-detected sensors from backend
         if (data.sensor_data) {
             setSensorInputs(prev => {
@@ -575,35 +582,50 @@ const ProtocolTriage = () => {
 
         } else if (data.status === 'next_node') {
             const next = data.next_node;
-            setCurrentNode(next);
+            const nextId = data.next_node_id || (next ? next.id : null);
 
-            if (next.type === 'assignment') {
+            if (next) {
+                setCurrentNode(next);
+            }
+
+            if (next && next.type === 'assignment') {
                 setTriageResult(next);
                 if (data.report) {
                     setTriageReport(data.report);
                 }
                 addMessage('system', `Triagem Completa! Prioridade: ${next.text} (${next.priority})`);
-            } else {
-                // Recursive traversal with EXPLICIT next node ID to avoid closure staleness
+            } else if (nextId) {
+                // Recursive traversal with EXPLICIT next node ID
                 setLoading(true);
-                getAuthHeaders().then(h => traverseTree(h, null, next.id));
+                getAuthHeaders().then(h => traverseTree(h, null, nextId));
+            } else {
+                console.warn("Status 'next_node' received but no ID available for jump.");
+                setLoading(false);
             }
 
         } else if (data.status === 'ask_user') {
             // Backend evaluated context and decided it needs more info.
-            setCurrentNode(data.node);
-            const msgText = data.node.question || data.node.text;
-            addMessage('system', msgText);
-            logSystemMessage(msgText);
+            if (data.node) {
+                setCurrentNode(data.node);
+                const msgText = data.node.question || data.node.text;
+                addMessage('system', msgText);
+                logSystemMessage(msgText);
+            } else {
+                console.warn("Status 'ask_user' received but no node provided.");
+            }
 
         } else if (data.status === 'missing_sensors') {
-            const translatedSensors = data.missing_sensors.map(s => {
-                const key = s === 'gcs_scale' ? 'gcs' : s;
-                return SENSOR_CONFIG[key]?.full_label || SENSOR_CONFIG[key]?.label || s;
-            });
-            addMessage('system', `Preciso dos seguintes sinais vitais para continuar: ${translatedSensors.join(', ')}. Por favor, preencha o painel lateral, ou digite os valores.`);
-            setMissingSensors(data.missing_sensors);
-            setCurrentNode(data.node);
+            if (data.missing_sensors) {
+                const translatedSensors = data.missing_sensors.map(s => {
+                    const key = s === 'gcs_scale' ? 'gcs' : s;
+                    return SENSOR_CONFIG[key]?.full_label || SENSOR_CONFIG[key]?.label || s;
+                });
+                addMessage('system', `Preciso dos seguintes sinais vitais para continuar: ${translatedSensors.join(', ')}. Por favor, preencha o painel lateral, ou digite os valores.`);
+                setMissingSensors(data.missing_sensors);
+            }
+            if (data.node) {
+                setCurrentNode(data.node);
+            }
         } else if (data.error) {
             addMessage('system', `Erro: ${data.error}`);
         }
@@ -656,6 +678,8 @@ const ProtocolTriage = () => {
         setSensorInputs({});
         setPendingProtocol(null);
         protocolRef.current = null; // Explicitly clear protocol reference
+        setCurrentReasoning(null);
+        setShowReasoning(false);
 
         // Generate new session ID to avoid history pollution
         setSessionId('session-' + Date.now() + '-' + Math.floor(Math.random() * 1000));
@@ -1080,6 +1104,62 @@ const ProtocolTriage = () => {
                     </button>
                 </div>
 
+                {/* Reasoning / Clinical Thought Process */}
+                {currentReasoning && (
+                    <div style={{
+                        padding: '1.25rem',
+                        background: '#e8f4fd',
+                        borderRadius: '8px',
+                        boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
+                        border: '1px solid #b6effb',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '0.5rem'
+                    }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#055160', fontWeight: 'bold', letterSpacing: '0.05em' }}>
+                                Insight Clínico (IA)
+                            </div>
+                            <button
+                                onClick={() => setShowReasoning(!showReasoning)}
+                                style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    color: '#0d6efd',
+                                    fontSize: '0.75rem',
+                                    cursor: 'pointer',
+                                    fontWeight: '600',
+                                    padding: 0
+                                }}
+                            >
+                                {showReasoning ? 'Ocultar' : 'Ver Detalhes'}
+                            </button>
+                        </div>
+                        {showReasoning ? (
+                            <div style={{
+                                fontSize: '0.9rem',
+                                color: '#055160',
+                                lineHeight: '1.5',
+                                textAlign: 'left',
+                                animation: 'fadeIn 0.3s'
+                            }}>
+                                {currentReasoning}
+                            </div>
+                        ) : (
+                            <div style={{
+                                fontSize: '0.85rem',
+                                color: '#055160',
+                                fontStyle: 'italic',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap'
+                            }}>
+                                {currentReasoning}
+                            </div>
+                        )}
+                    </div>
+                )}
+
                 {/* Sensors */}
                 <div style={{ padding: '1.25rem', background: '#ffffff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', border: '1px solid #dee2e6', display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid #f1f3f5', paddingBottom: '1rem' }}>
@@ -1182,16 +1262,20 @@ const ProtocolTriage = () => {
                             }
 
                             return (
-                                <div key={key} style={{
-                                    display: 'grid',
-                                    gridTemplateColumns: '90px minmax(0, 1fr)',
-                                    alignItems: 'center',
-                                    gap: '10px',
-                                    padding: '8px',
-                                    borderRadius: '6px',
-                                    backgroundColor: isMissing ? '#fff3f3' : '#f8f9fa',
-                                    border: isMissing ? '1px solid #ffc9c9' : '1px solid #e9ecef'
-                                }}>
+                                <div
+                                    key={key}
+                                    className={isMissing ? 'sensor-missing-pulse' : ''}
+                                    style={{
+                                        display: 'grid',
+                                        gridTemplateColumns: '90px minmax(0, 1fr)',
+                                        alignItems: 'center',
+                                        gap: '10px',
+                                        padding: '8px',
+                                        borderRadius: '6px',
+                                        backgroundColor: isMissing ? '#fff3f3' : '#f8f9fa',
+                                        border: isMissing ? '1px solid #ffc9c9' : '1px solid #e9ecef',
+                                        transition: 'all 0.3s'
+                                    }}>
                                     <SensorLabel config={conf} setTooltipState={setTooltipState} />
                                     {inputComponent}
                                 </div>
@@ -1225,38 +1309,40 @@ const ProtocolTriage = () => {
             </div>
 
             {/* Global Tooltip Portal */}
-            {tooltipState && (
-                <div style={{
-                    position: 'fixed',
-                    top: tooltipState.y - 8,
-                    left: tooltipState.x,
-                    transform: 'translate(-50%, -100%)',
-                    background: '#333',
-                    color: '#fff',
-                    padding: '8px',
-                    borderRadius: '4px',
-                    fontSize: '0.75rem',
-                    width: '180px',
-                    zIndex: 9999,
-                    textAlign: 'center',
-                    boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
-                    pointerEvents: 'none'
-                }}>
-                    <div style={{ marginBottom: '4px', fontWeight: 'bold' }}>{tooltipState.config.desc}</div>
-                    <div>{tooltipState.config.range}</div>
-                    {/* Arrow */}
+            {
+                tooltipState && (
                     <div style={{
-                        position: 'absolute',
-                        top: '100%',
-                        left: '50%',
-                        marginLeft: '-5px',
-                        borderWidth: '5px',
-                        borderStyle: 'solid',
-                        borderColor: '#333 transparent transparent transparent'
-                    }} />
-                </div>
-            )}
-        </div>
+                        position: 'fixed',
+                        top: tooltipState.y - 8,
+                        left: tooltipState.x,
+                        transform: 'translate(-50%, -100%)',
+                        background: '#333',
+                        color: '#fff',
+                        padding: '8px',
+                        borderRadius: '4px',
+                        fontSize: '0.75rem',
+                        width: '180px',
+                        zIndex: 9999,
+                        textAlign: 'center',
+                        boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
+                        pointerEvents: 'none'
+                    }}>
+                        <div style={{ marginBottom: '4px', fontWeight: 'bold' }}>{tooltipState.config.desc}</div>
+                        <div>{tooltipState.config.range}</div>
+                        {/* Arrow */}
+                        <div style={{
+                            position: 'absolute',
+                            top: '100%',
+                            left: '50%',
+                            marginLeft: '-5px',
+                            borderWidth: '5px',
+                            borderStyle: 'solid',
+                            borderColor: '#333 transparent transparent transparent'
+                        }} />
+                    </div>
+                )
+            }
+        </div >
     );
 };
 
