@@ -7,7 +7,7 @@ const TriageDetailsModal = ({ sessionKey, onClose }) => {
     const [details, setDetails] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [activeTab, setActiveTab] = useState('triage');
+    const [activeTab, setActiveTab] = useState('clinical'); // 'clinical' or 'reasoning'
 
     useEffect(() => {
         if (!sessionKey) return;
@@ -62,6 +62,28 @@ const TriageDetailsModal = ({ sessionKey, onClose }) => {
         return `${h}h ${m}m ${s}s`;
     };
 
+    const getPriorityName = (priority) => {
+        switch (priority?.toLowerCase()) {
+            case 'red': return 'Vermelho';
+            case 'orange': return 'Laranja';
+            case 'yellow': return 'Amarelo';
+            case 'green': return 'Verde';
+            case 'blue': return 'Azul';
+            default: return priority || 'N/A';
+        }
+    };
+
+    const getPriorityTextColor = (priority) => {
+        switch (priority?.toLowerCase()) {
+            case 'red': return '#842029';
+            case 'orange': return '#854000';
+            case 'yellow': return '#856404'; // Darker yellow for readability
+            case 'green': return '#0f5132';
+            case 'blue': return '#084298';
+            default: return '#343a40';
+        }
+    };
+
     const getPriorityColor = (priority) => {
         switch (priority?.toLowerCase()) {
             case 'red': return '#dc3545';
@@ -93,521 +115,15 @@ const TriageDetailsModal = ({ sessionKey, onClose }) => {
 
     if (!sessionKey) return null;
 
-    const renderTabContent = () => {
-        if (!details) return null;
-
-        switch (activeTab) {
-            case 'triage':
-                return (
-                    <div style={{ animation: 'fadeIn 0.3s' }}>
-                        {/* 1. Patient Info */}
-                        <section style={{ marginBottom: '1.5rem' }}>
-                            <h4 style={{ margin: '0 0 0.8rem 0', color: '#0d6efd', fontWeight: 600, fontSize: '0.95rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Paciente</h4>
-                            <div style={{
-                                backgroundColor: '#f8f9fa',
-                                borderRadius: '8px',
-                                padding: '1.2rem',
-                                display: 'grid',
-                                gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
-                                gap: '1rem',
-                                border: '1px solid #e9ecef'
-                            }}>
-                                <div>
-                                    <div style={{ fontSize: '0.8rem', color: '#868e96', marginBottom: '0.2rem' }}>Nome</div>
-                                    <div style={{ fontWeight: 600, color: '#343a40', fontSize: '1rem' }}>{details.patient_info?.name || 'N/A'}</div>
-                                </div>
-                                <div>
-                                    <div style={{ fontSize: '0.8rem', color: '#868e96', marginBottom: '0.2rem' }}>Idade</div>
-                                    <div style={{ fontWeight: 600, color: '#343a40', fontSize: '1rem' }}>{details.patient_info?.age} Anos</div>
-                                </div>
-                                <div>
-                                    <div style={{ fontSize: '0.8rem', color: '#868e96', marginBottom: '0.2rem' }}>Sexo</div>
-                                    <div style={{ fontWeight: 600, color: '#343a40', fontSize: '1rem' }}>{details.patient_info?.sex || 'N/A'}</div>
-                                </div>
-                            </div>
-                        </section>
-
-                        {/* 2. Protocol & Classification */}
-                        <section style={{ marginBottom: '1.5rem' }}>
-                            <h4 style={{ margin: '0 0 0.8rem 0', color: '#0d6efd', fontWeight: 600, fontSize: '0.95rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Classificação</h4>
-                            <div style={{
-                                padding: '1.2rem',
-                                background: getPriorityBg(details.triage_result?.priority),
-                                borderRadius: '8px',
-                                borderLeft: `5px solid ${getPriorityColor(details.triage_result?.priority)}`
-                            }}>
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                                    <div style={{ fontSize: '1.2rem', fontWeight: '700', color: '#212529' }}>
-                                        {details.triage_result?.classification || "Classificação Indefinida"}
-                                    </div>
-                                    <div style={{ display: 'flex', gap: '2rem', fontSize: '0.95rem', color: '#495057' }}>
-                                        <span>
-                                            <strong>Protocolo:</strong> {formatProtocolName(details.triage_result?.protocol)}
-                                        </span>
-                                        <span>
-                                            <strong>Prioridade:</strong> {details.triage_result?.priority?.toUpperCase() || 'N/A'}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-
-                        {/* 3. Discriminator */}
-                        <section style={{ marginBottom: '1.5rem' }}>
-                            <h4 style={{ margin: '0 0 0.8rem 0', color: '#0d6efd', fontWeight: 600, fontSize: '0.95rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Discriminador</h4>
-                            <div style={{
-                                backgroundColor: '#fff',
-                                border: '1px solid #dee2e6',
-                                borderRadius: '8px',
-                                padding: '1rem'
-                            }}>
-                                {details.discriminator ? (
-                                    <div>
-                                        <div style={{ fontWeight: 700, color: '#343a40', marginBottom: '0.5rem', fontSize: '1.05rem' }}>
-                                            {details.discriminator.text}
-                                        </div>
-                                        <div style={{ color: '#495057', lineHeight: '1.5' }}>
-                                            {details.discriminator.explanation}
-                                        </div>
-                                    </div>
-                                ) : details.triage_result?.discriminators && details.triage_result.discriminators.length > 0 ? (
-                                    <ul style={{ margin: '0 0 0 1.2rem', padding: 0, color: '#495057' }}>
-                                        {details.triage_result.discriminators.map((d, i) => <li key={i} style={{ marginBottom: '0.3rem' }}>{d}</li>)}
-                                    </ul>
-                                ) : (
-                                    <div style={{ fontStyle: 'italic', color: '#adb5bd', fontSize: '0.9rem' }}>
-                                        Nenhum discriminador registrado.
-                                    </div>
-                                )}
-                            </div>
-                        </section>
-
-                        {/* 4. Statistics */}
-                        <section>
-                            <h4 style={{ margin: '0 0 0.8rem 0', color: '#0d6efd', fontWeight: 600, fontSize: '0.95rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Estatísticas</h4>
-                            <div style={{
-                                display: 'grid',
-                                gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-                                gap: '1rem',
-                                fontSize: '0.9rem',
-                                color: '#6c757d',
-                                borderTop: '1px solid #f1f3f5',
-                                paddingTop: '1rem'
-                            }}>
-                                <div>
-                                    <strong>Início:</strong> {formatTime(details.stats?.start_time)}
-                                </div>
-                                <div>
-                                    <strong>Fim:</strong> {formatTime(details.stats?.end_time)}
-                                </div>
-                                <div>
-                                    <strong>Duração:</strong> {formatDuration(details.stats?.duration_seconds)}
-                                </div>
-                            </div>
-                        </section>
-                    </div>
-                );
-
-            case 'vital_signs':
-                const vs = details.vital_signs || {};
-                const getValue = (val) => {
-                    if (!val) return '-';
-                    if (typeof val === 'object') return val.parsedValue || val.source || '-';
-                    return val;
-                };
-
-                return (
-                    <div style={{ animation: 'fadeIn 0.3s' }}>
-                        <section>
-                            <h4 style={{ margin: '0 0 0.8rem 0', color: '#0d6efd', fontWeight: 600, fontSize: '0.95rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Sinais Vitais</h4>
-                            <div style={{
-                                backgroundColor: '#f8f9fa',
-                                borderRadius: '8px',
-                                padding: '1.2rem',
-                                display: 'grid',
-                                gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-                                gap: '1.5rem',
-                                border: '1px solid #e9ecef'
-                            }}>
-                                <div>
-                                    <div style={{ fontSize: '0.8rem', color: '#868e96', marginBottom: '0.2rem' }}>Frequência Cardíaca</div>
-                                    <div style={{ fontWeight: 600, color: '#343a40', fontSize: '1.1rem' }}>{getValue(vs.heart_rate)} <span style={{ fontSize: '0.8rem', fontWeight: 400, color: '#6c757d' }}>bpm</span></div>
-                                </div>
-                                <div>
-                                    <div style={{ fontSize: '0.8rem', color: '#868e96', marginBottom: '0.2rem' }}>Pressão Arterial</div>
-                                    <div style={{ fontWeight: 600, color: '#343a40', fontSize: '1.1rem' }}>{getValue(vs.blood_pressure)} <span style={{ fontSize: '0.8rem', fontWeight: 400, color: '#6c757d' }}>mmHg</span></div>
-                                </div>
-                                <div>
-                                    <div style={{ fontSize: '0.8rem', color: '#868e96', marginBottom: '0.2rem' }}>Frequência Respiratória</div>
-                                    <div style={{ fontWeight: 600, color: '#343a40', fontSize: '1.1rem' }}>{getValue(vs.respiratory_rate)} <span style={{ fontSize: '0.8rem', fontWeight: 400, color: '#6c757d' }}>rpm</span></div>
-                                </div>
-                                <div>
-                                    <div style={{ fontSize: '0.8rem', color: '#868e96', marginBottom: '0.2rem' }}>Glicemia</div>
-                                    <div style={{ fontWeight: 600, color: '#343a40', fontSize: '1.1rem' }}>{getValue(vs.blood_glucose)} <span style={{ fontSize: '0.8rem', fontWeight: 400, color: '#6c757d' }}>mg/dL</span></div>
-                                </div>
-                                <div>
-                                    <div style={{ fontSize: '0.8rem', color: '#868e96', marginBottom: '0.2rem' }}>Escala de Glasgow</div>
-                                    <div style={{ fontWeight: 600, color: '#343a40', fontSize: '1.1rem' }}>{getValue(vs.gcs_scale)}</div>
-                                </div>
-                            </div>
-                        </section>
-                    </div>
-                );
-
-            case 'reasoning':
-                return (
-                    <div style={{ animation: 'fadeIn 0.3s' }}>
-                        <section>
-                            <h4 style={{ margin: '0 0 0.8rem 0', color: '#0d6efd', fontWeight: 600, fontSize: '0.95rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Raciocínio Clínico (IA)</h4>
-                            <div style={{
-                                backgroundColor: '#f8f9fa',
-                                border: '1px solid #e9ecef',
-                                borderRadius: '8px',
-                                padding: '1.5rem',
-                                lineHeight: '1.7',
-                                color: '#212529',
-                                textAlign: 'justify',
-                                fontSize: '1rem'
-                            }}>
-                                {details.reasoning || "Nenhum raciocínio registrado."}
-                            </div>
-                        </section>
-                    </div>
-                );
-
-            case 'protocol':
-                const steps = details.decision_steps_for_protocol_selection || [];
-                if (steps.length === 0) {
-                    return (
-                        <div style={{ textAlign: 'center', padding: '3rem', color: '#adb5bd' }}>
-                            Nenhum passo de decisão registrado.
-                        </div>
-                    );
-                }
-
-                return (
-                    <div style={{ animation: 'fadeIn 0.3s', padding: '1rem 0' }}>
-                        <h4 style={{ margin: '0 0 2rem 0', color: '#0d6efd', fontWeight: 600, fontSize: '0.95rem', textTransform: 'uppercase', letterSpacing: '0.5px', textAlign: 'center' }}>
-                            Linha do Tempo de Decisão
-                        </h4>
-                        <div style={{ position: 'relative', width: '100%', maxWidth: '700px', margin: '0 auto' }}>
-                            {/* Central Line */}
-                            <div style={{
-                                position: 'absolute',
-                                left: '50%',
-                                top: 0,
-                                bottom: 0,
-                                width: '4px',
-                                backgroundColor: '#e9ecef',
-                                transform: 'translateX(-50%)',
-                                borderRadius: '2px'
-                            }}></div>
-
-                            {/* Steps */}
-                            {steps.map((step, index) => {
-                                const isLeft = index % 2 === 0;
-                                const isProtocol = step.type === 'protocol';
-                                const title = step.text || formatProtocolName(step.chosen_branch_id) || 'Passo sem título';
-                                const reasoning = step.response || step.reasoning;
-
-                                return (
-                                    <div key={index} style={{
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'flex-start',
-                                        marginBottom: '2rem',
-                                        position: 'relative'
-                                    }}>
-                                        {/* Left Side */}
-                                        <div style={{ width: '45%', display: 'flex', flexDirection: 'column', alignItems: isLeft ? 'flex-end' : 'flex-start', paddingRight: isLeft ? '2rem' : 0 }}>
-                                            {isLeft && (
-                                                <div style={{ textAlign: 'right' }}>
-                                                    <div style={{ fontWeight: 700, fontSize: '1.1rem', color: '#343a40', marginBottom: '0.5rem' }}>
-                                                        {title}
-                                                    </div>
-                                                    {reasoning && (
-                                                        <div style={{ fontSize: '0.9rem', color: '#495057', backgroundColor: '#fff', border: '1px solid #dee2e6', padding: '1rem', borderRadius: '8px', boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }}>
-                                                            {reasoning}
-                                                        </div>
-                                                    )}
-                                                    {isProtocol && (
-                                                        <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', color: '#adb5bd', textTransform: 'uppercase', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '0.5rem' }}>
-                                                            <span style={{
-                                                                backgroundColor: '#e9ecef',
-                                                                color: '#495057',
-                                                                padding: '2px 6px',
-                                                                borderRadius: '4px'
-                                                            }}>
-                                                                Protocolo Selecionado
-                                                            </span>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        {/* Center Node */}
-                                        <div style={{
-                                            position: 'relative',
-                                            zIndex: 2,
-                                            width: '40px',
-                                            height: '40px',
-                                            borderRadius: '50%',
-                                            backgroundColor: '#343a40', // Always dark/neutral
-                                            color: '#fff',
-                                            display: 'flex',
-                                            justifyContent: 'center',
-                                            alignItems: 'center',
-                                            fontWeight: 'bold',
-                                            fontSize: '1.1rem',
-                                            border: '4px solid #fff',
-                                            boxShadow: isProtocol ? '0 0 0 4px #e9ecef' : '0 0 0 2px #e9ecef', // Thicker ring for protocol
-                                            transform: isProtocol ? 'scale(1.2)' : 'scale(1)' // Slight size bump
-                                        }}>
-                                            {step.step}
-                                        </div>
-
-                                        {/* Right Side */}
-                                        <div style={{ width: '45%', display: 'flex', flexDirection: 'column', alignItems: !isLeft ? 'flex-start' : 'flex-end', paddingLeft: !isLeft ? '2rem' : 0 }}>
-                                            {!isLeft && (
-                                                <div style={{ textAlign: 'left' }}>
-                                                    <div style={{ fontWeight: 700, fontSize: '1.1rem', color: '#343a40', marginBottom: '0.5rem' }}>
-                                                        {title}
-                                                    </div>
-                                                    {reasoning && (
-                                                        <div style={{ fontSize: '0.9rem', color: '#495057', backgroundColor: '#fff', border: '1px solid #dee2e6', padding: '1rem', borderRadius: '8px', boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }}>
-                                                            {reasoning}
-                                                        </div>
-                                                    )}
-                                                    {isProtocol && (
-                                                        <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', color: '#adb5bd', textTransform: 'uppercase', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                                            <span style={{
-                                                                backgroundColor: '#e9ecef',
-                                                                color: '#495057',
-                                                                padding: '2px 6px',
-                                                                borderRadius: '4px'
-                                                            }}>
-                                                                Protocolo
-                                                            </span>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    </div>
-                );
-
-            case 'priority':
-                const priorityRawSteps = details.decision_steps_for_priority || [];
-                // Group the interleaved steps
-                // Expected pattern: current_node -> llm_response
-                const prioritySteps = [];
-                let currentStep = null;
-
-                priorityRawSteps.forEach(item => {
-                    if (item.type === 'current_node') {
-                        if (currentStep) prioritySteps.push(currentStep);
-                        currentStep = {
-                            step: item.step,
-                            question: item.object,
-                            response: null
-                        };
-                    } else if (item.type === 'level_evaluation') {
-                        if (currentStep) prioritySteps.push(currentStep);
-                        currentStep = {
-                            step: item.step,
-                            question: { text: item.text },
-                            response: null,
-                            isLevelEvaluation: true
-                        };
-                    } else if (item.type === 'llm_response') {
-                        if (currentStep) {
-                            currentStep.response = item.object;
-                            prioritySteps.push(currentStep);
-                            currentStep = null;
-                        } else {
-                            // Edge case: Response without preceding question?
-                            prioritySteps.push({
-                                step: item.step,
-                                question: { text: 'Decisão Intermediária' },
-                                response: item.object
-                            });
-                        }
-                    }
-                });
-                if (currentStep) prioritySteps.push(currentStep); // Push last if lingering
-
-                if (prioritySteps.length === 0) {
-                    return (
-                        <div style={{ textAlign: 'center', padding: '3rem', color: '#adb5bd' }}>
-                            Nenhum passo de decisão de prioridade registrado.
-                        </div>
-                    );
-                }
-
-                return (
-                    <div style={{ animation: 'fadeIn 0.3s', padding: '1rem 0' }}>
-                        <h4 style={{ margin: '0 0 2rem 0', color: '#0d6efd', fontWeight: 600, fontSize: '0.95rem', textTransform: 'uppercase', letterSpacing: '0.5px', textAlign: 'center' }}>
-                            Linha do Tempo de Prioridade
-                        </h4>
-                        <div style={{ position: 'relative', width: '100%', maxWidth: '700px', margin: '0 auto' }}>
-                            {/* Central Line */}
-                            <div style={{
-                                position: 'absolute',
-                                left: '50%',
-                                top: 0,
-                                bottom: 0,
-                                width: '4px',
-                                backgroundColor: '#e9ecef',
-                                transform: 'translateX(-50%)',
-                                borderRadius: '2px'
-                            }}></div>
-
-                            {/* Steps */}
-                            {prioritySteps.map((stepItem, index) => {
-                                const isLeft = index % 2 === 0;
-                                const questionText = stepItem.question?.text || 'Avaliação de Critério';
-                                const questionDetail = stepItem.question?.question;
-                                const priority = stepItem.question?.priority; // e.g. 'red', 'orange'
-                                const reasoning = stepItem.response?.reasoning;
-                                const outcome = stepItem.response?.chosen_branch;
-
-                                return (
-                                    <div key={index} style={{
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'flex-start',
-                                        marginBottom: '2rem',
-                                        position: 'relative'
-                                    }}>
-                                        {/* Left Side */}
-                                        <div style={{ width: '45%', display: 'flex', flexDirection: 'column', alignItems: isLeft ? 'flex-end' : 'flex-start', paddingRight: isLeft ? '2rem' : 0 }}>
-                                            {isLeft && !stepItem.isLevelEvaluation && (
-                                                <div style={{ textAlign: 'right' }}>
-                                                    <div style={{ fontWeight: 700, fontSize: '1.1rem', color: '#343a40', marginBottom: '0.2rem' }}>
-                                                        {questionText}
-                                                    </div>
-                                                    {priority && (
-                                                        <span style={{
-                                                            fontSize: '0.75rem',
-                                                            backgroundColor: getPriorityBg(priority),
-                                                            color: getPriorityColor(priority), // darker text
-                                                            // We need readable text on light bg, getPriorityColor returns distinct color
-                                                            // Better to use border style or specific styling
-                                                            border: `1px solid ${getPriorityColor(priority)}`,
-                                                            padding: '2px 6px',
-                                                            borderRadius: '4px',
-                                                            marginBottom: '0.5rem',
-                                                            display: 'inline-block',
-                                                            fontWeight: 600
-                                                        }}>
-                                                            Risco: {priority.toUpperCase()}
-                                                        </span>
-                                                    )}
-
-                                                    <div style={{ fontSize: '0.9rem', color: '#495057', backgroundColor: '#fff', border: '1px solid #dee2e6', padding: '1rem', borderRadius: '8px', boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }}>
-                                                        {questionDetail && <div style={{ marginBottom: '0.5rem', fontStyle: 'italic', color: '#6c757d' }}>"{questionDetail}"</div>}
-                                                        {reasoning}
-                                                        <div style={{ marginTop: '0.5rem', paddingTop: '0.5rem', borderTop: '1px dashed #e9ecef', fontSize: '0.85rem', fontWeight: 600, color: '#343a40' }}>
-                                                            Decisão: {outcome || 'N/A'}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        {/* Center Node */}
-                                        {stepItem.isLevelEvaluation ? (
-                                            <div style={{
-                                                position: 'relative',
-                                                zIndex: 2,
-                                                width: 'auto',
-                                                minWidth: '40px',
-                                                height: '40px',
-                                                borderRadius: '20px',
-                                                backgroundColor: '#0d6efd',
-                                                color: '#fff',
-                                                display: 'flex',
-                                                justifyContent: 'center',
-                                                alignItems: 'center',
-                                                fontWeight: 'bold',
-                                                fontSize: '0.85rem',
-                                                padding: '0 15px',
-                                                border: '4px solid #fff',
-                                                boxShadow: '0 0 0 2px #0d6efd',
-                                                whiteSpace: 'nowrap'
-                                            }}>
-                                                {questionText}
-                                            </div>
-                                        ) : (
-                                            <div style={{
-                                                position: 'relative',
-                                                zIndex: 2,
-                                                width: '40px',
-                                                height: '40px',
-                                                borderRadius: '50%',
-                                                backgroundColor: priority ? getPriorityColor(priority) : '#343a40',
-                                                color: '#fff',
-                                                display: 'flex',
-                                                justifyContent: 'center',
-                                                alignItems: 'center',
-                                                fontWeight: 'bold',
-                                                fontSize: '1.1rem',
-                                                border: '4px solid #fff',
-                                                boxShadow: '0 0 0 2px #e9ecef'
-                                            }}>
-                                                {index + 1}
-                                            </div>
-                                        )}
-
-                                        {/* Right Side */}
-                                        <div style={{ width: '45%', display: 'flex', flexDirection: 'column', alignItems: !isLeft ? 'flex-start' : 'flex-end', paddingLeft: !isLeft ? '2rem' : 0 }}>
-                                            {!isLeft && !stepItem.isLevelEvaluation && (
-                                                <div style={{ textAlign: 'left' }}>
-                                                    <div style={{ fontWeight: 700, fontSize: '1.1rem', color: '#343a40', marginBottom: '0.2rem' }}>
-                                                        {questionText}
-                                                    </div>
-                                                    {priority && (
-                                                        <span style={{
-                                                            fontSize: '0.75rem',
-                                                            backgroundColor: getPriorityBg(priority),
-                                                            color: getPriorityColor(priority),
-                                                            border: `1px solid ${getPriorityColor(priority)}`,
-                                                            padding: '2px 6px',
-                                                            borderRadius: '4px',
-                                                            marginBottom: '0.5rem',
-                                                            display: 'inline-block',
-                                                            fontWeight: 600
-                                                        }}>
-                                                            Risco: {priority.toUpperCase()}
-                                                        </span>
-                                                    )}
-
-                                                    <div style={{ fontSize: '0.9rem', color: '#495057', backgroundColor: '#fff', border: '1px solid #dee2e6', padding: '1rem', borderRadius: '8px', boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }}>
-                                                        {questionDetail && <div style={{ marginBottom: '0.5rem', fontStyle: 'italic', color: '#6c757d' }}>"{questionDetail}"</div>}
-                                                        {reasoning}
-                                                        <div style={{ marginTop: '0.5rem', paddingTop: '0.5rem', borderTop: '1px dashed #e9ecef', fontSize: '0.85rem', fontWeight: 600, color: '#343a40' }}>
-                                                            Decisão: {outcome || 'N/A'}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    </div>
-                );
-
-            default:
-                return null;
-        }
+    const vs = details?.vital_signs || {};
+    const getValue = (val) => {
+        if (!val) return '-';
+        if (typeof val === 'object') return val.parsedValue || val.source || '-';
+        return val;
     };
+
+    const assignmentStep = details?.decision_steps_for_priority?.find(s => s.type === 'assignment')?.object;
+    const discriminator = details?.triage_result?.discriminador || details?.discriminator || assignmentStep;
 
     return (
         <div style={{
@@ -628,7 +144,7 @@ const TriageDetailsModal = ({ sessionKey, onClose }) => {
                 borderRadius: '12px',
                 width: '95%',
                 maxWidth: '900px',
-                height: '85vh',
+                maxHeight: '90vh',
                 display: 'flex',
                 flexDirection: 'column',
                 boxShadow: '0 10px 30px rgba(0,0,0,0.15)',
@@ -636,73 +152,60 @@ const TriageDetailsModal = ({ sessionKey, onClose }) => {
                 overflow: 'hidden'
             }} onClick={e => e.stopPropagation()}>
 
-                {/* Header & Tabs */}
+                {/* Header with Tabs */}
                 <div style={{
-                    padding: '1.5rem 1.5rem 0',
-                    borderBottom: '1px solid #dee2e6',
-                    flexShrink: 0
+                    padding: '0 1.5rem',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    borderBottom: '1px solid #f1f3f5',
+                    flexShrink: 0,
+                    backgroundColor: '#fff'
                 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
-                        <h2 style={{ margin: 0, color: '#212529', fontSize: '1.5rem' }}>
-                            Detalhes da Triagem
-                        </h2>
-                        <button
-                            onClick={onClose}
-                            style={{
-                                background: 'transparent',
-                                border: 'none',
-                                fontSize: '2rem',
-                                lineHeight: '1rem',
-                                cursor: 'pointer',
-                                color: '#adb5bd',
-                            }}
-                        >
-                            &times;
-                        </button>
+                    <div style={{ display: 'flex', gap: '2rem' }}>
+                        {[
+                            { id: 'clinical', label: 'Dados Clínicos' },
+                            { id: 'reasoning', label: 'Raciocínio IA' },
+                            { id: 'stats', label: 'Auditoria' }
+                        ].map(tab => (
+                            <button
+                                key={tab.id}
+                                onClick={() => setActiveTab(tab.id)}
+                                style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    borderBottom: activeTab === tab.id ? '3px solid #0d6efd' : '3px solid transparent',
+                                    padding: '1.2rem 0',
+                                    fontSize: '1rem',
+                                    fontWeight: activeTab === tab.id ? 700 : 500,
+                                    color: activeTab === tab.id ? '#0d6efd' : '#6c757d',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.2s',
+                                    marginBottom: '-1px'
+                                }}
+                            >
+                                {tab.label}
+                            </button>
+                        ))}
                     </div>
 
-                    <div style={{ display: 'flex', gap: '2rem', overflowX: 'auto' }}>
-                        {[
-                            'triage',
-                            ...(details?.vital_signs ? ['vital_signs'] : []),
-                            'reasoning',
-                            'protocol',
-                            'priority'
-                        ].map((tab) => {
-                            const labels = {
-                                triage: 'Triagem',
-                                vital_signs: 'Sinais Vitais',
-                                reasoning: 'Raciocínio IA',
-                                protocol: 'Seleção de Protocolo',
-                                priority: 'Seleção de Prioridade'
-                            };
-                            const isActive = activeTab === tab;
-                            return (
-                                <button
-                                    key={tab}
-                                    onClick={() => setActiveTab(tab)}
-                                    style={{
-                                        background: 'none',
-                                        border: 'none',
-                                        borderBottom: isActive ? '3px solid #0d6efd' : '3px solid transparent',
-                                        padding: '0.8rem 0',
-                                        fontSize: '1rem',
-                                        fontWeight: isActive ? 600 : 400,
-                                        color: isActive ? '#0d6efd' : '#495057',
-                                        cursor: 'pointer',
-                                        transition: 'all 0.2s',
-                                        marginBottom: '-1px',
-                                        whiteSpace: 'nowrap'
-                                    }}
-                                >
-                                    {labels[tab]}
-                                </button>
-                            );
-                        })}
-                    </div>
+                    <button
+                        onClick={onClose}
+                        style={{
+                            background: 'transparent',
+                            border: 'none',
+                            fontSize: '2rem',
+                            lineHeight: '1rem',
+                            cursor: 'pointer',
+                            color: '#adb5bd',
+                            padding: '1rem 0'
+                        }}
+                    >
+                        &times;
+                    </button>
                 </div>
 
-                {/* Content Area */}
+                {/* Scrollable Content */}
                 <div style={{
                     flex: 1,
                     overflowY: 'auto',
@@ -724,7 +227,181 @@ const TriageDetailsModal = ({ sessionKey, onClose }) => {
                             </div>
                         </div>
                     ) : (
-                        renderTabContent()
+                        <div style={{ animation: 'fadeIn 0.2s' }}>
+                            {activeTab === 'clinical' ? (
+                                <>
+                                    {/* 0. Patient Info - Compact Horizontal Header */}
+                                    <div style={{
+                                        display: 'flex',
+                                        gap: '2rem',
+                                        padding: '0.8rem 1.2rem',
+                                        backgroundColor: '#f8f9fa',
+                                        borderRadius: '8px',
+                                        border: '1px solid #e9ecef',
+                                        marginBottom: '1.5rem',
+                                        fontSize: '0.95rem',
+                                        color: '#495057',
+                                        alignItems: 'center'
+                                    }}>
+                                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                            <strong style={{ color: '#868e96', textTransform: 'uppercase', fontSize: '0.75rem', marginTop: '0.2rem' }}>Paciente:</strong>
+                                            <span style={{ fontWeight: 600, color: '#212529' }}>{details.patient_info?.name || 'N/A'}</span>
+                                        </div>
+                                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                            <strong style={{ color: '#868e96', textTransform: 'uppercase', fontSize: '0.75rem', marginTop: '0.2rem' }}>Idade:</strong>
+                                            <span style={{ fontWeight: 600, color: '#212529' }}>{details.patient_info?.age ? `${details.patient_info.age} anos` : 'N/A'}</span>
+                                        </div>
+                                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                            <strong style={{ color: '#868e96', textTransform: 'uppercase', fontSize: '0.75rem', marginTop: '0.2rem' }}>Sexo:</strong>
+                                            <span style={{ fontWeight: 600, color: '#212529' }}>{details.patient_info?.gender || details.patient_info?.sex || 'N/A'}</span>
+                                        </div>
+                                    </div>
+
+                                    {/* 1. Classification & Result Box */}
+                                    <section style={{ marginBottom: '2.5rem' }}>
+                                        <div style={{
+                                            padding: '1.5rem 2rem',
+                                            background: getPriorityBg(details.triage_result?.priority),
+                                            borderRadius: '12px',
+                                            borderLeft: `8px solid ${getPriorityColor(details.triage_result?.priority)}`,
+                                            boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '2.5rem',
+                                            flexWrap: 'wrap'
+                                        }}>
+                                            {/* Priority Column - High Impact */}
+                                            <div style={{ flex: '0 0 auto' }}>
+                                                <div style={{ fontSize: '0.8rem', color: '#666', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.2rem' }}>Prioridade</div>
+                                                <div style={{
+                                                    fontSize: '2rem',
+                                                    fontWeight: '900',
+                                                    color: getPriorityTextColor(details.triage_result?.priority),
+                                                    lineHeight: '1.1'
+                                                }}>
+                                                    {getPriorityName(details.triage_result?.priority)}
+                                                </div>
+                                            </div>
+
+                                            {/* Vertical Divider */}
+                                            <div style={{ height: '50px', width: '1px', backgroundColor: 'rgba(0,0,0,0.1)', display: 'block' }}></div>
+
+                                            {/* Protocol & Discriminator Column */}
+                                            <div style={{ flex: '1 1 300px' }}>
+                                                <div style={{ marginBottom: '0.4rem' }}>
+                                                    <span style={{ fontSize: '0.8rem', color: '#666', textTransform: 'uppercase' }}>Protocolo: </span>
+                                                    <span style={{ fontSize: '1rem', fontWeight: 600, color: '#333' }}>{formatProtocolName(details.triage_result?.protocol)}</span>
+                                                </div>
+                                                <div>
+                                                    <span style={{ fontSize: '0.8rem', color: '#666', textTransform: 'uppercase' }}>Discriminador: </span>
+                                                    <span style={{ fontSize: '1.1rem', fontWeight: 800, color: '#212529' }}>{details.triage_result?.discriminador || "Indefinido"}</span>
+                                                </div>
+                                            </div>
+
+                                            {(typeof discriminator === 'object' && discriminator.explanation) && (
+                                                <div style={{
+                                                    width: '100%',
+                                                    marginTop: '0.4rem',
+                                                    paddingTop: '0.8rem',
+                                                    borderTop: '1px solid rgba(0,0,0,0.08)',
+                                                    color: '#555',
+                                                    lineHeight: '1.5',
+                                                    fontSize: '0.95rem',
+                                                    fontStyle: 'italic'
+                                                }}>
+                                                    "{discriminator.explanation}"
+                                                </div>
+                                            )}
+                                        </div>
+                                    </section>
+
+                                    {/* 2. Vital Signs Grid */}
+                                    {details.vital_signs && (
+                                        <div style={{
+                                            backgroundColor: '#fff',
+                                            borderRadius: '8px',
+                                            padding: '1.2rem',
+                                            display: 'grid',
+                                            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                                            gap: '1.5rem',
+                                            border: '1px solid #dee2e6'
+                                        }}>
+                                            {[
+                                                { label: 'Freq. Cardíaca', val: vs.heart_rate, unit: 'bpm' },
+                                                { label: 'Pressão Arterial', val: vs.blood_pressure, unit: 'mmHg' },
+                                                { label: 'Freq. Respiratória', val: vs.respiratory_rate, unit: 'rpm' },
+                                                { label: 'Saturação (SpO2)', val: vs.spo2, unit: '%' },
+                                                { label: 'Temperatura', val: vs.temperature, unit: '°C' },
+                                                { label: 'Glicemia', val: vs.blood_glucose, unit: 'mg/dL' },
+                                                { label: 'Escala de Glasgow', val: vs.gcs_scale, unit: '' },
+                                                { label: 'Escala de Dor', val: vs.pain_scale, unit: '/10' },
+                                            ].map((item, idx) => (
+                                                <div key={idx}>
+                                                    <div style={{ fontSize: '0.8rem', color: '#868e96', marginBottom: '0.2rem' }}>{item.label}</div>
+                                                    <div style={{ fontWeight: 700, color: '#343a40', fontSize: '1.2rem' }}>
+                                                        {getValue(item.val)} <span style={{ fontSize: '0.85rem', fontWeight: 400, color: '#6c757d' }}>{item.unit}</span>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </>
+                            ) : activeTab === 'reasoning' ? (
+                                /* 3. IA Reasoning Tab */
+                                <div style={{
+                                    backgroundColor: '#f1f8ff',
+                                    border: '1px solid #cce5ff',
+                                    borderRadius: '12px',
+                                    padding: '2rem',
+                                    lineHeight: '1.8',
+                                    color: '#004085',
+                                    textAlign: 'justify',
+                                    fontSize: '1.1rem',
+                                    fontStyle: 'italic',
+                                    boxShadow: '0 2px 10px rgba(0,64,133,0.05)'
+                                }}>
+                                    "{details.reasoning || "Nenhum raciocínio registrado."}"
+                                </div>
+                            ) : (
+                                /* 4. Stats / Audit Tab */
+                                <div style={{
+                                    padding: '2rem',
+                                    backgroundColor: '#f8f9fa',
+                                    borderRadius: '12px',
+                                    border: '1px solid #e9ecef',
+                                    display: 'grid',
+                                    gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+                                    gap: '2rem',
+                                    color: '#212529'
+                                }}>
+                                    <div>
+                                        <div style={{ fontSize: '0.85rem', color: '#6c757d', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.4rem' }}>Início do Atendimento</div>
+                                        <div style={{ fontSize: '1.2rem', fontWeight: 600 }}>{formatTime(details.stats?.start_time)}</div>
+                                    </div>
+                                    <div>
+                                        <div style={{ fontSize: '0.85rem', color: '#6c757d', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.4rem' }}>Finalização</div>
+                                        <div style={{ fontSize: '1.2rem', fontWeight: 600 }}>{formatTime(details.stats?.end_time)}</div>
+                                    </div>
+                                    <div>
+                                        <div style={{ fontSize: '0.85rem', color: '#6c757d', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.4rem' }}>Tempo Total de Triagem</div>
+                                        <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#0d6efd' }}>{formatDuration(details.stats?.duration_seconds)}</div>
+                                    </div>
+                                    <div style={{
+                                        gridColumn: '1 / -1',
+                                        paddingTop: '1.5rem',
+                                        marginTop: '1rem',
+                                        borderTop: '1px dashed #dee2e6',
+                                        fontSize: '0.95rem',
+                                        color: '#495057'
+                                    }}>
+                                        <strong style={{ color: '#868e96' }}>Identificador da Sessão:</strong>
+                                        <div style={{ marginTop: '0.5rem', fontFamily: 'monospace', backgroundColor: '#fff', padding: '0.8rem', borderRadius: '4px', border: '1px solid #eee' }}>
+                                            {details.session_id}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                     )}
                 </div>
             </div>

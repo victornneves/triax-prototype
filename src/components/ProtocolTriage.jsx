@@ -284,8 +284,6 @@ const ProtocolTriage = () => {
     const [tooltipState, setTooltipState] = useState(null);
     const [allProtocols, setAllProtocols] = useState([]);
     const [pendingProtocol, setPendingProtocol] = useState(null);
-    const [currentReasoning, setCurrentReasoning] = useState(null);
-    const [showReasoning, setShowReasoning] = useState(false);
 
     // -- AUDIO TRANSCRIPTION --
     const {
@@ -547,11 +545,6 @@ const ProtocolTriage = () => {
     const handleTraversalResponse = (data) => {
         setLoading(false);
 
-        // Update reasoning if available
-        if (data.reasoning) {
-            setCurrentReasoning(data.reasoning);
-        }
-
         // Handle auto-detected sensors from backend
         if (data.sensor_data) {
             setSensorInputs(prev => {
@@ -678,8 +671,6 @@ const ProtocolTriage = () => {
         setSensorInputs({});
         setPendingProtocol(null);
         protocolRef.current = null; // Explicitly clear protocol reference
-        setCurrentReasoning(null);
-        setShowReasoning(false);
 
         // Generate new session ID to avoid history pollution
         setSessionId('session-' + Date.now() + '-' + Math.floor(Math.random() * 1000));
@@ -1103,62 +1094,6 @@ const ProtocolTriage = () => {
                         Cancelar Triagem
                     </button>
                 </div>
-
-                {/* Reasoning / Clinical Thought Process */}
-                {currentReasoning && (
-                    <div style={{
-                        padding: '1.25rem',
-                        background: '#e8f4fd',
-                        borderRadius: '8px',
-                        boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
-                        border: '1px solid #b6effb',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '0.5rem'
-                    }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#055160', fontWeight: 'bold', letterSpacing: '0.05em' }}>
-                                Insight Clínico (IA)
-                            </div>
-                            <button
-                                onClick={() => setShowReasoning(!showReasoning)}
-                                style={{
-                                    background: 'none',
-                                    border: 'none',
-                                    color: '#0d6efd',
-                                    fontSize: '0.75rem',
-                                    cursor: 'pointer',
-                                    fontWeight: '600',
-                                    padding: 0
-                                }}
-                            >
-                                {showReasoning ? 'Ocultar' : 'Ver Detalhes'}
-                            </button>
-                        </div>
-                        {showReasoning ? (
-                            <div style={{
-                                fontSize: '0.9rem',
-                                color: '#055160',
-                                lineHeight: '1.5',
-                                textAlign: 'left',
-                                animation: 'fadeIn 0.3s'
-                            }}>
-                                {currentReasoning}
-                            </div>
-                        ) : (
-                            <div style={{
-                                fontSize: '0.85rem',
-                                color: '#055160',
-                                fontStyle: 'italic',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap'
-                            }}>
-                                {currentReasoning}
-                            </div>
-                        )}
-                    </div>
-                )}
 
                 {/* Sensors */}
                 <div style={{ padding: '1.25rem', background: '#ffffff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', border: '1px solid #dee2e6', display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
