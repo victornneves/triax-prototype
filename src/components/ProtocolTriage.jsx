@@ -147,13 +147,30 @@ const SensorLabel = ({ config, setTooltipState }) => (
 
 const PatientForm = ({ onSubmit, loading }) => {
     const [formData, setFormData] = useState({
-        name: '',
-        age: '',
-        sex: 'M'
+        name: 'João da Silva',
+        age: '45',
+        sex: 'M',
+        patient_code: '12345',
+        birth_date: '10/05/1979',
+        ticket_number: 'AZ001',
+        insurance: 'Unimed',
+        visit_id: 'VISIT-999',
+        same: '009988'
     });
 
     const handleChange = (e) => {
         setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    };
+
+    const inputStyle = {
+        width: '100%',
+        padding: '10px',
+        borderRadius: '6px',
+        border: '1px solid #ced4da',
+        boxSizing: 'border-box',
+        backgroundColor: '#ffffff',
+        color: '#212529',
+        fontSize: '0.95rem'
     };
 
     const handleSubmit = (e) => {
@@ -172,72 +189,64 @@ const PatientForm = ({ onSubmit, loading }) => {
             <form onSubmit={handleSubmit} style={{
                 background: '#fff',
                 padding: '2rem',
-                borderRadius: '8px',
-                boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                borderRadius: '12px',
+                boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
                 width: '100%',
-                maxWidth: '400px',
+                maxWidth: '600px',
                 border: '1px solid #dee2e6'
             }}>
-                <h3 style={{ marginTop: 0, marginBottom: '1.5rem', color: '#212529', textAlign: 'center' }}>Identificação do Paciente</h3>
+                <h3 style={{ marginTop: 0, marginBottom: '2rem', color: '#212529', textAlign: 'center', fontSize: '1.5rem', fontWeight: 700 }}>Identificação do Paciente</h3>
 
-                <div style={{ marginBottom: '1rem' }}>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, color: '#495057' }}>Nome</label>
-                    <input
-                        required
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        style={{
-                            width: '100%',
-                            padding: '10px',
-                            borderRadius: '4px',
-                            border: '1px solid #ced4da',
-                            boxSizing: 'border-box',
-                            backgroundColor: '#ffffff',
-                            color: '#212529'
-                        }}
-                    />
+                {/* Patient Header Info */}
+                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
+                    <div>
+                        <label style={{ display: 'block', marginBottom: '0.4rem', fontWeight: 600, color: '#495057', fontSize: '0.9rem' }}>Nome Completo</label>
+                        <input required name="name" value={formData.name} onChange={handleChange} placeholder="Ex: Maria Souza" style={inputStyle} />
+                    </div>
+                    <div>
+                        <label style={{ display: 'block', marginBottom: '0.4rem', fontWeight: 600, color: '#495057', fontSize: '0.9rem' }}>Cód. Paciente</label>
+                        <input name="patient_code" value={formData.patient_code} onChange={handleChange} placeholder="00000" style={inputStyle} />
+                    </div>
                 </div>
 
-                <div style={{ marginBottom: '1rem' }}>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, color: '#495057' }}>Idade</label>
-                    <input
-                        required
-                        type="number"
-                        name="age"
-                        value={formData.age}
-                        onChange={handleChange}
-                        style={{
-                            width: '100%',
-                            padding: '10px',
-                            borderRadius: '4px',
-                            border: '1px solid #ced4da',
-                            boxSizing: 'border-box',
-                            backgroundColor: '#ffffff',
-                            color: '#212529'
-                        }}
-                    />
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
+                    <div>
+                        <label style={{ display: 'block', marginBottom: '0.4rem', fontWeight: 600, color: '#495057', fontSize: '0.9rem' }}>Nascimento</label>
+                        <input type="text" name="birth_date" value={formData.birth_date} onChange={handleChange} placeholder="DD/MM/AAAA" style={inputStyle} />
+                    </div>
+                    <div>
+                        <label style={{ display: 'block', marginBottom: '0.4rem', fontWeight: 600, color: '#495057', fontSize: '0.9rem' }}>Idade</label>
+                        <input required type="number" name="age" value={formData.age} onChange={handleChange} placeholder="Anos" style={inputStyle} />
+                    </div>
+                    <div>
+                        <label style={{ display: 'block', marginBottom: '0.4rem', fontWeight: 600, color: '#495057', fontSize: '0.9rem' }}>Sexo</label>
+                        <select name="sex" value={formData.sex} onChange={handleChange} style={inputStyle}>
+                            <option value="M">Masculino</option>
+                            <option value="F">Feminino</option>
+                        </select>
+                    </div>
                 </div>
 
-                <div style={{ marginBottom: '1.5rem' }}>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, color: '#495057' }}>Sexo</label>
-                    <select
-                        name="sex"
-                        value={formData.sex}
-                        onChange={handleChange}
-                        style={{
-                            width: '100%',
-                            padding: '10px',
-                            borderRadius: '4px',
-                            border: '1px solid #ced4da',
-                            boxSizing: 'border-box',
-                            backgroundColor: '#ffffff',
-                            color: '#212529'
-                        }}
-                    >
-                        <option value="M">Masculino</option>
-                        <option value="F">Feminino</option>
-                    </select>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: '1rem', marginBottom: '1.5rem' }}>
+                    <div>
+                        <label style={{ display: 'block', marginBottom: '0.4rem', fontWeight: 600, color: '#495057', fontSize: '0.9rem' }}>Senha (Ticket)</label>
+                        <input name="ticket_number" value={formData.ticket_number} onChange={handleChange} placeholder="Ex: PU0022" style={inputStyle} />
+                    </div>
+                    <div>
+                        <label style={{ display: 'block', marginBottom: '0.4rem', fontWeight: 600, color: '#495057', fontSize: '0.9rem' }}>Convênio</label>
+                        <input name="insurance" value={formData.insurance} onChange={handleChange} placeholder="Ex: SUS-SIA" style={inputStyle} />
+                    </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '2rem' }}>
+                    <div>
+                        <label style={{ display: 'block', marginBottom: '0.4rem', fontWeight: 600, color: '#495057', fontSize: '0.9rem' }}>Atendimento (Visit ID)</label>
+                        <input name="visit_id" value={formData.visit_id} onChange={handleChange} placeholder="Ex: ATEND123" style={inputStyle} />
+                    </div>
+                    <div>
+                        <label style={{ display: 'block', marginBottom: '0.4rem', fontWeight: 600, color: '#495057', fontSize: '0.9rem' }}>SAME</label>
+                        <input name="same" value={formData.same} onChange={handleChange} placeholder="Ex: 45678" style={inputStyle} />
+                    </div>
                 </div>
 
                 <button
@@ -245,13 +254,16 @@ const PatientForm = ({ onSubmit, loading }) => {
                     disabled={loading}
                     style={{
                         width: '100%',
-                        padding: '12px',
+                        padding: '14px',
                         background: '#0d6efd',
                         color: '#fff',
                         border: 'none',
-                        borderRadius: '4px',
-                        fontWeight: 600,
+                        borderRadius: '6px',
+                        fontSize: '1.1rem',
+                        fontWeight: 700,
                         cursor: 'pointer',
+                        transition: 'background 0.2s',
+                        boxShadow: '0 4px 12px rgba(13,110,253,0.3)',
                         opacity: loading ? 0.7 : 1
                     }}
                 >
@@ -284,6 +296,7 @@ const ProtocolTriage = () => {
     const [tooltipState, setTooltipState] = useState(null);
     const [allProtocols, setAllProtocols] = useState([]);
     const [pendingProtocol, setPendingProtocol] = useState(null);
+    const [pdfLoading, setPdfLoading] = useState(false);
 
     // -- AUDIO TRANSCRIPTION --
     const {
@@ -363,9 +376,28 @@ const ProtocolTriage = () => {
         setLoading(true);
         try {
             const headers = await getAuthHeaders();
-            // Log patient info to transcription context
-            const infoString = `PACIENTE: ${data.name}, IDADE: ${data.age}, SEXO: ${data.sex === 'M' ? 'Masculino' : 'Feminino'}.`;
+            // 1. Register patient info (New Endpoint)
+            await fetch(`${API_URL}/patient-info`, {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify({
+                    session_id: sessionId,
+                    patient_info: {
+                        name: data.name,
+                        age: data.age,
+                        sex: data.sex,
+                        patient_code: data.patient_code,
+                        birth_date: data.birth_date,
+                        ticket_number: data.ticket_number,
+                        insurance: data.insurance,
+                        visit_id: data.visit_id,
+                        same: data.same
+                    }
+                })
+            });
 
+            // 2. Log initial context to transcription
+            const infoString = `PACIENTE: ${data.name}, IDADE: ${data.age}, SEXO: ${data.sex === 'M' ? 'Masculino' : 'Feminino'}.`;
             await fetch(`${API_URL}/transcription`, {
                 method: 'POST',
                 headers: headers,
@@ -488,8 +520,10 @@ const ProtocolTriage = () => {
                 addMessage('system', "Não foi possível identificar o protocolo. Por favor, dê mais detalhes.");
             }
 
+        } else if (data.error) {
+            addMessage('system', "Não foi possível carregar o protocolo. Por favor, tente descrever o sintoma novamente.");
         } else {
-            addMessage('system', "Informação insuficiente. Por favor, detalhe.");
+            addMessage('system', "Informação insuficiente. Por favor, detalhe melhor a queixa.");
         }
     };
 
@@ -620,7 +654,8 @@ const ProtocolTriage = () => {
                 setCurrentNode(data.node);
             }
         } else if (data.error) {
-            addMessage('system', `Erro: ${data.error}`);
+            addMessage('system', "Houve um erro no processamento deste passo. Por favor, tente novamente.");
+            console.error("Traversal Error:", data.error);
         }
     };
 
@@ -683,6 +718,29 @@ const ProtocolTriage = () => {
         handleRestartTriage();
     };
 
+    const handleDownloadPDF = async () => {
+        setPdfLoading(true);
+        try {
+            const sessionData = await fetchAuthSession();
+            const token = sessionData.tokens?.idToken?.toString();
+            const response = await fetch(`${API_URL}/history/${sessionId}/pdf`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            if (!response.ok) throw new Error('Erro ao buscar PDF');
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            window.open(url, '_blank');
+        } catch (error) {
+            console.error("Falha ao gerar PDF:", error);
+            alert("Erro ao gerar PDF. Tente novamente.");
+        } finally {
+            setPdfLoading(false);
+        }
+    };
+
     if (triageResult) {
         return (
             <div style={{
@@ -711,7 +769,7 @@ const ProtocolTriage = () => {
 
                     <div style={{
                         padding: '1.5rem',
-                        borderRadius: '8px',
+                        borderRadius: '12px',
                         marginBottom: '2rem',
                         backgroundColor:
                             triageResult.priority === 'red' ? '#dc3545' :
@@ -719,9 +777,24 @@ const ProtocolTriage = () => {
                                     triageResult.priority === 'yellow' ? '#ffc107' :
                                         triageResult.priority === 'green' ? '#198754' :
                                             triageResult.priority === 'blue' ? '#0d6efd' : '#6c757d',
-                        color: '#fff'
+                        color: triageResult.priority === 'yellow' ? '#000' : '#fff',
+                        boxShadow: '0 8px 16px rgba(0,0,0,0.1)'
                     }}>
-                        <h1 style={{ margin: 0, fontSize: '2.5rem', textTransform: 'uppercase' }}>
+                        <div style={{
+                            fontSize: '1rem',
+                            fontWeight: 700,
+                            marginBottom: '0.5rem',
+                            opacity: 0.9,
+                            textTransform: 'uppercase',
+                            letterSpacing: '1px'
+                        }}>
+                            {triageResult.priority === 'red' ? 'VERMELHO - EMERGÊNCIA' :
+                                triageResult.priority === 'orange' ? 'LARANJA - MUITO URGENTE' :
+                                    triageResult.priority === 'yellow' ? 'AMARELO - URGENTE' :
+                                        triageResult.priority === 'green' ? 'VERDE - POUCO URGENTE' :
+                                            triageResult.priority === 'blue' ? 'AZUL - NÃO URGENTE' : ' INDEFINIDO'}
+                        </div>
+                        <h1 style={{ margin: 0, fontSize: '2.5rem', fontWeight: 900, textTransform: 'uppercase' }}>
                             {triageResult.text}
                         </h1>
                     </div>
@@ -748,26 +821,65 @@ const ProtocolTriage = () => {
                         </div>
                     )}
 
-                    <div style={{ display: 'grid', gap: '1rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                        <button
+                            onClick={handleDownloadPDF}
+                            disabled={pdfLoading}
+                            style={{
+                                width: '100%',
+                                padding: '12px',
+                                background: '#fff',
+                                color: '#dc3545',
+                                border: '2px solid #dc3545',
+                                borderRadius: '6px',
+                                fontWeight: '700',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '8px',
+                                transition: 'all 0.2s',
+                                opacity: pdfLoading ? 0.7 : 1
+                            }}
+                            onMouseOver={(e) => {
+                                if (!pdfLoading) {
+                                    e.currentTarget.style.background = '#dc3545';
+                                    e.currentTarget.style.color = '#fff';
+                                }
+                            }}
+                            onMouseOut={(e) => {
+                                if (!pdfLoading) {
+                                    e.currentTarget.style.background = '#fff';
+                                    e.currentTarget.style.color = '#dc3545';
+                                }
+                            }}
+                        >
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                            {pdfLoading ? 'Gerando...' : 'Baixar PDF'}
+                        </button>
 
-
-                        <div>
-                            <button
-                                onClick={handleNewTriage}
-                                style={{
-                                    width: '100%',
-                                    padding: '12px',
-                                    background: '#0d6efd',
-                                    color: '#fff',
-                                    border: 'none',
-                                    borderRadius: '4px',
-                                    fontWeight: '600',
-                                    cursor: 'pointer'
-                                }}
-                            >
-                                Nova Triagem
-                            </button>
-                        </div>
+                        <button
+                            onClick={handleNewTriage}
+                            style={{
+                                width: '100%',
+                                padding: '12px',
+                                background: '#0d6efd',
+                                color: '#fff',
+                                border: 'none',
+                                borderRadius: '6px',
+                                fontWeight: '700',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s'
+                            }}
+                            onMouseOver={(e) => e.target.style.background = '#0b5ed7'}
+                            onMouseOut={(e) => e.target.style.background = '#0d6efd'}
+                        >
+                            Nova Triagem
+                        </button>
                     </div>
                 </div>
             </div>

@@ -8,6 +8,7 @@ const TriageDetailsModal = ({ sessionKey, onClose }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [activeTab, setActiveTab] = useState('clinical'); // 'clinical' or 'reasoning'
+    const [pdfLoading, setPdfLoading] = useState(false);
 
     useEffect(() => {
         if (!sessionKey) return;
@@ -63,6 +64,9 @@ const TriageDetailsModal = ({ sessionKey, onClose }) => {
     };
 
     const getPriorityName = (priority) => {
+        // Handle new 'prioridade' field or old 'priority'
+        if (typeof priority === 'string' && priority.includes('-')) return priority;
+
         switch (priority?.toLowerCase()) {
             case 'red': return 'Vermelho';
             case 'orange': return 'Laranja';
@@ -74,36 +78,33 @@ const TriageDetailsModal = ({ sessionKey, onClose }) => {
     };
 
     const getPriorityTextColor = (priority) => {
-        switch (priority?.toLowerCase()) {
-            case 'red': return '#842029';
-            case 'orange': return '#854000';
-            case 'yellow': return '#856404'; // Darker yellow for readability
-            case 'green': return '#0f5132';
-            case 'blue': return '#084298';
-            default: return '#343a40';
-        }
+        const p = priority?.toLowerCase() || '';
+        if (p.includes('red') || p.includes('vermelho')) return '#842029';
+        if (p.includes('orange') || p.includes('laranja')) return '#854000';
+        if (p.includes('yellow') || p.includes('amarelo')) return '#856404';
+        if (p.includes('green') || p.includes('verde')) return '#0f5132';
+        if (p.includes('blue') || p.includes('azul')) return '#084298';
+        return '#343a40';
     };
 
     const getPriorityColor = (priority) => {
-        switch (priority?.toLowerCase()) {
-            case 'red': return '#dc3545';
-            case 'orange': return '#fd7e14';
-            case 'yellow': return '#ffc107';
-            case 'green': return '#198754';
-            case 'blue': return '#0d6efd';
-            default: return '#6c757d';
-        }
+        const p = priority?.toLowerCase() || '';
+        if (p.includes('red') || p.includes('vermelho')) return '#dc3545';
+        if (p.includes('orange') || p.includes('laranja')) return '#fd7e14';
+        if (p.includes('yellow') || p.includes('amarelo')) return '#ffc107';
+        if (p.includes('green') || p.includes('verde')) return '#198754';
+        if (p.includes('blue') || p.includes('azul')) return '#0d6efd';
+        return '#6c757d';
     };
 
     const getPriorityBg = (priority) => {
-        switch (priority?.toLowerCase()) {
-            case 'red': return '#ffeaea';
-            case 'orange': return '#fff5e6';
-            case 'yellow': return '#fff9db';
-            case 'green': return '#e8f5e9';
-            case 'blue': return '#e7f1ff';
-            default: return '#f8f9fa';
-        }
+        const p = priority?.toLowerCase() || '';
+        if (p.includes('red') || p.includes('vermelho')) return '#ffeaea';
+        if (p.includes('orange') || p.includes('laranja')) return '#fff5e6';
+        if (p.includes('yellow') || p.includes('amarelo')) return '#fff9db';
+        if (p.includes('green') || p.includes('verde')) return '#e8f5e9';
+        if (p.includes('blue') || p.includes('azul')) return '#e7f1ff';
+        return '#f8f9fa';
     };
 
     const formatProtocolName = (protocolString) => {
@@ -113,17 +114,43 @@ const TriageDetailsModal = ({ sessionKey, onClose }) => {
         return cleaned.charAt(0).toUpperCase() + cleaned.slice(1).toLowerCase();
     };
 
+    const handleDownloadPDF = async () => {
+        setPdfLoading(true);
+        try {
+            const session = await fetchAuthSession();
+            const token = session.tokens?.idToken?.toString();
+            const response = await fetch(`${API_URL}/history/${sessionKey}/pdf`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            if (!response.ok) throw new Error('Erro ao buscar PDF');
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            window.open(url, '_blank');
+        } catch (error) {
+            console.error("Falha ao gerar PDF:", error);
+            alert("Erro ao gerar PDF. Tente novamente.");
+        } finally {
+            setPdfLoading(false);
+        }
+    };
+
     if (!sessionKey) return null;
 
-    const vs = details?.vital_signs || {};
+    const vs = details?.clinical_data?.vital_signs || details?.vital_signs || {};
     const getValue = (val) => {
+        if (val === 0) return 0;
         if (!val) return '-';
         if (typeof val === 'object') return val.parsedValue || val.source || '-';
         return val;
     };
 
-    const assignmentStep = details?.decision_steps_for_priority?.find(s => s.type === 'assignment')?.object;
-    const discriminator = details?.triage_result?.discriminador || details?.discriminator || assignmentStep;
+    const triageResult = details?.triage_result || {};
+    const priorityValue = triageResult.prioridade || triageResult.cor || triageResult.priority;
+    const protocolValue = triageResult.fluxograma_sintoma || triageResult.protocol;
+    const discriminator = triageResult.discriminador || details?.discriminator;
 
     return (
         <div style={{
@@ -176,7 +203,7 @@ const TriageDetailsModal = ({ sessionKey, onClose }) => {
                                     border: 'none',
                                     borderBottom: activeTab === tab.id ? '3px solid #0d6efd' : '3px solid transparent',
                                     padding: '1.2rem 0',
-                                    fontSize: '1rem',
+                                    fontSize: '0.95rem',
                                     fontWeight: activeTab === tab.id ? 700 : 500,
                                     color: activeTab === tab.id ? '#0d6efd' : '#6c757d',
                                     cursor: 'pointer',
@@ -189,20 +216,65 @@ const TriageDetailsModal = ({ sessionKey, onClose }) => {
                         ))}
                     </div>
 
-                    <button
-                        onClick={onClose}
-                        style={{
-                            background: 'transparent',
-                            border: 'none',
-                            fontSize: '2rem',
-                            lineHeight: '1rem',
-                            cursor: 'pointer',
-                            color: '#adb5bd',
-                            padding: '1rem 0'
-                        }}
-                    >
-                        &times;
-                    </button>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <button
+                            onClick={handleDownloadPDF}
+                            disabled={pdfLoading}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                                padding: '8px 16px',
+                                backgroundColor: '#fff',
+                                color: '#dc3545',
+                                border: '1px solid #dc3545',
+                                borderRadius: '6px',
+                                cursor: 'pointer',
+                                fontSize: '0.9rem',
+                                fontWeight: 700,
+                                transition: 'all 0.2s',
+                                opacity: pdfLoading ? 0.7 : 1,
+                                boxShadow: '0 2px 4px rgba(220, 53, 69, 0.1)'
+                            }}
+                            onMouseOver={(e) => {
+                                if (!pdfLoading) {
+                                    e.currentTarget.style.backgroundColor = '#dc3545';
+                                    e.currentTarget.style.color = '#fff';
+                                }
+                            }}
+                            onMouseOut={(e) => {
+                                if (!pdfLoading) {
+                                    e.currentTarget.style.backgroundColor = '#fff';
+                                    e.currentTarget.style.color = '#dc3545';
+                                }
+                            }}
+                        >
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                            {pdfLoading ? 'Gerando...' : 'GERAR PDF'}
+                        </button>
+
+                        <button
+                            onClick={onClose}
+                            style={{
+                                background: 'transparent',
+                                border: 'none',
+                                fontSize: '2rem',
+                                lineHeight: '1rem',
+                                cursor: 'pointer',
+                                color: '#adb5bd',
+                                padding: '1rem 0',
+                                transition: 'color 0.2s'
+                            }}
+                            onMouseOver={(e) => e.target.style.color = '#495057'}
+                            onMouseOut={(e) => e.target.style.color = '#adb5bd'}
+                        >
+                            &times;
+                        </button>
+                    </div>
                 </div>
 
                 {/* Scrollable Content */}
@@ -230,30 +302,51 @@ const TriageDetailsModal = ({ sessionKey, onClose }) => {
                         <div style={{ animation: 'fadeIn 0.2s' }}>
                             {activeTab === 'clinical' ? (
                                 <>
-                                    {/* 0. Patient Info - Compact Horizontal Header */}
+                                    {/* 0. Patient Info - Expanded Compact Header */}
                                     <div style={{
                                         display: 'flex',
-                                        gap: '2rem',
-                                        padding: '0.8rem 1.2rem',
+                                        flexDirection: 'column',
+                                        gap: '0.8rem',
+                                        padding: '1.2rem',
                                         backgroundColor: '#f8f9fa',
-                                        borderRadius: '8px',
+                                        borderRadius: '12px',
                                         border: '1px solid #e9ecef',
-                                        marginBottom: '1.5rem',
+                                        marginBottom: '2rem',
                                         fontSize: '0.95rem',
-                                        color: '#495057',
-                                        alignItems: 'center'
+                                        color: '#495057'
                                     }}>
-                                        <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                            <strong style={{ color: '#868e96', textTransform: 'uppercase', fontSize: '0.75rem', marginTop: '0.2rem' }}>Paciente:</strong>
-                                            <span style={{ fontWeight: 600, color: '#212529' }}>{details.patient_info?.name || 'N/A'}</span>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+                                            <div style={{ flex: '1 1 250px' }}>
+                                                <strong style={{ color: '#868e96', textTransform: 'uppercase', fontSize: '0.75rem' }}>Paciente:</strong>
+                                                <div style={{ fontWeight: 700, color: '#212529', fontSize: '1.1rem' }}>{details.patient_info?.name || 'N/A'}</div>
+                                            </div>
+                                            <div style={{ flex: '1 1 150px' }}>
+                                                <strong style={{ color: '#868e96', textTransform: 'uppercase', fontSize: '0.75rem' }}>Nascimento / Idade:</strong>
+                                                <div>{details.patient_info?.birth_date || '-'} ({details.patient_info?.age}a) • {details.patient_info?.sex || 'N/A'}</div>
+                                            </div>
+                                            <div style={{ flex: '1 1 120px' }}>
+                                                <strong style={{ color: '#868e96', textTransform: 'uppercase', fontSize: '0.75rem' }}>Senha:</strong>
+                                                <div style={{ fontWeight: 600 }}>{details.patient_info?.ticket_number || '-'}</div>
+                                            </div>
                                         </div>
-                                        <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                            <strong style={{ color: '#868e96', textTransform: 'uppercase', fontSize: '0.75rem', marginTop: '0.2rem' }}>Idade:</strong>
-                                            <span style={{ fontWeight: 600, color: '#212529' }}>{details.patient_info?.age ? `${details.patient_info.age} anos` : 'N/A'}</span>
-                                        </div>
-                                        <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                            <strong style={{ color: '#868e96', textTransform: 'uppercase', fontSize: '0.75rem', marginTop: '0.2rem' }}>Sexo:</strong>
-                                            <span style={{ fontWeight: 600, color: '#212529' }}>{details.patient_info?.gender || details.patient_info?.sex || 'N/A'}</span>
+
+                                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '1rem', paddingTop: '0.8rem', borderTop: '1px solid #eee' }}>
+                                            <div>
+                                                <strong style={{ color: '#868e96', textTransform: 'uppercase', fontSize: '0.7rem' }}>Cód. Paciente:</strong>
+                                                <div>{details.patient_info?.patient_code || '-'}</div>
+                                            </div>
+                                            <div>
+                                                <strong style={{ color: '#868e96', textTransform: 'uppercase', fontSize: '0.7rem' }}>Convênio:</strong>
+                                                <div>{details.patient_info?.insurance || '-'}</div>
+                                            </div>
+                                            <div>
+                                                <strong style={{ color: '#868e96', textTransform: 'uppercase', fontSize: '0.7rem' }}>Atendimento:</strong>
+                                                <div>{details.patient_info?.visit_id || '-'}</div>
+                                            </div>
+                                            <div>
+                                                <strong style={{ color: '#868e96', textTransform: 'uppercase', fontSize: '0.7rem' }}>SAME:</strong>
+                                                <div>{details.patient_info?.same || '-'}</div>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -261,9 +354,9 @@ const TriageDetailsModal = ({ sessionKey, onClose }) => {
                                     <section style={{ marginBottom: '2.5rem' }}>
                                         <div style={{
                                             padding: '1.5rem 2rem',
-                                            background: getPriorityBg(details.triage_result?.priority),
+                                            background: getPriorityBg(priorityValue),
                                             borderRadius: '12px',
-                                            borderLeft: `8px solid ${getPriorityColor(details.triage_result?.priority)}`,
+                                            borderLeft: `10px solid ${getPriorityColor(priorityValue)}`,
                                             boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
                                             display: 'flex',
                                             alignItems: 'center',
@@ -272,14 +365,14 @@ const TriageDetailsModal = ({ sessionKey, onClose }) => {
                                         }}>
                                             {/* Priority Column - High Impact */}
                                             <div style={{ flex: '0 0 auto' }}>
-                                                <div style={{ fontSize: '0.8rem', color: '#666', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.2rem' }}>Prioridade</div>
+                                                <div style={{ fontSize: '0.8rem', color: '#666', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.2rem' }}>Classificação</div>
                                                 <div style={{
-                                                    fontSize: '2rem',
+                                                    fontSize: '1.8rem',
                                                     fontWeight: '900',
-                                                    color: getPriorityTextColor(details.triage_result?.priority),
+                                                    color: getPriorityTextColor(priorityValue),
                                                     lineHeight: '1.1'
                                                 }}>
-                                                    {getPriorityName(details.triage_result?.priority)}
+                                                    {getPriorityName(priorityValue)}
                                                 </div>
                                             </div>
 
@@ -289,62 +382,67 @@ const TriageDetailsModal = ({ sessionKey, onClose }) => {
                                             {/* Protocol & Discriminator Column */}
                                             <div style={{ flex: '1 1 300px' }}>
                                                 <div style={{ marginBottom: '0.4rem' }}>
-                                                    <span style={{ fontSize: '0.8rem', color: '#666', textTransform: 'uppercase' }}>Protocolo: </span>
-                                                    <span style={{ fontSize: '1rem', fontWeight: 600, color: '#333' }}>{formatProtocolName(details.triage_result?.protocol)}</span>
+                                                    <span style={{ fontSize: '0.85rem', color: '#666', textTransform: 'uppercase' }}>Fluxograma: </span>
+                                                    <span style={{ fontSize: '1.1rem', fontWeight: 600, color: '#333' }}>{formatProtocolName(protocolValue)}</span>
                                                 </div>
                                                 <div>
-                                                    <span style={{ fontSize: '0.8rem', color: '#666', textTransform: 'uppercase' }}>Discriminador: </span>
-                                                    <span style={{ fontSize: '1.1rem', fontWeight: 800, color: '#212529' }}>{details.triage_result?.discriminador || "Indefinido"}</span>
+                                                    <span style={{ fontSize: '0.85rem', color: '#666', textTransform: 'uppercase' }}>Discriminador: </span>
+                                                    <span style={{ fontSize: '1.2rem', fontWeight: 800, color: '#212529' }}>{discriminator || "Indefinido"}</span>
                                                 </div>
                                             </div>
-
-                                            {(typeof discriminator === 'object' && discriminator.explanation) && (
-                                                <div style={{
-                                                    width: '100%',
-                                                    marginTop: '0.4rem',
-                                                    paddingTop: '0.8rem',
-                                                    borderTop: '1px solid rgba(0,0,0,0.08)',
-                                                    color: '#555',
-                                                    lineHeight: '1.5',
-                                                    fontSize: '0.95rem',
-                                                    fontStyle: 'italic'
-                                                }}>
-                                                    "{discriminator.explanation}"
-                                                </div>
-                                            )}
                                         </div>
                                     </section>
 
-                                    {/* 2. Vital Signs Grid */}
-                                    {details.vital_signs && (
-                                        <div style={{
-                                            backgroundColor: '#fff',
-                                            borderRadius: '8px',
-                                            padding: '1.2rem',
-                                            display: 'grid',
-                                            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                                            gap: '1.5rem',
-                                            border: '1px solid #dee2e6'
-                                        }}>
-                                            {[
-                                                { label: 'Freq. Cardíaca', val: vs.heart_rate, unit: 'bpm' },
-                                                { label: 'Pressão Arterial', val: vs.blood_pressure, unit: 'mmHg' },
-                                                { label: 'Freq. Respiratória', val: vs.respiratory_rate, unit: 'rpm' },
-                                                { label: 'Saturação (SpO2)', val: vs.spo2, unit: '%' },
-                                                { label: 'Temperatura', val: vs.temperature, unit: '°C' },
-                                                { label: 'Glicemia', val: vs.blood_glucose, unit: 'mg/dL' },
-                                                { label: 'Escala de Glasgow', val: vs.gcs_scale, unit: '' },
-                                                { label: 'Escala de Dor', val: vs.pain_scale, unit: '/10' },
-                                            ].map((item, idx) => (
-                                                <div key={idx}>
-                                                    <div style={{ fontSize: '0.8rem', color: '#868e96', marginBottom: '0.2rem' }}>{item.label}</div>
-                                                    <div style={{ fontWeight: 700, color: '#343a40', fontSize: '1.2rem' }}>
-                                                        {getValue(item.val)} <span style={{ fontSize: '0.85rem', fontWeight: 400, color: '#6c757d' }}>{item.unit}</span>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
+                                    {/* 2. Clinical Data & IA Extraction */}
+                                    {details.clinical_data && (
+                                        <section style={{ marginBottom: '2.5rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+                                            <div style={{ backgroundColor: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #dee2e6' }}>
+                                                <h5 style={{ margin: '0 0 0.8rem 0', color: '#0d6efd', textTransform: 'uppercase', fontSize: '0.75rem' }}>Queixa Principal</h5>
+                                                <p style={{ margin: 0, fontSize: '1rem', color: '#212529', lineHeight: '1.5' }}>{details.clinical_data.queixa_principal || '-'}</p>
+                                            </div>
+                                            <div style={{ backgroundColor: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #dee2e6' }}>
+                                                <h5 style={{ margin: '0 0 0.8rem 0', color: '#0d6efd', textTransform: 'uppercase', fontSize: '0.75rem' }}>Especialidade Sugerida</h5>
+                                                <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: '#198754' }}>{details.clinical_data.especialidade || '-'}</p>
+                                            </div>
+                                            <div style={{ backgroundColor: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #dee2e6' }}>
+                                                <h5 style={{ margin: '0 0 0.8rem 0', color: '#dc3545', textTransform: 'uppercase', fontSize: '0.75rem' }}>Alergias</h5>
+                                                <p style={{ margin: 0, fontSize: '0.95rem', fontWeight: 600 }}>{details.clinical_data.alergias || 'Nega'}</p>
+                                            </div>
+                                            <div style={{ backgroundColor: '#fff', padding: '1.2rem', borderRadius: '8px', border: '1px solid #dee2e6' }}>
+                                                <h5 style={{ margin: '0 0 0.8rem 0', color: '#6c757d', textTransform: 'uppercase', fontSize: '0.75rem' }}>Medicamentos</h5>
+                                                <p style={{ margin: 0, fontSize: '0.95rem' }}>{details.clinical_data.medicamentos || 'Nega'}</p>
+                                            </div>
+                                        </section>
                                     )}
+
+                                    {/* 3. Vital Signs Grid */}
+                                    <div style={{
+                                        backgroundColor: '#fff',
+                                        borderRadius: '8px',
+                                        padding: '1.2rem',
+                                        display: 'grid',
+                                        gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+                                        gap: '1.5rem',
+                                        border: '1px solid #dee2e6'
+                                    }}>
+                                        {[
+                                            { label: 'Freq. Cardíaca', val: vs.heart_rate, unit: 'bpm' },
+                                            { label: 'Pressão Arterial', val: vs.blood_pressure, unit: 'mmHg' },
+                                            { label: 'Freq. Respiratória', val: vs.respiratory_rate, unit: 'rpm' },
+                                            { label: 'Saturação (SpO2)', val: vs.spo2, unit: '%' },
+                                            { label: 'Temperatura', val: vs.temperature, unit: '°C' },
+                                            { label: 'Glicemia', val: vs.blood_glucose, unit: 'mg/dL' },
+                                            { label: 'Escala de Glasgow', val: vs.gcs_scale, unit: '' },
+                                            { label: 'Escala de Dor', val: vs.pain_scale, unit: '/10' },
+                                        ].map((item, idx) => (
+                                            <div key={idx}>
+                                                <div style={{ fontSize: '0.8rem', color: '#868e96', marginBottom: '0.2rem' }}>{item.label}</div>
+                                                <div style={{ fontWeight: 700, color: '#343a40', fontSize: '1.2rem' }}>
+                                                    {getValue(item.val)} <span style={{ fontSize: '0.85rem', fontWeight: 400, color: '#6c757d' }}>{item.unit}</span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </>
                             ) : activeTab === 'reasoning' ? (
                                 /* 3. IA Reasoning Tab */

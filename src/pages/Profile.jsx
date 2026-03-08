@@ -70,7 +70,6 @@ const Profile = () => {
     };
 
 
-
     return (
         <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '2rem' }}>
 
@@ -124,11 +123,12 @@ const Profile = () => {
                                             </div>
                                         </td>
                                         <td style={{ padding: '1rem', color: '#495057' }}>
-                                            {item.triage_result?.protocol ? item.triage_result.protocol.replace(/_/g, ' ') : '-'}
+                                            {item.triage_result?.fluxograma_sintoma || item.triage_result?.protocol?.replace(/_/g, ' ') || '-'}
                                         </td>
                                         <td style={{ padding: '1rem' }}>
                                             {(() => {
-                                                const p = item.triage_result?.priority?.toLowerCase();
+                                                const triageResult = item.triage_result || {};
+                                                const p = (triageResult.prioridade || triageResult.cor || triageResult.priority || '').toLowerCase();
                                                 const colors = {
                                                     red: { bg: '#dc3545', text: '#fff', label: 'Vermelho' },
                                                     orange: { bg: '#fd7e14', text: '#fff', label: 'Laranja' },
@@ -136,7 +136,20 @@ const Profile = () => {
                                                     green: { bg: '#198754', text: '#fff', label: 'Verde' },
                                                     blue: { bg: '#0d6efd', text: '#fff', label: 'Azul' }
                                                 };
-                                                const style = colors[p] || { bg: '#e9ecef', text: '#495057', label: p || 'N/A' };
+
+                                                let style = colors[p];
+                                                if (!style) {
+                                                    if (p.includes('red') || p.includes('vermelho')) style = colors.red;
+                                                    else if (p.includes('orange') || p.includes('laranja')) style = colors.orange;
+                                                    else if (p.includes('yellow') || p.includes('amarelo')) style = colors.yellow;
+                                                    else if (p.includes('green') || p.includes('verde')) style = colors.green;
+                                                    else if (p.includes('blue') || p.includes('azul')) style = colors.blue;
+                                                    else style = { bg: '#e9ecef', text: '#495057', label: triageResult.prioridade || p || 'N/A' };
+                                                }
+
+                                                if (!style.label && (triageResult.prioridade || p)) {
+                                                    style.label = triageResult.prioridade || p;
+                                                }
                                                 return (
                                                     <span style={{
                                                         backgroundColor: style.bg,
