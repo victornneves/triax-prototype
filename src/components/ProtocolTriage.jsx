@@ -297,6 +297,7 @@ const ProtocolTriage = () => {
     const [allProtocols, setAllProtocols] = useState([]);
     const [pendingProtocol, setPendingProtocol] = useState(null);
     const [pdfLoading, setPdfLoading] = useState(false);
+    const [pendingQuestion, setPendingQuestion] = useState(null); // { question, nodeId }
 
     // -- AUDIO TRANSCRIPTION --
     const {
@@ -474,6 +475,11 @@ const ProtocolTriage = () => {
             // 2. Decide next action based on state
             if (!protocolRef.current) {
                 await checkProtocolSuggestion(headers);
+            } else if (pendingQuestion) {
+                const formattedInput = `Pergunta: ${pendingQuestion.question} Resposta: ${userMsg}`;
+                const nodeId = pendingQuestion.nodeId;
+                setPendingQuestion(null);
+                await traverseTree(headers, null, nodeId, formattedInput);
             } else {
                 // Pass userMsg explicitly to avoid race condition with DB read
                 await traverseTree(headers, null, null, userMsg);
@@ -536,6 +542,7 @@ const ProtocolTriage = () => {
         // We can just proceed, user sees they clicked accept.
 
         addMessage('system', `Protocolo Confirmado: ${protocol.text}`);
+        setLoading(true);
 
         getAuthHeaders().then(headers => {
             setTimeout(() => traverseTree(headers, protocol.id.replace('protocol_', '')), 100);
@@ -566,14 +573,40 @@ const ProtocolTriage = () => {
 
         console.log("Traverse Payload:", payload);
 
-        const response = await fetch(`${API_URL}/protocol-traverse`, {
-            method: 'POST',
-            headers: headers,
-            body: JSON.stringify(payload)
-        });
-        const data = await response.json();
-
-        handleTraversalResponse(data);
+        const MAX_RETRIES = 3;
+        const TIMEOUT_MS = 29000;
+        let lastError;
+        for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS);
+                const response = await fetch(`${API_URL}/protocol-traverse`, {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify(payload),
+                    signal: controller.signal,
+                });
+                clearTimeout(timeoutId);
+                if (response.status === 503 && attempt < MAX_RETRIES) {
+                    const delay = attempt * 1000;
+                    console.warn(`protocol-traverse 503, retry ${attempt}/${MAX_RETRIES} in ${delay}ms`);
+                    await new Promise(r => setTimeout(r, delay));
+                    continue;
+                }
+                const data = await response.json();
+                handleTraversalResponse(data);
+                return;
+            } catch (err) {
+                lastError = err;
+                if (attempt < MAX_RETRIES) {
+                    const delay = attempt * 1000;
+                    console.warn(`protocol-traverse error (${err.message}), retry ${attempt}/${MAX_RETRIES} in ${delay}ms`);
+                    await new Promise(r => setTimeout(r, delay));
+                }
+            }
+        }
+        console.error("protocol-traverse failed after retries:", lastError);
+        handleTraversalResponse({ error: "service_unavailable" });
     };
 
     const handleTraversalResponse = (data) => {
@@ -631,15 +664,16 @@ const ProtocolTriage = () => {
             }
 
         } else if (data.status === 'ask_user') {
-            // Backend evaluated context and decided it needs more info.
-            if (data.node) {
-                setCurrentNode(data.node);
-                const msgText = data.node.question || data.node.text;
-                addMessage('system', msgText);
-                logSystemMessage(msgText);
+            const question = data.question || data.node?.question || data.node?.text;
+            const nodeId = data.current_node_id || data.node?.id || (currentNode ? currentNode.id : null);
+            if (question) {
+                setPendingQuestion({ question, nodeId });
+                addMessage('system', question);
+                logSystemMessage(question);
             } else {
-                console.warn("Status 'ask_user' received but no node provided.");
+                console.warn("Status 'ask_user' received but no question found.", data);
             }
+            if (data.node) setCurrentNode(data.node);
 
         } else if (data.status === 'missing_sensors') {
             if (data.missing_sensors) {
