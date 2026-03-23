@@ -568,6 +568,24 @@ const ProtocolTriage = () => {
         }
     };
 
+    const fetchProtocolDefinition = async (protocolId) => {
+        // Strip 'protocol_' prefix for the path parameter per openapi.yaml spec
+        const protocolName = protocolId.replace(/^protocol_/, '');
+        try {
+            const response = await fetch(`${API_URL}/protocol/${protocolName}`);
+            if (!response.ok) {
+                console.error("Failed to fetch protocol definition:", response.status);
+                return null;
+            }
+            const data = await response.json();
+            console.log("Protocol definition loaded:", protocolName);
+            return data;
+        } catch (err) {
+            console.error("Error fetching protocol definition:", err);
+            return null;
+        }
+    };
+
     const confirmProtocol = (protocol) => {
         setSuggestedProtocol(protocol);
         protocolRef.current = protocol;
@@ -578,6 +596,9 @@ const ProtocolTriage = () => {
 
         addMessage('system', `Protocolo Confirmado: ${protocol.text}`);
         setLoading(true);
+
+        // Fire-and-forget protocol definition fetch (API-07)
+        fetchProtocolDefinition(protocol.id);
 
         getAuthHeaders().then(headers => {
             setTimeout(() => traverseTree(headers, protocol.id.replace('protocol_', '')), 100);
