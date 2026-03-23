@@ -638,6 +638,8 @@ const ProtocolTriage = () => {
             }
             // addMessage is not strictly needed if we switch view immediately, but kept for history
             addMessage('system', `Triagem Completa! Prioridade: ${data.result.text} (${data.result.priority})`);
+            // Finalize session on backend (fire-and-forget)
+            finishSession();
 
         } else if (data.status === 'next_node') {
             const next = data.next_node;
@@ -653,6 +655,7 @@ const ProtocolTriage = () => {
                     setTriageReport(data.report);
                 }
                 addMessage('system', `Triagem Completa! Prioridade: ${next.text} (${next.priority})`);
+                finishSession();
             } else if (nextId) {
                 // Recursive traversal with EXPLICIT next node ID
                 setLoading(true);
@@ -689,6 +692,25 @@ const ProtocolTriage = () => {
         } else if (data.error) {
             addMessage('system', "Houve um erro no processamento deste passo. Por favor, tente novamente.");
             console.error("Traversal Error:", data.error);
+        }
+    };
+
+    const finishSession = async () => {
+        try {
+            const headers = await getAuthHeaders();
+            const response = await fetch(`${API_URL}/session-finish`, {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify({ session_id: sessionId })
+            });
+            if (!response.ok) {
+                console.error("session-finish failed:", response.status);
+            } else {
+                const data = await response.json();
+                console.log("Session finished, S3 key:", data.s3_key);
+            }
+        } catch (err) {
+            console.error("Error finishing session:", err);
         }
     };
 
