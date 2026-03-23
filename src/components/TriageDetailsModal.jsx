@@ -150,7 +150,7 @@ const TriageDetailsModal = ({ sessionKey, onClose }) => {
     const triageResult = details?.triage_result || {};
     const priorityValue = triageResult.prioridade || triageResult.cor || triageResult.priority;
     const protocolValue = triageResult.fluxograma_sintoma || triageResult.protocol;
-    const discriminator = triageResult.discriminador || details?.discriminator;
+    const discriminator = triageResult.discriminador || 'Discriminador Indisponivel';
 
     return (
         <div style={{
