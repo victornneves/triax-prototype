@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 01-002-PLAN.md
-last_updated: "2026-03-23T21:00:00.000Z"
+stopped_at: Completed 01-004-PLAN.md
+last_updated: "2026-03-23T21:11:32.053Z"
 progress:
   total_phases: 4
-  completed_phases: 0
-  total_plans: 3
-  completed_plans: 2
+  completed_phases: 1
+  total_plans: 4
+  completed_plans: 4
 ---
 
 # Project State
@@ -24,7 +24,7 @@ See: .planning/PROJECT.md (updated 2026-03-23)
 ## Current Position
 
 Phase: 01 (api-alignment) — EXECUTING
-Plan: 3 of 3
+Plan: 2 of 4
 
 ## Performance Metrics
 
@@ -47,6 +47,7 @@ Plan: 3 of 3
 
 *Updated after each plan completion*
 | Phase 01 P003 | 5 | 2 tasks | 2 files |
+| Phase 01 P004 | 2 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -58,6 +59,8 @@ Recent decisions affecting current work:
 - [Init]: API alignment before concerns cleanup — cleaning code that calls wrong endpoints wastes effort
 - [Init]: All work on `dev` branch; merge to `main` only at verified milestone checkpoints (Amplify auto-deploys main)
 - [Phase 01]: discriminador is the sole source field in history views; no fallback to old classification or details.discriminator
+- [Phase 01]: response.ok guards scoped to /protocol-suggest and /patient-info only; remaining fetch calls deferred to Phase 4 FRAG-01
+- [Phase 01]: handlePatientSubmit throws on non-2xx to prevent setIsPatientInfoSubmitted(true) advancing session into inconsistent state — patient safety concern
 
 ### Pending Todos
 
@@ -69,6 +72,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-23T21:00:00.000Z
-Stopped at: Completed 01-002-PLAN.md
+Last session: 2026-03-23T21:11:32.050Z
+Stopped at: Completed 01-004-PLAN.md
 Resume file: None
