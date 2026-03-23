@@ -378,7 +378,7 @@ const ProtocolTriage = () => {
         try {
             const headers = await getAuthHeaders();
             // 1. Register patient info (New Endpoint)
-            await fetch(`${API_URL}/patient-info`, {
+            const patientResponse = await fetch(`${API_URL}/patient-info`, {
                 method: 'POST',
                 headers: headers,
                 body: JSON.stringify({
@@ -394,6 +394,9 @@ const ProtocolTriage = () => {
                     same: data.same
                 })
             });
+            if (!patientResponse.ok) {
+                throw new Error(`Erro ao registrar paciente: ${patientResponse.status}`);
+            }
 
             // 2. Log initial context to transcription
             const infoString = `PACIENTE: ${data.name}, IDADE: ${data.age}, SEXO: ${data.sex === 'M' ? 'Masculino' : 'Feminino'}.`;
@@ -502,6 +505,9 @@ const ProtocolTriage = () => {
                 node_id: currentNode ? currentNode.id : undefined
             })
         });
+        if (!response.ok) {
+            throw new Error(`Erro na sugestao de protocolo: ${response.status}`);
+        }
         const data = await response.json();
 
         if (data.reply) {
