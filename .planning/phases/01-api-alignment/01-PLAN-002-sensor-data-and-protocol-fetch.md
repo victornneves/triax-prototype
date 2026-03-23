@@ -6,7 +6,7 @@ wave: 2
 depends_on: [001]
 files_modified:
   - src/components/ProtocolTriage.jsx
-requirements: [API-04, API-07]
+requirements: [API-02, API-04, API-05, API-07]
 autonomous: true
 must_haves:
   truths:
@@ -215,6 +215,29 @@ IMPORTANT: The existing `setTimeout(() => traverseTree(...), 100)` call is alrea
     - grep for `fetchProtocolDefinition` returns at least 3 matches (definition + fetch URL + call site)
   </acceptance_criteria>
   <done>Protocol definition is fetched via GET /protocol/{protocol_name} after user confirms the suggested protocol; existing traversal call remains intact and functional</done>
+</task>
+
+<task type="auto">
+  <name>Task 3: Verify existing /protocol-traverse and /transcription call sites (API-02, API-05)</name>
+  <files></files>
+  <action>
+Read-only verification task — no code changes. Confirm that the existing call sites for POST /protocol-traverse (API-02) and POST /transcription (API-05) are present and correctly wired in ProtocolTriage.jsx. These endpoints were already implemented in the original codebase; this task documents their continued presence after Tasks 1 and 2 modify the file.
+
+Run grep to confirm:
+1. `grep -n "protocol-traverse" src/components/ProtocolTriage.jsx` — expect at least 1 match showing the fetch call to `/protocol-traverse`
+2. `grep -n "/transcription" src/components/ProtocolTriage.jsx` — expect at least 1 match showing the fetch call to `/transcription`
+
+If either grep returns 0 matches, Tasks 1-2 introduced a regression — flag for investigation.
+  </action>
+  <verify>
+    <automated>cd /home/victor/Git/triax-prototype && echo "=== API-02: /protocol-traverse ===" && grep -cn "protocol-traverse" src/components/ProtocolTriage.jsx && grep -n "protocol-traverse" src/components/ProtocolTriage.jsx && echo "=== API-05: /transcription ===" && grep -cn "/transcription" src/components/ProtocolTriage.jsx && grep -n "/transcription" src/components/ProtocolTriage.jsx</automated>
+  </verify>
+  <acceptance_criteria>
+    - grep for "protocol-traverse" in ProtocolTriage.jsx returns at least 1 match (the fetch call site)
+    - grep for "/transcription" in ProtocolTriage.jsx returns at least 1 match (the fetch call site)
+    - No regressions introduced by Tasks 1-2 to these existing call sites
+  </acceptance_criteria>
+  <done>Existing POST /protocol-traverse (API-02) and POST /transcription (API-05) call sites confirmed present and unmodified</done>
 </task>
 
 </tasks>
