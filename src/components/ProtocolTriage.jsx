@@ -532,6 +532,42 @@ const ProtocolTriage = () => {
         }
     };
 
+    const submitSensorData = async (headers, sensors) => {
+        // Build the payload matching SensorDataRequest schema
+        const payload = { session_id: sessionId };
+
+        // Map frontend sensor keys to API schema keys
+        if (sensors.blood_glucose) payload.blood_glucose = parseFloat(sensors.blood_glucose);
+        if (sensors.bp_systolic && sensors.bp_diastolic) {
+            payload.blood_pressure = `${sensors.bp_systolic}/${sensors.bp_diastolic}`;
+        }
+        if (sensors.gcs) payload.gcs = parseInt(sensors.gcs, 10);
+        if (sensors.heart_rate) payload.heart_rate = parseInt(sensors.heart_rate, 10);
+        if (sensors.oxygen_saturation) payload.oxygen_saturation = parseInt(sensors.oxygen_saturation, 10);
+        if (sensors.pain_scale) payload.pain_scale = parseInt(sensors.pain_scale, 10);
+        if (sensors.respiratory_rate) payload.respiratory_rate = parseInt(sensors.respiratory_rate, 10);
+        if (sensors.temperature) payload.temperature = parseFloat(sensors.temperature);
+
+        // Only call if we have at least one sensor value beyond session_id
+        if (Object.keys(payload).length <= 1) return;
+
+        try {
+            const response = await fetch(`${API_URL}/sensor-data`, {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(payload)
+            });
+            if (!response.ok) {
+                console.error("sensor-data submission failed:", response.status);
+            } else {
+                const data = await response.json();
+                console.log("Sensor data saved. Features:", data.features);
+            }
+        } catch (err) {
+            console.error("Error submitting sensor data:", err);
+        }
+    };
+
     const confirmProtocol = (protocol) => {
         setSuggestedProtocol(protocol);
         protocolRef.current = protocol;
@@ -727,7 +763,12 @@ const ProtocolTriage = () => {
         // Clear missing sensors flag locally as we are attempting to send them
         setMissingSensors([]);
         getAuthHeaders()
-            .then(h => traverseTree(h))
+            .then(async (h) => {
+                // Submit sensor data as dedicated call (API-04)
+                await submitSensorData(h, sensorInputs);
+                // Then proceed with traversal (sensors also included in traverse payload)
+                await traverseTree(h);
+            })
             .catch(e => {
                 console.error("Error sending sensors:", e);
                 setLoading(false);
