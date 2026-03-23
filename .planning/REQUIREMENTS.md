@@ -7,14 +7,14 @@
 
 ### API Alignment (openapi.yaml v1.1.0)
 
-- [ ] **API-01**: App calls `POST /protocol-suggest` (not `/suggest_protocol`) for protocol suggestion
+- [x] **API-01**: App calls `POST /protocol-suggest` (not `/suggest_protocol`) for protocol suggestion
 - [x] **API-02**: App calls `POST /protocol-traverse` (not `/traverse`) for decision tree traversal
-- [ ] **API-03**: App calls `POST /session-finish` (not `/end_session`) to finalize a session
+- [x] **API-03**: App calls `POST /session-finish` (not `/end_session`) to finalize a session
 - [x] **API-04**: App submits vital sign readings via `POST /sensor-data` as a dedicated call (not embedded inline in traversal payload only)
 - [x] **API-05**: App submits transcription text via `POST /transcription` as a dedicated call
 - [x] **API-06**: History views display `triage_result.discriminador` (not the old `classification` field)
 - [x] **API-07**: App calls `GET /protocol/{protocol_name}` to retrieve full protocol definition before traversal (if not already fetched)
-- [ ] **API-08**: All API calls use the correct request body schemas as defined in openapi.yaml v1.1.0
+- [x] **API-08**: All API calls use the correct request body schemas as defined in openapi.yaml v1.1.0
 
 ### Auth & Security
 
@@ -63,14 +63,14 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| API-01 | Phase 1 | Pending |
+| API-01 | Phase 1 | Complete |
 | API-02 | Phase 1 | Complete |
-| API-03 | Phase 1 | Pending |
+| API-03 | Phase 1 | Complete |
 | API-04 | Phase 1 | Complete |
 | API-05 | Phase 1 | Complete |
 | API-06 | Phase 1 | Complete |
 | API-07 | Phase 1 | Complete |
-| API-08 | Phase 1 | Pending |
+| API-08 | Phase 1 | Complete |
 | AUTH-01 | Phase 2 | Pending |
 | AUTH-02 | Phase 2 | Pending |
 | AUTH-03 | Phase 2 | Pending |
