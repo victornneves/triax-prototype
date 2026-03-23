@@ -383,17 +383,15 @@ const ProtocolTriage = () => {
                 headers: headers,
                 body: JSON.stringify({
                     session_id: sessionId,
-                    patient_info: {
-                        name: data.name,
-                        age: data.age,
-                        sex: data.sex,
-                        patient_code: data.patient_code,
-                        birth_date: data.birth_date,
-                        ticket_number: data.ticket_number,
-                        insurance: data.insurance,
-                        visit_id: data.visit_id,
-                        same: data.same
-                    }
+                    name: data.name,
+                    age: data.age,
+                    sex: data.sex,
+                    patient_code: data.patient_code,
+                    birth_date: data.birth_date,
+                    ticket_number: data.ticket_number,
+                    insurance: data.insurance,
+                    visit_id: data.visit_id,
+                    same: data.same
                 })
             });
 
@@ -474,7 +472,7 @@ const ProtocolTriage = () => {
 
             // 2. Decide next action based on state
             if (!protocolRef.current) {
-                await checkProtocolSuggestion(headers);
+                await checkProtocolSuggestion(headers, userMsg);
             } else if (pendingQuestion) {
                 const formattedInput = `Pergunta: ${pendingQuestion.question} Resposta: ${userMsg}`;
                 const nodeId = pendingQuestion.nodeId;
@@ -493,12 +491,13 @@ const ProtocolTriage = () => {
         }
     };
 
-    const checkProtocolSuggestion = async (headers) => {
+    const checkProtocolSuggestion = async (headers, promptText) => {
         // ... (existing code)
         const response = await fetch(`${API_URL}/protocol-suggest`, {
             method: 'POST',
             headers: headers,
             body: JSON.stringify({
+                prompt: promptText || "",
                 session_id: sessionId,
                 node_id: currentNode ? currentNode.id : undefined
             })
