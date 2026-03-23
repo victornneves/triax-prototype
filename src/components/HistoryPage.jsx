@@ -189,7 +189,7 @@ const HistoryPage = () => {
                                         return '#0d6efd';
                                     })()
                             }}>
-                                <h2 style={{ margin: 0, fontSize: '1.8rem' }}>{selectedSession.triage_result?.discriminador || selectedSession.triage_result?.classification || 'Classificação Desconhecida'}</h2>
+                                <h2 style={{ margin: 0, fontSize: '1.8rem' }}>{selectedSession.triage_result?.discriminador || 'Discriminador Indisponivel'}</h2>
                                 <p style={{ margin: '0.5rem 0 0' }}>Prioridade: {selectedSession.triage_result?.prioridade || selectedSession.triage_result?.priority || 'N/A'}</p>
                             </div>
 
