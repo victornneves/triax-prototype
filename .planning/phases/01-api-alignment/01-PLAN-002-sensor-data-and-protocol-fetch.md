@@ -6,7 +6,7 @@ wave: 2
 depends_on: [001]
 files_modified:
   - src/components/ProtocolTriage.jsx
-requirements: [API-02, API-04, API-05, API-07]
+requirements: [API-04, API-07]
 autonomous: true
 must_haves:
   truths:
@@ -179,7 +179,7 @@ const fetchProtocolDefinition = async (protocolId) => {
 
 Note: This endpoint requires NO authentication (security: [] in openapi.yaml), so no auth headers needed.
 
-**Step 2: Call `fetchProtocolDefinition` in `confirmProtocol`** (around line 536). Fetch the protocol definition before starting traversal. This is informational — the traversal works without it, but the API contract expects it to be called:
+**Step 2: Call `fetchProtocolDefinition` in `confirmProtocol`** (around line 536). Add it as a fire-and-forget call. Do NOT introduce any setTimeout — call `traverseTree` directly, preserving its existing invocation pattern:
 
 ```js
 const confirmProtocol = (protocol) => {
@@ -190,28 +190,31 @@ const confirmProtocol = (protocol) => {
     addMessage('system', `Protocolo Confirmado: ${protocol.text}`);
     setLoading(true);
 
-    // Fetch full protocol definition (API-07) then start traversal
-    getAuthHeaders().then(async (headers) => {
-        // Fire-and-forget protocol definition fetch
-        fetchProtocolDefinition(protocol.id);
+    // Fire-and-forget protocol definition fetch (API-07)
+    fetchProtocolDefinition(protocol.id);
+
+    // Start traversal — keep the existing setTimeout + traverseTree call unchanged
+    getAuthHeaders().then(headers => {
         setTimeout(() => traverseTree(headers, protocol.id.replace('protocol_', '')), 100);
     });
 };
 ```
 
-The protocol definition fetch is fire-and-forget — it does not block traversal. The backend uses this call to ensure the protocol is loaded/cached.
+IMPORTANT: The existing `setTimeout(() => traverseTree(...), 100)` call is already present in the current codebase (line 548). Do NOT remove or modify it — this plan's scope is adding the `fetchProtocolDefinition` call, not restructuring the traversal timing. The `fetchProtocolDefinition` call is placed before `getAuthHeaders()` since it needs no auth, making it truly independent and non-blocking.
   </action>
   <verify>
-    <automated>cd /home/victor/Git/triax-prototype && grep -n "fetchProtocolDefinition\|/protocol/" src/components/ProtocolTriage.jsx | head -10; echo "---"; grep -c "fetchProtocolDefinition" src/components/ProtocolTriage.jsx</automated>
+    <automated>cd /home/victor/Git/triax-prototype && grep -n "fetchProtocolDefinition\|/protocol/" src/components/ProtocolTriage.jsx | head -10; echo "---"; grep -c "fetchProtocolDefinition" src/components/ProtocolTriage.jsx; echo "---"; grep -n "traverseTree" src/components/ProtocolTriage.jsx | head -10</automated>
   </verify>
   <acceptance_criteria>
     - `src/components/ProtocolTriage.jsx` contains a `fetchProtocolDefinition` function
     - The function calls `fetch(\`\${API_URL}/protocol/\${protocolName}\`)` with NO auth headers
     - The `protocolName` variable is derived by stripping the `protocol_` prefix from the protocol ID
     - `fetchProtocolDefinition` is called in `confirmProtocol` with `protocol.id`
+    - The existing `traverseTree` call in `confirmProtocol` is unchanged (still called via getAuthHeaders().then with setTimeout)
+    - After modification, the triage flow still advances: confirming a protocol triggers traversal (grep shows traverseTree call intact in confirmProtocol)
     - grep for `fetchProtocolDefinition` returns at least 3 matches (definition + fetch URL + call site)
   </acceptance_criteria>
-  <done>Protocol definition is fetched via GET /protocol/{protocol_name} after user confirms the suggested protocol, before traversal begins</done>
+  <done>Protocol definition is fetched via GET /protocol/{protocol_name} after user confirms the suggested protocol; existing traversal call remains intact and functional</done>
 </task>
 
 </tasks>
@@ -219,14 +222,15 @@ The protocol definition fetch is fire-and-forget — it does not block traversal
 <verification>
 1. `grep -n "sensor-data" src/components/ProtocolTriage.jsx` — at least 1 match
 2. `grep -n "/protocol/" src/components/ProtocolTriage.jsx` — at least 1 match (the GET call, not the POST endpoints)
-3. `npm run build` completes without errors
-4. Existing `/protocol-traverse` and `/transcription` calls remain unchanged and functional
+3. `grep -n "protocol-traverse\|/transcription" src/components/ProtocolTriage.jsx` — existing call sites for /protocol-traverse and /transcription survive modification
+4. `grep -n "traverseTree" src/components/ProtocolTriage.jsx` — traverseTree call sites remain intact (at least 5 matches: definition + confirmProtocol + handleSendSensors + recursive calls)
+5. `npm run build` completes without errors
 </verification>
 
 <success_criteria>
 - POST /sensor-data is called with SensorDataRequest schema when clinician submits vital signs
 - GET /protocol/{protocol_name} is called after protocol confirmation
-- Existing traverse and transcription calls remain intact
+- Existing traverse and transcription calls remain intact (verified by grep)
 - App builds without errors
 </success_criteria>
 
