@@ -12,7 +12,7 @@
 - [ ] **API-03**: App calls `POST /session-finish` (not `/end_session`) to finalize a session
 - [ ] **API-04**: App submits vital sign readings via `POST /sensor-data` as a dedicated call (not embedded inline in traversal payload only)
 - [ ] **API-05**: App submits transcription text via `POST /transcription` as a dedicated call
-- [ ] **API-06**: History views display `triage_result.discriminador` (not the old `classification` field)
+- [x] **API-06**: History views display `triage_result.discriminador` (not the old `classification` field)
 - [ ] **API-07**: App calls `GET /protocol/{protocol_name}` to retrieve full protocol definition before traversal (if not already fetched)
 - [ ] **API-08**: All API calls use the correct request body schemas as defined in openapi.yaml v1.1.0
 
@@ -68,7 +68,7 @@
 | API-03 | Phase 1 | Pending |
 | API-04 | Phase 1 | Pending |
 | API-05 | Phase 1 | Pending |
-| API-06 | Phase 1 | Pending |
+| API-06 | Phase 1 | Complete |
 | API-07 | Phase 1 | Pending |
 | API-08 | Phase 1 | Pending |
 | AUTH-01 | Phase 2 | Pending |
