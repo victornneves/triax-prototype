@@ -29,7 +29,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Session finalization calls `POST /session-finish` and the triage result is displayed with the correct priority color
   4. Vital sign readings are submitted via `POST /sensor-data` as a dedicated call (not only embedded in traversal)
   5. History views display `triage_result.discriminador` instead of the old `classification` field
-**Plans**: TBD
+**Plans:** 3 plans
+Plans:
+- [ ] 01-PLAN-001-protocol-triage-schema-fixes.md — Fix /patient-info and /protocol-suggest request schemas, add POST /session-finish call
+- [ ] 01-PLAN-002-sensor-data-and-protocol-fetch.md — Add dedicated POST /sensor-data and GET /protocol/{protocol_name} calls
+- [ ] 01-PLAN-003-history-discriminador.md — Replace classification with discriminador in all history views
 
 ### Phase 2: Auth & Security
 **Goal**: Auth credentials are never silently dropped, AWS config is environment-driven, and admin routes are protected at the routing layer
@@ -69,7 +73,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. API Alignment | 0/TBD | Not started | - |
+| 1. API Alignment | 0/3 | Planning complete | - |
 | 2. Auth & Security | 0/TBD | Not started | - |
 | 3. Tech Debt | 0/TBD | Not started | - |
 | 4. Fragility | 0/TBD | Not started | - |
