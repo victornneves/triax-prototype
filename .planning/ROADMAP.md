@@ -43,7 +43,10 @@ Plans:
   1. `src/aws-config.js` contains no hardcoded Cognito IDs — all values read from `VITE_*` environment variables
   2. When `fetchAuthSession()` fails or returns no token, the app surfaces an explicit auth error instead of proceeding without an Authorization header
   3. Navigating directly to `/admin/users` as a non-admin user is blocked at the route level — the component never renders
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [ ] 02-001-env-config-PLAN.md — Move hardcoded AWS resource IDs to VITE_* env vars
+- [ ] 02-002-auth-error-admin-guard-PLAN.md — Auth failure error screen and RequireAdmin route guard
 
 ### Phase 3: Tech Debt
 **Goal**: Duplicated auth code is centralized, demo data is gone from production builds, and dead dependencies no longer bloat the bundle
@@ -74,6 +77,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. API Alignment | 2/3 | In Progress|  |
-| 2. Auth & Security | 0/TBD | Not started | - |
+| 2. Auth & Security | 0/2 | Not started | - |
 | 3. Tech Debt | 0/TBD | Not started | - |
 | 4. Fragility | 0/TBD | Not started | - |
