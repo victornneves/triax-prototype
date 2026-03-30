@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 02-001-env-config-PLAN.md
-last_updated: "2026-03-30T18:35:31.544Z"
+stopped_at: Completed 02-002-auth-error-admin-guard-PLAN.md
+last_updated: "2026-03-30T18:35:52.478Z"
 progress:
   total_phases: 4
   completed_phases: 2
@@ -49,6 +49,7 @@ Plan: 2 of 2
 | Phase 01 P003 | 5 | 2 tasks | 2 files |
 | Phase 01 P004 | 2 | 2 tasks | 2 files |
 | Phase 02 P001 | 1 | 2 tasks | 2 files |
+| Phase 02 P002 | 2m | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -63,6 +64,8 @@ Recent decisions affecting current work:
 - [Phase 01]: response.ok guards scoped to /protocol-suggest and /patient-info only; remaining fetch calls deferred to Phase 4 FRAG-01
 - [Phase 01]: handlePatientSubmit throws on non-2xx to prevent setIsPatientInfoSubmitted(true) advancing session into inconsistent state — patient safety concern
 - [Phase 02]: Non-secret config (region, loginWith, passwordFormat, allowGuestAccess) stays hardcoded; only resource IDs moved to env vars
+- [Phase 02]: RequireAdmin renders loading state while profile fetches to prevent flash redirect to non-admins
+- [Phase 02]: AppContent inner component pattern used to access useUser() inside UserProvider scope for auth error interception
 
 ### Pending Todos
 
@@ -74,6 +77,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-30T18:35:12.838Z
-Stopped at: Completed 02-001-env-config-PLAN.md
+Last session: 2026-03-30T18:35:52.476Z
+Stopped at: Completed 02-002-auth-error-admin-guard-PLAN.md
 Resume file: None

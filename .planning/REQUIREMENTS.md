@@ -19,8 +19,8 @@
 ### Auth & Security
 
 - [x] **AUTH-01**: Cognito User Pool ID, Client ID, and Identity Pool ID are read from environment variables (not hardcoded in `src/aws-config.js`)
-- [ ] **AUTH-02**: When `fetchAuthSession()` fails or returns no token, the app throws a clear auth error instead of silently omitting the Authorization header
-- [ ] **AUTH-03**: Admin route (`/admin/users`) is protected at the route level — unauthenticated or non-admin users cannot reach the component at all
+- [x] **AUTH-02**: When `fetchAuthSession()` fails or returns no token, the app throws a clear auth error instead of silently omitting the Authorization header
+- [x] **AUTH-03**: Admin route (`/admin/users`) is protected at the route level — unauthenticated or non-admin users cannot reach the component at all
 
 ### Tech Debt
 
@@ -72,8 +72,8 @@
 | API-07 | Phase 1 | Complete |
 | API-08 | Phase 1 | Complete |
 | AUTH-01 | Phase 2 | Complete |
-| AUTH-02 | Phase 2 | Pending |
-| AUTH-03 | Phase 2 | Pending |
+| AUTH-02 | Phase 2 | Complete |
+| AUTH-03 | Phase 2 | Complete |
 | DEBT-01 | Phase 3 | Pending |
 | DEBT-02 | Phase 3 | Pending |
 | DEBT-03 | Phase 3 | Pending |
