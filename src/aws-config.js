@@ -1,9 +1,9 @@
 const awsConfig = {
     Auth: {
         Cognito: {
-            userPoolId: 'sa-east-1_Jw98XU6oe',
-            userPoolClientId: '2jqbrs353aipm3pd034ei9sph8',
-            identityPoolId: 'sa-east-1:c098c9c8-4f64-44a4-8e20-72d34e21e68f',
+            userPoolId: import.meta.env.VITE_USER_POOL_ID,
+            userPoolClientId: import.meta.env.VITE_USER_POOL_CLIENT_ID,
+            identityPoolId: import.meta.env.VITE_IDENTITY_POOL_ID,
             loginWith: {
                 email: true,
             },
@@ -25,7 +25,7 @@ const awsConfig = {
     },
     Storage: {
         S3: {
-            bucket: 'storagestack-aitriagedevsessionbucketec01eff9-m7nvints9cab',
+            bucket: import.meta.env.VITE_S3_BUCKET,
             region: 'sa-east-1',
         }
     }
