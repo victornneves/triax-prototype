@@ -16,7 +16,7 @@ export const UserProvider = ({ children }) => {
             const token = session.tokens?.idToken?.toString();
 
             if (!token) {
-                // If no token, maybe not logged in properly yet or guest
+                setError(new Error('AUTH_SESSION_FAILED'));
                 setLoading(false);
                 return;
             }
