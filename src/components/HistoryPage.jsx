@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { fetchAuthSession } from 'aws-amplify/auth';
+import { getAuthHeaders } from '../utils/auth';
 import { useNavigate } from 'react-router-dom';
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -16,31 +16,14 @@ const HistoryPage = () => {
         loadSessions();
     }, []);
 
-    const getAuthHeaders = async () => {
-        try {
-            const session = await fetchAuthSession();
-            const token = session.tokens?.idToken?.toString();
-            return {
-                'Content-Type': 'application/json',
-                ...(token ? { 'Authorization': `Bearer ${token}` } : {})
-            };
-        } catch (e) {
-            console.error("Error fetching auth session", e);
-            return { 'Content-Type': 'application/json' };
-        }
-    };
-
     const handleDownloadPDF = async () => {
         if (!selectedSession) return;
         setPdfLoading(true);
         try {
-            const sessionData = await fetchAuthSession();
-            const token = sessionData.tokens?.idToken?.toString();
+            const headers = await getAuthHeaders();
             const response = await fetch(`${API_URL}/history/${selectedSession.session_id}/pdf`, {
                 method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                headers: headers
             });
             if (!response.ok) throw new Error('Erro ao buscar PDF');
             const blob = await response.blob();

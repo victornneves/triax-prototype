@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { fetchAuthSession } from 'aws-amplify/auth';
+import { getAuthHeaders } from '../utils/auth';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -15,14 +15,11 @@ const TriageDetailsModal = ({ sessionKey, onClose }) => {
 
         const fetchDetails = async () => {
             try {
-                const session = await fetchAuthSession();
-                const token = session.tokens?.idToken?.toString();
+                const headers = await getAuthHeaders();
                 const encodedKey = encodeURIComponent(sessionKey);
 
                 const response = await fetch(`${API_URL}/history?key=${encodedKey}`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
+                    headers: headers
                 });
 
                 if (!response.ok) {
@@ -117,13 +114,10 @@ const TriageDetailsModal = ({ sessionKey, onClose }) => {
     const handleDownloadPDF = async () => {
         setPdfLoading(true);
         try {
-            const session = await fetchAuthSession();
-            const token = session.tokens?.idToken?.toString();
+            const headers = await getAuthHeaders();
             const response = await fetch(`${API_URL}/history/${sessionKey}/pdf`, {
                 method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                headers: headers
             });
             if (!response.ok) throw new Error('Erro ao buscar PDF');
             const blob = await response.blob();

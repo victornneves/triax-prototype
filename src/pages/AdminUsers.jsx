@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { fetchAuthSession } from 'aws-amplify/auth';
+import { getAuthHeaders } from '../utils/auth';
 import { useUser } from '../contexts/UserContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -25,13 +25,10 @@ const AdminUsers = () => {
         const fetchUsers = async () => {
             setLoading(true);
             try {
-                const session = await fetchAuthSession();
-                const token = session.tokens?.idToken?.toString();
+                const headers = await getAuthHeaders();
 
                 const response = await fetch(`${API_URL}/users`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
+                    headers: headers
                 });
 
                 if (!response.ok) {

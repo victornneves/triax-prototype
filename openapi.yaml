@@ -1,515 +1,1751 @@
-openapi: 3.0.0
+openapi: 3.0.3
 info:
-  title: AI Triage API
-  description: API for the AI Triage System, including protocol suggestion and decision tree traversal.
-  version: 1.0.0
+  title: Triax AI Triage API
+  description: |
+    REST API for the Triax clinical triage system. Uses Claude (via Amazon Bedrock) to guide
+    emergency triage decisions. The system follows the Manchester Triage System (MTS) approach,
+    assigning priority colors (red, orange, yellow, green, blue) based on discriminators.
+
+    **Authentication:** Most endpoints require a Cognito JWT bearer token in the `Authorization`
+    header. Three endpoints are publicly accessible without a token:
+    - `GET /protocol_names`
+    - `GET /protocol/{protocol_name}`
+    - `POST /session-features`
+  version: 1.1.0
+  contact:
+    name: Triax Backend Team
+
 servers:
   - url: https://o7267hgyxl.execute-api.sa-east-1.amazonaws.com
-    description: Development Server
+    description: Development Server (sa-east-1)
+
+security:
+  - CognitoJWT: []
+
+tags:
+  - name: Protocol
+    description: Protocol catalog — list and retrieve clinical protocol definitions
+  - name: Triage
+    description: Core triage workflow — protocol suggestion and decision-tree traversal
+  - name: Session
+    description: Session lifecycle — transcription, sensor data, patient info, finish
+  - name: History
+    description: Triage history — list, retrieve detail, and export PDF
+  - name: User
+    description: User management — current profile and admin user listing
+
 paths:
-  /protocol-suggest:
-    post:
-      summary: Suggest a protocol based on symptoms
-      description: Analyzes user-provided symptom text and suggests the most relevant medical protocol.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - prompt
-              properties:
-                prompt:
-                  type: string
-                  description: Description of the patient's symptoms.
-                  example: "Patient has severe chest pain radiating to the left arm."
-                node_id:
-                  type: string
-                  description: Optional node ID to start from (defaults to root).
-      responses:
-        '200':
-          description: Successful response with suggested protocol or next question.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  reply:
-                    type: object
-                    properties:
-                      type:
-                        type: string
-                        enum: [protocol, question, unknown]
-                      protocol:
-                        type: object
-                        description: The suggested protocol object (if type is protocol).
-                      text:
-                        type: string
-                        description: The next question text (if type is question).
-                      node_id:
-                        type: string
-                        description: The ID of the next node.
-        '400':
-          description: Invalid request body.
-        '500':
-          description: Internal server error.
 
-  /protocol-traverse:
-    post:
-      summary: Traverse a decision tree
-      description: Evaluates a single step in a decision tree based on sensor data or user input.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - decision_tree_protocol
-                - node_id
-              properties:
-                decision_tree_protocol:
-                  type: string
-                  description: The name/ID of the protocol to traverse.
-                  example: "agressao"
-                node_id:
-                  type: string
-                  description: The current node ID in the decision tree.
-                  example: "criteria_choque"
-                user_input:
-                  type: string
-                  description: User's answer to a question (if applicable).
-                blood_pressure:
-                  type: string
-                  description: Patient's blood pressure (e.g., "120/80").
-                heart_rate:
-                  type: integer
-                  description: Patient's heart rate.
-                respiratory_rate:
-                  type: integer
-                  description: Patient's respiratory rate.
-                gsc:
-                  type: integer
-                  description: Glasgow Coma Scale score.
-                oxigen_sat:
-                  type: integer
-                  description: Oxygen saturation level.
-                pain_scale:
-                  type: integer
-                  description: Pain scale (0-10).
-                temperature:
-                  type: number
-                  description: Body temperature.
-                blood_glucose:
-                  type: number
-                  description: Blood glucose level.
-      responses:
-        '200':
-          description: Successful traversal step.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    enum: [next_node, ask_user, missing_sensors, complete]
-                  current_node_id:
-                    type: string
-                  next_node_id:
-                    type: string
-                  next_node:
-                    type: object
-                    description: The next node object.
-                  node:
-                    type: object
-                    description: The current node object (returned for ask_user/missing_sensors).
-                  missing_sensors:
-                    type: array
-                    items:
-                      type: string
-                    description: List of missing mandatory sensors.
-                  result:
-                    type: object
-                    description: The final result/assignment (if status is complete).
-        '400':
-          description: Invalid request or missing fields.
-        '404':
-          description: Protocol or tree not found.
-        '500':
-          description: Internal server error.
-
-  /protocol/{protocol_name}:
-    get:
-      summary: Get protocol details
-      description: Retrieves the full content of a specific protocol.
-      parameters:
-        - in: path
-          name: protocol_name
-          schema:
-            type: string
-          required: true
-          description: The name of the protocol to retrieve.
-      responses:
-        '200':
-          description: Protocol details.
-        '500':
-          description: Internal server error.
+  # ---------------------------------------------------------------------------
+  # Protocol catalog (no auth required)
+  # ---------------------------------------------------------------------------
 
   /protocol_names:
     get:
-      summary: List all protocols
-      description: Returns a list of all available protocol names.
+      tags: [Protocol]
+      summary: List all protocol names
+      description: Returns a flat list of all available clinical protocol IDs loaded from S3.
+      security: []
+      operationId: listProtocolNames
       responses:
         '200':
-          description: List of protocols.
+          description: Array of protocol descriptor objects.
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  type: string
+                  type: object
+                  required: [name, protocol_id]
+                  properties:
+                    name:
+                      type: string
+                      description: Human-readable protocol name (may contain accents).
+                      example: Dor Torácica
+                    protocol_id:
+                      type: string
+                      description: Machine identifier used as the path parameter in GET /protocol/{protocol_name}.
+                      example: protocol_dor_toracica
+              example:
+                - name: Dor Torácica
+                  protocol_id: protocol_dor_toracica
+                - name: Cefaleia
+                  protocol_id: protocol_cefaleia
+                - name: Agressão
+                  protocol_id: protocol_agressao
         '500':
-          description: Internal server error.
+          $ref: '#/components/responses/InternalServerError'
 
-  /patient-info:
+  /protocol/{protocol_name}:
+    get:
+      tags: [Protocol]
+      summary: Get protocol details
+      description: Retrieves the full JSON definition of a specific clinical protocol from S3.
+      security: []
+      operationId: getProtocol
+      parameters:
+        - in: path
+          name: protocol_name
+          required: true
+          schema:
+            type: string
+          description: >
+            Protocol identifier — use the `protocol_id` value from `GET /protocol_names`,
+            but strip the leading `protocol_` prefix (e.g. `protocol_dor_toracica` → `dor_toracica`).
+          example: dor_toracica
+      responses:
+        '200':
+          description: Protocol object as stored in S3.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProtocolDetail'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  # ---------------------------------------------------------------------------
+  # Triage workflow (auth required)
+  # ---------------------------------------------------------------------------
+
+  /protocol-suggest:
     post:
-      summary: Update patient information
-      description: Stores or updates patient details for a specific session.
+      tags: [Triage]
+      summary: Suggest a clinical protocol based on symptoms
+      description: |
+        Analyzes patient symptom text (or a session's transcription history) and traverses the
+        master decision tree to identify the most relevant clinical protocol.
+
+        The LLM auto-traverses question nodes when it can infer the answer from the provided
+        context. If the LLM cannot answer a question node it returns `type: "question"` asking
+        the caller to supply additional information and re-call with the same `node_id`.
+      operationId: suggestProtocol
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - session_id
-              properties:
-                session_id:
-                  type: string
-                name:
-                  type: string
-                age:
-                  type: integer
-                sex:
-                  type: string
-                  enum: [M, F, Other]
+              $ref: '#/components/schemas/ProtocolSuggestRequest'
+            example:
+              prompt: "Paciente do sexo masculino, 58 anos, relata dor intensa no peito com irradiação para o braço esquerdo, iniciada há 30 minutos. Nega trauma."
+              node_id: root
+              session_id: sess_abc123
       responses:
         '200':
-          description: Patient info updated successfully.
+          description: Protocol match or clarifying question.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProtocolSuggestResponse'
+              examples:
+                protocol_found:
+                  summary: Protocol identified
+                  value:
+                    reply:
+                      type: protocol
+                      protocol:
+                        id: dor_toracica
+                        name: Dor Torácica
+                        description: Protocolo para queixa principal de dor torácica
+                      node_id: dor_toracica
+                      reasoning: "Paciente relata dor torácica com irradiação — protocolo dor_toracica selecionado."
+                      path_taken: [root, dor_toracica]
+                      decision_steps:
+                        - step: 1
+                          node_id: root
+                          type: question
+                          text: "Qual é a queixa principal do paciente?"
+                          response: "Dor torácica com irradiação para membro superior esquerdo"
+                          next_node_id: dor_toracica
+                question_needed:
+                  summary: Clarifying question required
+                  value:
+                    reply:
+                      type: question
+                      text: "O paciente apresenta febre ou sinais de infecção?"
+                      node_id: febre_infeccao
+                      reasoning: "Não foi possível determinar a presença de febre a partir das informações disponíveis."
+                      path_taken: [root, febre_infeccao]
         '400':
-          description: Missing session_id.
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error.
+          $ref: '#/components/responses/InternalServerError'
+
+  /protocol-traverse:
+    post:
+      tags: [Triage]
+      summary: Traverse a protocol decision tree (priority evaluation)
+      description: |
+        Evaluates a single priority level in the selected protocol's decision tree.
+        The caller must supply the protocol name and optionally sensor readings or free-text.
+
+        The orchestrator processes priority levels from highest (red) to lowest (blue).
+        Use `node_id` returned as `next_node_id` from the previous response to advance.
+        Start at `node_id: "root"` (or omit it) for the first call.
+
+        **Response shapes (discriminated by `status`):**
+
+        | status | Meaning |
+        |--------|---------|
+        | `complete` | Priority assigned — triage finished. `result` and `report` fields present. |
+        | `next_node` | Current level not matched — advance to `next_node_id`. |
+        | `ask_user` | LLM cannot decide — a question must be shown to the clinician. |
+        | `missing_sensors` | Mandatory sensor values absent — list provided in `missing_sensors`. |
+
+        **Sensor field aliases:** Both `gsc`/`gcs` and `oxigen_sat`/`oxygen_saturation` are
+        accepted; the backend normalizes them internally.
+      operationId: traverseProtocol
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProtocolTraverseRequest'
+            example:
+              decision_tree_protocol: dor_toracica
+              node_id: "0"
+              session_id: sess_abc123
+              heart_rate: 110
+              blood_pressure: "90/60"
+              oxygen_saturation: 94
+              respiratory_rate: 22
+              temperature: 36.8
+              pain_scale: 8
+      responses:
+        '200':
+          description: One of four traversal outcome shapes.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProtocolTraverseResponse'
+              examples:
+                complete:
+                  summary: Triage complete — priority assigned
+                  value:
+                    status: complete
+                    result:
+                      type: assignment
+                      priority: orange
+                      text: "Dor torácica com instabilidade hemodinâmica"
+                      explanation: "FC > 100 bpm e PA sistólica < 100 mmHg"
+                    report:
+                      session_id: sess_abc123
+                      tenant_id: hospital_norte
+                      user_id: usr_456
+                      patient_info:
+                        name: "João Silva"
+                        age: 58
+                        sex: M
+                      triage_result:
+                        fluxograma_sintoma: dor_toracica
+                        prioridade: "LARANJA - MUITO URGENTE"
+                        cor: ORANGE
+                        discriminador: "Dor torácica com instabilidade hemodinâmica"
+                      clinical_data:
+                        queixa_principal: "Dor no peito com irradiação para o braço esquerdo"
+                        medicamentos: "AAS 100mg"
+                        alergias: "Nega"
+                        especialidade: "Cardiologia"
+                        vital_signs:
+                          heart_rate: 110
+                          blood_pressure: "90/60"
+                          spo2: 94
+                      stats:
+                        start_time: "2026-03-23T14:00:00"
+                        end_time: "2026-03-23T14:08:32"
+                        duration_seconds: 512
+                    sensor_data:
+                      heart_rate: 110
+                      blood_pressure: "90/60"
+                      spo2: 94
+                    reasoning: "FC elevada e hipotensão confirmam critério laranja."
+                next_node:
+                  summary: Advance to next priority level
+                  value:
+                    status: next_node
+                    current_node_id: "0"
+                    next_node_id: "1"
+                    decision:
+                      criteria_met: false
+                      reasoning: "Nenhum critério vermelho atendido."
+                    reasoning: "Nenhum critério vermelho atendido."
+                    sensor_data:
+                      heart_rate: 88
+                      spo2: 97
+                ask_user:
+                  summary: Clarifying question for clinician
+                  value:
+                    status: ask_user
+                    pending_criteria_id: criterio_dor_precordial
+                    question: "O paciente refere dor precordial em aperto com irradiação?"
+                    current_level: orange
+                    current_node_id: "1"
+                    reasoning: "Informação insuficiente para avaliar critério."
+                    sensor_data: {}
+                missing_sensors:
+                  summary: Required sensors not provided
+                  value:
+                    status: missing_sensors
+                    current_level: red
+                    current_node_id: "0"
+                    missing_sensors:
+                      - gcs_scale
+                      - heart_rate
+                    sensor_data: {}
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  # ---------------------------------------------------------------------------
+  # Session management
+  # ---------------------------------------------------------------------------
 
   /transcription:
     post:
+      tags: [Session]
       summary: Submit audio transcription
-      description: Stores transcription text and extracts audio cues (symptoms) using LLM.
+      description: |
+        Stores a transcription text entry for the session (time-series append) and
+        asynchronously extracts symptom audio cues using Claude.
+
+        The response always includes `detected_cues` (may be empty if LLM fails — the
+        transcription is still stored). LLM extraction failures are non-fatal.
+      operationId: submitTranscription
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - session_id
-                - transcription
-              properties:
-                session_id:
-                  type: string
-                transcription:
-                  type: string
+              $ref: '#/components/schemas/TranscriptionRequest'
+            example:
+              session_id: sess_abc123
+              transcription: "Paciente refere dor de cabeça intensa há duas horas, com náusea e sensibilidade à luz."
       responses:
         '200':
-          description: Transcription processed.
+          description: Transcription stored and cues extracted.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  detected_cues:
-                    type: array
-                    items:
-                      type: string
+                $ref: '#/components/schemas/TranscriptionResponse'
+              example:
+                message: "Transcription processed successfully"
+                detected_cues:
+                  - referiu_cefaleia
+                  - referiu_nausea
+                  - referiu_fotofobia
         '400':
-          description: Missing fields.
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error.
+          $ref: '#/components/responses/InternalServerError'
 
   /sensor-data:
     post:
-      summary: Submit sensor data
-      description: Stores sensor readings and extracts features based on defined rules.
+      tags: [Session]
+      summary: Submit vital-sign sensor readings
+      description: |
+        Stores sensor readings for the session (time-series list_append per sensor key)
+        and runs the feature-extraction rules engine to produce clinical features.
+
+        Sensor values are stored individually and enriched with a timestamp.
+      operationId: submitSensorData
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - session_id
-              properties:
-                session_id:
-                  type: string
-                blood_glucose:
-                  type: number
-                blood_pressure:
-                  type: string
-                gcs:
-                  type: integer
-                heart_rate:
-                  type: integer
-                oxygen_saturation:
-                  type: integer
-                pain_scale:
-                  type: integer
-                respiratory_rate:
-                  type: integer
-                temperature:
-                  type: number
+              $ref: '#/components/schemas/SensorDataRequest'
+            example:
+              session_id: sess_abc123
+              heart_rate: 110
+              blood_pressure: "150/95"
+              oxygen_saturation: 96
+              respiratory_rate: 20
+              temperature: 37.2
+              pain_scale: 7
+              gcs: 15
+              blood_glucose: 142.0
       responses:
         '200':
-          description: Sensor data saved and features extracted.
+          description: Sensor data stored and features extracted.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  features:
-                    type: array
-                    items:
-                      type: object
+                $ref: '#/components/schemas/SensorDataResponse'
+              example:
+                message: "Sensor data and features saved successfully"
+                features:
+                  - id: fc_taquicardia
+                    category: vital_sign
+                    description: "FC elevada (> 100 bpm)"
+                  - id: pa_hipertensao_leve
+                    category: vital_sign
+                    description: "PA sistólica entre 140–159 mmHg"
         '400':
-          description: Invalid request.
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error.
+          $ref: '#/components/responses/InternalServerError'
+
+  /patient-info:
+    post:
+      tags: [Session]
+      summary: Store or update patient information
+      description: |
+        Writes patient demographic and administrative fields to the session DynamoDB item.
+        All fields except `session_id` are optional — only provided fields are updated.
+        `same` is a boolean flag indicating the patient is the same as a previous visit.
+      operationId: submitPatientInfo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatientInfoRequest'
+            example:
+              session_id: sess_abc123
+              name: "João da Silva"
+              age: 58
+              sex: M
+              patient_code: "PAC-2026-00842"
+              birth_date: "1968-04-12"
+              ticket_number: "T-001423"
+              insurance: "Unimed"
+              visit_id: "VIS-0099"
+              same: false
+      responses:
+        '200':
+          description: Patient info saved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                message: "Data saved successfully"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
   /session-summary:
     post:
+      tags: [Session]
       summary: Get session summary
-      description: Retrieves patient info, detected features, and feature logs for a session.
+      description: Returns patient demographics and all clinical features detected so far for the session.
+      operationId: getSessionSummary
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - session_id
-              properties:
-                session_id:
-                  type: string
+              $ref: '#/components/schemas/SessionIdRequest'
+            example:
+              session_id: sess_abc123
       responses:
         '200':
-          description: Session summary retrieved.
+          description: Session summary.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  name:
-                    type: string
-                  age:
-                    type: integer
-                  sex:
-                    type: string
-                  detected_features:
-                    type: array
-                    items:
-                      type: string
-                  features_log:
-                    type: array
-                    items:
-                      type: object
+                $ref: '#/components/schemas/SessionSummaryResponse'
+              example:
+                name: "João da Silva"
+                age: 58
+                sex: M
+                detected_features:
+                  - fc_taquicardia
+                  - referiu_dor_toracica
+                features_log:
+                  - id: fc_taquicardia
+                    category: vital_sign
+                    timestamp: "2026-03-23T14:02:11"
+                    description: "FC elevada (> 100 bpm)"
+                    source: sensor
+                  - id: referiu_dor_toracica
+                    category: relato_sintoma
+                    timestamp: "2026-03-23T14:00:55"
+                    description: "Paciente refere dor torácica"
+                    source: audio_transcription
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          description: Session not found.
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error.
-
-  /session-finish:
-    post:
-      summary: Finish session
-      description: Generates a JSON report of the session and saves it to S3.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - session_id
-              properties:
-                session_id:
-                  type: string
-      responses:
-        '200':
-          description: Session finished and report saved.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  s3_key:
-                    type: string
-        '404':
-          description: Session not found.
-        '500':
-          description: Internal server error.
+          $ref: '#/components/responses/InternalServerError'
 
   /session-features:
     post:
-      summary: Get session features
-      description: Retrieves all extracted features for a session, including sensor type and description.
+      tags: [Session]
+      summary: Get all session features
+      description: |
+        Returns the complete `features_log` for a session — the detailed list of all features
+        extracted from sensor data and transcriptions, including source information.
+
+        This endpoint does **not** require authentication.
+      security: []
+      operationId: getSessionFeatures
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - session_id
-              properties:
-                session_id:
-                  type: string
+              $ref: '#/components/schemas/SessionIdRequest'
+            example:
+              session_id: sess_abc123
       responses:
         '200':
-          description: List of features retrieved.
+          description: Full feature log for the session.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  features:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: string
-                        category:
-                          type: string
-                        timestamp:
-                          type: string
-                        description:
-                          type: string
+                $ref: '#/components/schemas/SessionFeaturesResponse'
+              example:
+                features:
+                  - id: fc_taquicardia
+                    category: vital_sign
+                    timestamp: "2026-03-23T14:02:11"
+                    description: "FC elevada (> 100 bpm)"
+                    source: sensor
+                  - id: referiu_dor_toracica
+                    category: relato_sintoma
+                    timestamp: "2026-03-23T14:00:55"
+                    description: "Paciente refere dor torácica"
+                    source: audio_transcription
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '404':
-          description: Session not found.
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error.
+          $ref: '#/components/responses/InternalServerError'
+
+  /session-finish:
+    post:
+      tags: [Session]
+      summary: Finalize session and save report
+      description: |
+        Serializes the full DynamoDB session item to JSON and uploads it to S3
+        under `sessions/{session_id}/report.json`. Returns the S3 key for the frontend
+        to reference.
+      operationId: finishSession
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionIdRequest'
+            example:
+              session_id: sess_abc123
+      responses:
+        '200':
+          description: Session finished and JSON report saved to S3.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionFinishResponse'
+              example:
+                message: "Session finished and report saved to S3"
+                s3_key: "sessions/sess_abc123/report.json"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  # ---------------------------------------------------------------------------
+  # History
+  # ---------------------------------------------------------------------------
 
   /history:
     get:
-      summary: Get triage history
-      description: Lists past triage sessions or retrieves a specific session details. Access is restricted by user role.
+      tags: [History]
+      summary: List triage history sessions
+      description: |
+        Returns a role-scoped list of past triage sessions from DynamoDB.
+
+        - **admin**: All sessions from the last two calendar months (GlobalTimelineIndex).
+        - **tenant_admin**: All sessions within the caller's tenant (TenantIndex).
+        - **user / nurse / medic / technician**: Only sessions owned by the caller (UserIndex).
+
+        The optional `key` query parameter redirects to detail lookup (same as
+        `GET /history/{session_id}`) using the S3 key basename as the session ID.
+
+        `triage_result.classification` is renamed to `discriminador` in all responses.
+      operationId: listHistory
       parameters:
         - in: query
           name: key
+          required: false
           schema:
             type: string
-          required: false
-          description: The specific S3 key of the session to retrieve. If omitted, lists available sessions.
+          description: |
+            S3 object key for a specific session. If provided, returns a single session
+            detail object instead of the sessions list.
+          example: "sessions/sess_abc123/report.json"
       responses:
         '200':
-          description: List of sessions or session details.
+          description: List of sessions or single session detail.
           content:
             application/json:
               schema:
-                oneOf:
-                  - type: object
-                    properties:
-                      sessions:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            key:
-                              type: string
-                            lastModified:
-                              type: string
-                            size:
-                              type: integer
-                  - type: object
-                    description: The content of the session file (if key is provided).
+                $ref: '#/components/schemas/HistoryListResponse'
+              example:
+                sessions:
+                  - session_id: sess_abc123
+                    created_at: "2026-03-23T14:00:00"
+                    tenant_id: hospital_norte
+                    user_id: usr_456
+                    patient_info:
+                      name: "João da Silva"
+                      age: 58
+                      sex: M
+                    triage_result:
+                      fluxograma_sintoma: dor_toracica
+                      prioridade: "LARANJA - MUITO URGENTE"
+                      cor: ORANGE
+                      discriminador: "Dor torácica com instabilidade hemodinâmica"
+                    reasoning: "FC elevada e hipotensão confirmam critério laranja."
+                    stats:
+                      start_time: "2026-03-23T14:00:00"
+                      end_time: "2026-03-23T14:08:32"
+                      duration_seconds: 512
+                    vital_signs:
+                      heart_rate: 110
+                      blood_pressure: "90/60"
+                      spo2: 94
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '403':
-          description: Access denied. User does not have permission to view this resource.
+          $ref: '#/components/responses/Forbidden'
         '404':
-          description: Session not found.
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error.
+          $ref: '#/components/responses/InternalServerError'
 
-  /users:
+  /history/{session_id}:
     get:
-      summary: List all users
-      description: Returns a list of all users with their tenant IDs and roles. Restricted to admins.
+      tags: [History]
+      summary: Get a single triage session detail
+      description: |
+        Returns the full session record from DynamoDB. Access is enforced:
+        - **admin**: any session.
+        - **tenant_admin**: sessions belonging to the same tenant.
+        - **others**: only their own sessions.
+      operationId: getHistoryDetail
+      parameters:
+        - in: path
+          name: session_id
+          required: true
+          schema:
+            type: string
+          description: Session identifier.
+          example: sess_abc123
       responses:
         '200':
-          description: List of users.
+          description: Session detail object.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  users:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        username:
-                          type: string
-                        email:
-                          type: string
-                        tenant_id:
-                          type: string
-                        roles:
-                          type: array
-                          items:
-                            type: string
-                        status:
-                          type: string
-                        enabled:
-                          type: boolean
-                        created_at:
-                          type: string
+                $ref: '#/components/schemas/HistorySession'
+              example:
+                session_id: sess_abc123
+                created_at: "2026-03-23T14:00:00"
+                tenant_id: hospital_norte
+                user_id: usr_456
+                patient_info:
+                  name: "João da Silva"
+                  age: 58
+                  sex: M
+                triage_result:
+                  fluxograma_sintoma: dor_toracica
+                  prioridade: "LARANJA - MUITO URGENTE"
+                  cor: ORANGE
+                  discriminador: "Dor torácica com instabilidade hemodinâmica"
+                reasoning: "FC elevada e hipotensão confirmam critério laranja."
+                stats:
+                  start_time: "2026-03-23T14:00:00"
+                  end_time: "2026-03-23T14:08:32"
+                  duration_seconds: 512
+                vital_signs:
+                  heart_rate: 110
+                  blood_pressure: "90/60"
+                  spo2: 94
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '403':
-          description: Access denied. Admins only.
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
         '500':
-          description: Internal server error.
+          $ref: '#/components/responses/InternalServerError'
+
+  /history/{session_id}/pdf:
+    get:
+      tags: [History]
+      summary: Download session report as PDF
+      description: |
+        Generates a PDF report for the session using fpdf2 and returns it as a
+        base64-encoded body (API Gateway `isBase64Encoded: true`).
+
+        **Content-Disposition header:** `attachment; filename=triage_{session_id}.pdf`
+      operationId: getSessionPdf
+      parameters:
+        - in: path
+          name: session_id
+          required: true
+          schema:
+            type: string
+          description: Session identifier.
+          example: sess_abc123
+      responses:
+        '200':
+          description: Binary PDF file.
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  # ---------------------------------------------------------------------------
+  # User management
+  # ---------------------------------------------------------------------------
 
   /me:
     get:
-      summary: Get current profile
-      description: Returns the profile of the currently authenticated user, including ID, tenant, and roles.
+      tags: [User]
+      summary: Get current user profile
+      description: |
+        Returns the authenticated user's profile extracted from the Cognito JWT claims.
+        No Cognito API calls are made — data comes entirely from the token.
+
+        **Effective role resolution** (priority order):
+        `admin` > `tenant_admin` > `medic` > `nurse` > `technician` > `user`
+      operationId: getCurrentUser
       responses:
         '200':
-          description: User profile.
+          description: Authenticated user profile.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                  username:
-                    type: string
-                  email:
-                    type: string
-                  tenant_id:
-                    type: string
-                  roles:
-                    type: array
-                    items:
-                      type: string
-                  effective_role:
-                    type: string
+                $ref: '#/components/schemas/CurrentUserResponse'
+              example:
+                id: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                email: "enfermeira.joana@hospitalnorte.com.br"
+                username: "joana.silva"
+                tenant_id: hospital_norte
+                roles:
+                  - tenant_user_nurse
+                primary_role: null
+                effective_role: nurse
         '401':
-          description: Unauthorized.
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          description: Internal server error.
+          $ref: '#/components/responses/InternalServerError'
+
+  /users:
+    get:
+      tags: [User]
+      summary: List all users (admin only)
+      description: |
+        Lists all users in the Cognito User Pool with their tenant, roles, and status.
+        Restricted to users with the `admin` role (via `custom:role` claim or `admin` group).
+
+        Each user's Cognito groups are fetched individually (N+1 Cognito API calls) and
+        mapped to the `roles` field.
+      operationId: listUsers
+      responses:
+        '200':
+          description: List of all users.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsersListResponse'
+              example:
+                users:
+                  - username: joana.silva
+                    email: "enfermeira.joana@hospitalnorte.com.br"
+                    tenant_id: hospital_norte
+                    roles:
+                      - tenant_user_nurse
+                    status: CONFIRMED
+                    enabled: true
+                    created_at: "2026-01-10 09:00:00+00:00"
+                    last_modified: "2026-03-01 12:00:00+00:00"
+                  - username: dr.carlos
+                    email: "carlos.medeiros@hospitalcentral.com.br"
+                    tenant_id: hospital_central
+                    roles:
+                      - tenant_user_medic
+                      - tenant_admin
+                    status: CONFIRMED
+                    enabled: true
+                    created_at: "2025-12-01 08:00:00+00:00"
+                    last_modified: "2026-02-15 10:30:00+00:00"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+# =============================================================================
+# Components
+# =============================================================================
+
+components:
+
+  securitySchemes:
+    CognitoJWT:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        Cognito User Pool JWT. Obtain via Cognito hosted UI or SDK sign-in.
+        Pass in `Authorization: Bearer <token>` header.
+        Claims used by the API: `sub`, `email`, `custom:tenant_id`, `custom:role`, `cognito:groups`.
+
+  # ---------------------------------------------------------------------------
+  # Reusable Schemas
+  # ---------------------------------------------------------------------------
+
+  schemas:
+
+    # --- Requests ---
+
+    SessionIdRequest:
+      type: object
+      required: [session_id]
+      properties:
+        session_id:
+          $ref: '#/components/schemas/SessionId'
+
+    PatientInfoRequest:
+      type: object
+      required: [session_id]
+      properties:
+        session_id:
+          $ref: '#/components/schemas/SessionId'
+        name:
+          type: string
+          description: Patient full name.
+          example: "João da Silva"
+        age:
+          type: integer
+          minimum: 0
+          maximum: 150
+          description: Patient age in years.
+          example: 58
+        sex:
+          type: string
+          enum: [M, F, Other]
+          description: Biological sex.
+          example: M
+        patient_code:
+          type: string
+          description: Internal patient registration code.
+          example: "PAC-2026-00842"
+        birth_date:
+          type: string
+          format: date
+          description: Date of birth (ISO 8601).
+          example: "1968-04-12"
+        ticket_number:
+          type: string
+          description: Triage ticket / queue number.
+          example: "T-001423"
+        insurance:
+          type: string
+          description: Health insurance / plan name.
+          example: "Unimed"
+        visit_id:
+          type: string
+          description: Encounter / visit identifier in hospital HIS.
+          example: "VIS-0099"
+        same:
+          type: boolean
+          description: True if this is a follow-up on the same complaint as a prior visit.
+          example: false
+
+    SensorDataRequest:
+      type: object
+      required: [session_id]
+      properties:
+        session_id:
+          $ref: '#/components/schemas/SessionId'
+        blood_glucose:
+          type: number
+          description: Blood glucose in mg/dL.
+          example: 142.0
+        blood_pressure:
+          type: string
+          description: Blood pressure as "systolic/diastolic" string.
+          example: "150/95"
+        gcs:
+          type: integer
+          minimum: 3
+          maximum: 15
+          description: Glasgow Coma Scale total score.
+          example: 15
+        heart_rate:
+          type: integer
+          description: Heart rate in bpm.
+          example: 110
+        oxygen_saturation:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: Peripheral oxygen saturation (SpO2) in percent.
+          example: 96
+        pain_scale:
+          type: integer
+          minimum: 0
+          maximum: 10
+          description: Numeric pain scale (0 = no pain, 10 = worst).
+          example: 7
+        respiratory_rate:
+          type: integer
+          description: Respiratory rate in breaths per minute.
+          example: 20
+        temperature:
+          type: number
+          description: Body temperature in degrees Celsius.
+          example: 37.2
+
+    TranscriptionRequest:
+      type: object
+      required: [session_id, transcription]
+      properties:
+        session_id:
+          $ref: '#/components/schemas/SessionId'
+        transcription:
+          type: string
+          description: Free-text transcription of the clinician–patient interaction.
+          example: "Paciente refere dor de cabeça intensa há duas horas, com náusea e sensibilidade à luz."
+
+    ProtocolSuggestRequest:
+      type: object
+      required: [prompt]
+      description: At least one of `prompt` or `session_id` must be non-empty.
+      properties:
+        prompt:
+          type: string
+          description: Free-text description of the patient's chief complaint.
+          example: "Paciente masculino, 58 anos, com dor intensa no peito e irradiação para o braço esquerdo."
+        node_id:
+          type: string
+          description: |
+            Decision tree node ID to start from. Omit or pass `"root"` for the first call.
+            On follow-up calls after a `type: "question"` response, pass the `node_id`
+            returned in that response.
+          default: root
+          example: root
+        session_id:
+          type: string
+          description: |
+            If provided, the handler fetches the session's transcription history from DynamoDB
+            and uses it as context instead of the `prompt` field.
+          example: sess_abc123
+
+    ProtocolTraverseRequest:
+      type: object
+      required: [decision_tree_protocol]
+      properties:
+        decision_tree_protocol:
+          type: string
+          description: Protocol identifier matching the decision tree YAML file name (without extension).
+          example: dor_toracica
+        node_id:
+          type: string
+          description: |
+            Current level index as a string. Start with `"0"` (or omit for root).
+            Pass the `next_node_id` from the previous response on subsequent calls.
+          default: "0"
+          example: "0"
+        session_id:
+          type: string
+          description: Session ID. Used to load stored transcription and sensor history from DynamoDB.
+          example: sess_abc123
+        user_input:
+          type: string
+          description: Free-text answer from the clinician (for `ask_user` follow-ups).
+          example: "Sim, o paciente refere dor em aperto com irradiação."
+        blood_pressure:
+          type: string
+          description: Blood pressure as "systolic/diastolic" string.
+          example: "90/60"
+        heart_rate:
+          type: integer
+          description: Heart rate in bpm.
+          example: 110
+        respiratory_rate:
+          type: integer
+          description: Respiratory rate in breaths per minute.
+          example: 22
+        gsc:
+          type: integer
+          minimum: 3
+          maximum: 15
+          description: Glasgow Coma Scale (alias for `gcs` — both are accepted).
+          example: 14
+        gcs:
+          type: integer
+          minimum: 3
+          maximum: 15
+          description: Glasgow Coma Scale total score.
+          example: 14
+        oxigen_sat:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: SpO2 in percent (alias for `oxygen_saturation` — both are accepted).
+          example: 94
+        oxygen_saturation:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: Peripheral oxygen saturation (SpO2) in percent.
+          example: 94
+        pain_scale:
+          type: integer
+          minimum: 0
+          maximum: 10
+          description: Numeric pain scale (0–10).
+          example: 8
+        temperature:
+          type: number
+          description: Body temperature in degrees Celsius.
+          example: 36.8
+        blood_glucose:
+          type: number
+          description: Blood glucose in mg/dL.
+          example: 110.0
+
+    # --- Responses ---
+
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Data saved successfully"
+
+    TranscriptionResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Transcription processed successfully"
+        detected_cues:
+          type: array
+          items:
+            type: string
+          description: IDs of audio cues detected by the LLM (may be empty).
+          example: [referiu_cefaleia, referiu_nausea]
+
+    SensorDataResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Sensor data and features saved successfully"
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/Feature'
+
+    SessionSummaryResponse:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+          example: "João da Silva"
+        age:
+          type: integer
+          nullable: true
+          example: 58
+        sex:
+          type: string
+          nullable: true
+          example: M
+        detected_features:
+          type: array
+          items:
+            type: string
+          description: Set of feature IDs detected across all sensor and transcription events.
+          example: [fc_taquicardia, referiu_dor_toracica]
+        features_log:
+          type: array
+          items:
+            $ref: '#/components/schemas/Feature'
+
+    SessionFeaturesResponse:
+      type: object
+      properties:
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/Feature'
+
+    SessionFinishResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Session finished and report saved to S3"
+        s3_key:
+          type: string
+          description: S3 object key where the JSON report was stored.
+          example: "sessions/sess_abc123/report.json"
+
+    ProtocolSuggestResponse:
+      type: object
+      properties:
+        reply:
+          oneOf:
+            - $ref: '#/components/schemas/SuggestReplyProtocol'
+            - $ref: '#/components/schemas/SuggestReplyQuestion'
+          discriminator:
+            propertyName: type
+
+    SuggestReplyProtocol:
+      type: object
+      description: Returned when the LLM reaches a protocol leaf node.
+      properties:
+        type:
+          type: string
+          enum: [protocol]
+        protocol:
+          $ref: '#/components/schemas/ProtocolDetail'
+        node_id:
+          type: string
+          example: dor_toracica
+        reasoning:
+          type: string
+          example: "Dor torácica com irradiação — protocolo dor_toracica selecionado."
+        path_taken:
+          type: array
+          items:
+            type: string
+          example: [root, dor_toracica]
+        decision_steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/DecisionStep'
+
+    SuggestReplyQuestion:
+      type: object
+      description: Returned when the LLM cannot auto-answer a question node.
+      properties:
+        type:
+          type: string
+          enum: [question]
+        text:
+          type: string
+          description: The question to display to the clinician.
+          example: "O paciente apresenta febre ou sinais de infecção?"
+        node_id:
+          type: string
+          description: Node ID to pass back in the next request.
+          example: febre_infeccao
+        reasoning:
+          type: string
+          example: "Informação insuficiente sobre febre."
+        path_taken:
+          type: array
+          items:
+            type: string
+          example: [root, febre_infeccao]
+
+    ProtocolTraverseResponse:
+      oneOf:
+        - $ref: '#/components/schemas/TraverseComplete'
+        - $ref: '#/components/schemas/TraverseNextNode'
+        - $ref: '#/components/schemas/TraverseAskUser'
+        - $ref: '#/components/schemas/TraverseMissingSensors'
+      discriminator:
+        propertyName: status
+
+    TraverseComplete:
+      type: object
+      description: Triage complete — a priority level was assigned.
+      required: [status, result, report]
+      properties:
+        status:
+          type: string
+          enum: [complete]
+        result:
+          $ref: '#/components/schemas/AssignmentNode'
+        report:
+          $ref: '#/components/schemas/TriageReport'
+        sensor_data:
+          type: object
+          additionalProperties: true
+          description: Normalized sensor values used for the decision (keys are internal normalized names).
+        reasoning:
+          type: string
+          description: LLM reasoning summary for this level decision.
+
+    TraverseNextNode:
+      type: object
+      description: Current priority level not matched — caller should advance to `next_node_id`.
+      required: [status, current_node_id, next_node_id]
+      properties:
+        status:
+          type: string
+          enum: [next_node]
+        current_node_id:
+          type: string
+          description: Level index just evaluated (as string).
+          example: "0"
+        next_node_id:
+          type: string
+          description: Level index to pass in the next request.
+          example: "1"
+        decision:
+          type: object
+          description: Raw LLM decision object.
+          properties:
+            criteria_met:
+              type: boolean
+            reasoning:
+              type: string
+        reasoning:
+          type: string
+        sensor_data:
+          type: object
+          additionalProperties: true
+
+    TraverseAskUser:
+      type: object
+      description: LLM cannot decide without clinician input — a question must be shown.
+      required: [status, question, current_level, current_node_id]
+      properties:
+        status:
+          type: string
+          enum: [ask_user]
+        pending_criteria_id:
+          type: string
+          description: ID of the criteria node requiring clarification.
+          example: criterio_dor_precordial
+        question:
+          type: string
+          description: Question text to display to the clinician.
+          example: "O paciente refere dor precordial em aperto com irradiação?"
+        current_level:
+          type: string
+          description: Priority color being evaluated.
+          example: orange
+        current_node_id:
+          type: string
+          description: Level index (string) — pass back unchanged after collecting user answer.
+          example: "1"
+        reasoning:
+          type: string
+          description: LLM explanation for why the question is needed.
+        sensor_data:
+          type: object
+          additionalProperties: true
+
+    TraverseMissingSensors:
+      type: object
+      description: Required sensor readings are absent — the caller must collect and resubmit them.
+      required: [status, current_level, current_node_id, missing_sensors]
+      properties:
+        status:
+          type: string
+          enum: [missing_sensors]
+        current_level:
+          type: string
+          description: Priority color being evaluated.
+          example: red
+        current_node_id:
+          type: string
+          description: Level index — pass back unchanged after supplying sensors.
+          example: "0"
+        missing_sensors:
+          type: array
+          items:
+            type: string
+          description: |
+            Normalized sensor key names that must be supplied. Map to request fields:
+            `gcs_scale` → `gcs` or `gsc`, `spo2` → `oxygen_saturation` or `oxigen_sat`.
+          example: [gcs_scale, heart_rate]
+        sensor_data:
+          type: object
+          additionalProperties: true
+          description: Any sensor data already available for this request.
+
+    HistoryListResponse:
+      type: object
+      properties:
+        sessions:
+          type: array
+          items:
+            $ref: '#/components/schemas/HistorySession'
+
+    HistorySession:
+      type: object
+      description: Summary or full record of a completed or in-progress triage session.
+      properties:
+        session_id:
+          $ref: '#/components/schemas/SessionId'
+        created_at:
+          type: string
+          format: date-time
+          nullable: true
+          example: "2026-03-23T14:00:00"
+        tenant_id:
+          type: string
+          nullable: true
+          example: hospital_norte
+        user_id:
+          type: string
+          nullable: true
+          example: usr_456
+        patient_info:
+          $ref: '#/components/schemas/PatientInfo'
+        triage_result:
+          $ref: '#/components/schemas/TriageResult'
+        reasoning:
+          type: string
+          nullable: true
+          description: Narrative reasoning generated by the LLM at session completion.
+        stats:
+          $ref: '#/components/schemas/SessionStats'
+        vital_signs:
+          type: object
+          additionalProperties: true
+          nullable: true
+          description: Normalized vital sign snapshot stored at report generation.
+          example:
+            heart_rate: 110
+            blood_pressure: "90/60"
+            spo2: 94
+
+    CurrentUserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Cognito user sub (UUID).
+          example: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+        email:
+          type: string
+          format: email
+          nullable: true
+          example: "enfermeira.joana@hospitalnorte.com.br"
+        username:
+          type: string
+          description: Cognito username (falls back to `sub` if not in claims).
+          example: "joana.silva"
+        tenant_id:
+          type: string
+          nullable: true
+          description: Value of `custom:tenant_id` Cognito attribute.
+          example: hospital_norte
+        roles:
+          type: array
+          items:
+            type: string
+          description: |
+            Cognito groups the user belongs to.
+            Known values: `admin`, `tenant_admin`, `tenant_user_medic`,
+            `tenant_user_nurse`, `tenant_user_technician`.
+          example: [tenant_user_nurse]
+        primary_role:
+          type: string
+          nullable: true
+          description: Value of the `custom:role` Cognito attribute (may be null).
+          example: null
+        effective_role:
+          type: string
+          description: |
+            Computed role for UI logic (priority: admin > tenant_admin > medic > nurse > technician > user).
+          enum: [admin, tenant_admin, medic, nurse, technician, user]
+          example: nurse
+
+    UsersListResponse:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserRecord'
+
+    # --- Shared primitives / sub-types ---
+
+    SessionId:
+      type: string
+      description: Client-generated session identifier.
+      example: sess_abc123
+
+    Feature:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Feature identifier as defined in the feature YAML files.
+          example: fc_taquicardia
+        category:
+          type: string
+          description: Feature category (e.g. `vital_sign`, `relato_sintoma`).
+          example: vital_sign
+        timestamp:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the feature was detected.
+          example: "2026-03-23T14:02:11"
+        description:
+          type: string
+          description: Human-readable description of the feature.
+          example: "FC elevada (> 100 bpm)"
+        source:
+          type: string
+          description: Origin of the feature (`sensor` or `audio_transcription`).
+          enum: [sensor, audio_transcription]
+          example: sensor
+
+    PatientInfo:
+      type: object
+      nullable: true
+      properties:
+        name:
+          type: string
+          nullable: true
+          example: "João da Silva"
+        age:
+          type: integer
+          nullable: true
+          example: 58
+        sex:
+          type: string
+          nullable: true
+          example: M
+        patient_code:
+          type: string
+          nullable: true
+          example: "PAC-2026-00842"
+        birth_date:
+          type: string
+          nullable: true
+          example: "1968-04-12"
+        ticket_number:
+          type: string
+          nullable: true
+          example: "T-001423"
+        insurance:
+          type: string
+          nullable: true
+          example: "Unimed"
+        visit_id:
+          type: string
+          nullable: true
+          example: "VIS-0099"
+        same:
+          type: boolean
+          nullable: true
+          example: false
+
+    TriageResult:
+      type: object
+      nullable: true
+      description: |
+        Triage outcome. Note: the internal DynamoDB field `classification` is renamed to
+        `discriminador` in all API responses.
+      properties:
+        fluxograma_sintoma:
+          type: string
+          description: Protocol (flowchart) identifier.
+          example: dor_toracica
+        prioridade:
+          type: string
+          description: Priority label in Portuguese (e.g. "LARANJA - MUITO URGENTE").
+          example: "LARANJA - MUITO URGENTE"
+        cor:
+          type: string
+          description: Priority color in uppercase English.
+          enum: [RED, ORANGE, YELLOW, GREEN, BLUE, AZUL]
+          example: ORANGE
+        discriminador:
+          type: string
+          description: Discriminator criterion text that triggered the priority assignment.
+          example: "Dor torácica com instabilidade hemodinâmica"
+        status:
+          type: string
+          description: Present only for in-progress sessions reconstructed from step history.
+          enum: [in_progress]
+
+    AssignmentNode:
+      type: object
+      description: The priority-assignment result node returned on triage completion.
+      properties:
+        type:
+          type: string
+          enum: [assignment]
+        priority:
+          type: string
+          description: Priority color (English lowercase).
+          enum: [red, orange, yellow, green, blue, azul]
+          example: orange
+        text:
+          type: string
+          description: Discriminator text.
+          example: "Dor torácica com instabilidade hemodinâmica"
+        explanation:
+          type: string
+          description: Brief clinical explanation for the priority assignment.
+          example: "FC > 100 bpm e PA sistólica < 100 mmHg"
+
+    TriageReport:
+      type: object
+      description: Full structured report generated at the end of a triage session.
+      properties:
+        session_id:
+          $ref: '#/components/schemas/SessionId'
+        tenant_id:
+          type: string
+          example: hospital_norte
+        user_id:
+          type: string
+          example: usr_456
+        patient_info:
+          $ref: '#/components/schemas/PatientInfo'
+        triage_result:
+          $ref: '#/components/schemas/TriageResult'
+        clinical_data:
+          type: object
+          properties:
+            queixa_principal:
+              type: string
+              description: Chief complaint summarized by the LLM.
+              example: "Dor no peito com irradiação para o braço esquerdo"
+            medicamentos:
+              type: string
+              description: Current medications (LLM-extracted or "Nega").
+              example: "AAS 100mg"
+            alergias:
+              type: string
+              description: Known allergies (LLM-extracted or "Nega").
+              example: "Nega"
+            especialidade:
+              type: string
+              description: Suggested medical specialty.
+              example: "Cardiologia"
+            vital_signs:
+              type: object
+              additionalProperties: true
+              description: Normalized vital sign snapshot (internal key names).
+        decision_steps:
+          type: object
+          properties:
+            protocol_selection:
+              type: array
+              items:
+                $ref: '#/components/schemas/DecisionStep'
+            priority_evaluation:
+              type: array
+              items:
+                type: object
+        discriminator_details:
+          type: object
+          properties:
+            id:
+              type: string
+            priority:
+              type: string
+            text:
+              type: string
+            explanation:
+              type: string
+        reasoning:
+          type: string
+          description: Narrative reasoning generated by the LLM.
+        stats:
+          $ref: '#/components/schemas/SessionStats'
+
+    SessionStats:
+      type: object
+      nullable: true
+      properties:
+        start_time:
+          type: string
+          format: date-time
+          nullable: true
+          description: ISO 8601 timestamp of the first transcription entry.
+          example: "2026-03-23T14:00:00"
+        end_time:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the report was generated.
+          example: "2026-03-23T14:08:32"
+        duration_seconds:
+          type: integer
+          description: Duration from first transcription to report generation in seconds.
+          example: 512
+
+    DecisionStep:
+      type: object
+      description: A single step recorded during protocol-suggestion traversal.
+      properties:
+        step:
+          type: integer
+          example: 1
+        node_id:
+          type: string
+          example: root
+        type:
+          type: string
+          example: question
+        text:
+          type: string
+          example: "Qual é a queixa principal do paciente?"
+        response:
+          type: string
+          nullable: true
+          description: LLM reasoning for this step.
+          example: "Dor torácica com irradiação"
+        next_node_id:
+          type: string
+          nullable: true
+          example: dor_toracica
+
+    ProtocolDetail:
+      type: object
+      description: A clinical protocol definition object as stored in S3 / decision tree YAML.
+      properties:
+        id:
+          type: string
+          example: dor_toracica
+        name:
+          type: string
+          example: "Dor Torácica"
+        description:
+          type: string
+          example: "Protocolo para queixa principal de dor torácica"
+      additionalProperties: true
+
+    UserRecord:
+      type: object
+      properties:
+        username:
+          type: string
+          example: joana.silva
+        email:
+          type: string
+          format: email
+          nullable: true
+          example: "enfermeira.joana@hospitalnorte.com.br"
+        tenant_id:
+          type: string
+          nullable: true
+          example: hospital_norte
+        roles:
+          type: array
+          items:
+            type: string
+          description: Cognito groups the user belongs to.
+          example: [tenant_user_nurse]
+        status:
+          type: string
+          description: Cognito UserStatus value (e.g. CONFIRMED, FORCE_CHANGE_PASSWORD).
+          example: CONFIRMED
+        enabled:
+          type: boolean
+          description: Whether the Cognito user account is enabled.
+          example: true
+        created_at:
+          type: string
+          description: String representation of the Cognito UserCreateDate.
+          example: "2026-01-10 09:00:00+00:00"
+        last_modified:
+          type: string
+          description: String representation of the Cognito UserLastModifiedDate.
+          example: "2026-03-01 12:00:00+00:00"
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Human-readable error message.
+          example: "session_id is required"
+        details:
+          type: string
+          description: Additional detail (present on 500 errors).
+          example: "Decision tree not found for protocol: unknown_protocol"
+
+  # ---------------------------------------------------------------------------
+  # Reusable Responses
+  # ---------------------------------------------------------------------------
+
+  responses:
+    BadRequest:
+      description: Invalid request — missing required fields or malformed body.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error: "session_id is required"
+
+    Unauthorized:
+      description: Missing or invalid JWT token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error: "Unauthorized"
+
+    Forbidden:
+      description: Authenticated but insufficient permissions.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error: "Access denied: Admins only."
+
+    NotFound:
+      description: Requested resource does not exist.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error: "Session not found"
+
+    InternalServerError:
+      description: Unexpected server-side error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error: "Internal Server Error"
+            details: "Failed to evaluate request from LLM"
