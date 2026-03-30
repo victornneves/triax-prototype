@@ -13,7 +13,7 @@ The frontend is drifting from the backend API contract (openapi.yaml v1.1.0) and
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [ ] **Phase 1: API Alignment** - Align all frontend API calls with openapi.yaml v1.1.0 endpoint paths and schemas
-- [ ] **Phase 2: Auth & Security** - Harden authentication headers, config sourcing, and admin route protection
+- [x] **Phase 2: Auth & Security** - Harden authentication headers, config sourcing, and admin route protection (completed 2026-03-30)
 - [ ] **Phase 3: Tech Debt** - Extract shared auth utility, remove demo data, and prune unused dependencies
 - [ ] **Phase 4: Fragility** - Replace brittle patterns: missing ok-checks, fragile date parsing, deprecated APIs, memory leak
 
@@ -43,10 +43,10 @@ Plans:
   1. `src/aws-config.js` contains no hardcoded Cognito IDs — all values read from `VITE_*` environment variables
   2. When `fetchAuthSession()` fails or returns no token, the app surfaces an explicit auth error instead of proceeding without an Authorization header
   3. Navigating directly to `/admin/users` as a non-admin user is blocked at the route level — the component never renders
-**Plans:** 2 plans
+**Plans:** 2/2 plans complete
 Plans:
-- [ ] 02-001-env-config-PLAN.md — Move hardcoded AWS resource IDs to VITE_* env vars
-- [ ] 02-002-auth-error-admin-guard-PLAN.md — Auth failure error screen and RequireAdmin route guard
+- [x] 02-001-env-config-PLAN.md — Move hardcoded AWS resource IDs to VITE_* env vars
+- [x] 02-002-auth-error-admin-guard-PLAN.md — Auth failure error screen and RequireAdmin route guard
 
 ### Phase 3: Tech Debt
 **Goal**: Duplicated auth code is centralized, demo data is gone from production builds, and dead dependencies no longer bloat the bundle
@@ -77,6 +77,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. API Alignment | 2/3 | In Progress|  |
-| 2. Auth & Security | 0/2 | Not started | - |
+| 2. Auth & Security | 2/2 | Complete   | 2026-03-30 |
 | 3. Tech Debt | 0/TBD | Not started | - |
 | 4. Fragility | 0/TBD | Not started | - |

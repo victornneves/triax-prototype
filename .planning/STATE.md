@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 01-004-PLAN.md
-last_updated: "2026-03-23T21:11:32.053Z"
+stopped_at: Completed 02-001-env-config-PLAN.md
+last_updated: "2026-03-30T18:35:31.544Z"
 progress:
   total_phases: 4
-  completed_phases: 1
-  total_plans: 4
-  completed_plans: 4
+  completed_phases: 2
+  total_plans: 6
+  completed_plans: 6
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-23)
 
 **Core value:** Clinicians reach a triage priority decision faster and more consistently because the AI traverses the protocol decision tree for them.
-**Current focus:** Phase 01 — api-alignment
+**Current focus:** Phase 02 — auth-security
 
 ## Current Position
 
-Phase: 01 (api-alignment) — EXECUTING
-Plan: 2 of 4
+Phase: 02 (auth-security) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -48,6 +48,7 @@ Plan: 2 of 4
 *Updated after each plan completion*
 | Phase 01 P003 | 5 | 2 tasks | 2 files |
 | Phase 01 P004 | 2 | 2 tasks | 2 files |
+| Phase 02 P001 | 1 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -61,6 +62,7 @@ Recent decisions affecting current work:
 - [Phase 01]: discriminador is the sole source field in history views; no fallback to old classification or details.discriminator
 - [Phase 01]: response.ok guards scoped to /protocol-suggest and /patient-info only; remaining fetch calls deferred to Phase 4 FRAG-01
 - [Phase 01]: handlePatientSubmit throws on non-2xx to prevent setIsPatientInfoSubmitted(true) advancing session into inconsistent state — patient safety concern
+- [Phase 02]: Non-secret config (region, loginWith, passwordFormat, allowGuestAccess) stays hardcoded; only resource IDs moved to env vars
 
 ### Pending Todos
 
@@ -72,6 +74,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-23T21:11:32.050Z
-Stopped at: Completed 01-004-PLAN.md
+Last session: 2026-03-30T18:35:12.838Z
+Stopped at: Completed 02-001-env-config-PLAN.md
 Resume file: None
