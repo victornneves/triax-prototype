@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 1: API Alignment** - Align all frontend API calls with openapi.yaml v1.1.0 endpoint paths and schemas
 - [x] **Phase 2: Auth & Security** - Harden authentication headers, config sourcing, and admin route protection (completed 2026-03-30)
 - [x] **Phase 3: Tech Debt** - Extract shared auth utility, remove demo data, and prune unused dependencies (completed 2026-04-07)
-- [ ] **Phase 4: Fragility** - Replace brittle patterns: missing ok-checks, fragile date parsing, deprecated APIs, memory leak
+- [x] **Phase 4: Fragility** - Replace brittle patterns: missing ok-checks, fragile date parsing, deprecated APIs, memory leak (completed 2026-04-07)
 
 ## Phase Details
 
@@ -70,10 +70,10 @@ Plans:
   2. Session date display in `Profile.jsx` reads from a stable API field (`created_at` or equivalent), not from splitting S3 key filenames
   3. `useTranscribe.js` uses `TextDecoder` (or equivalent supported API) for character encoding — no call to `escape()`
   4. After a PDF download in `HistoryPage.jsx`, the blob URL is revoked via `URL.revokeObjectURL` — no blob URLs accumulate in memory
-**Plans:** 2 plans
+**Plans:** 2/2 plans complete
 Plans:
-- [ ] 04-01-PLAN.md — Add response.ok guards to unguarded fetch calls + blob URL revocation for PDF downloads
-- [ ] 04-02-PLAN.md — Remove dead formatDateFromKey code and deprecated escape() workaround
+- [x] 04-01-PLAN.md — Add response.ok guards to unguarded fetch calls + blob URL revocation for PDF downloads
+- [x] 04-02-PLAN.md — Remove dead formatDateFromKey code and deprecated escape() workaround
 
 ## Progress
 
@@ -85,4 +85,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. API Alignment | 2/3 | In Progress|  |
 | 2. Auth & Security | 2/2 | Complete   | 2026-03-30 |
 | 3. Tech Debt | 2/2 | Complete   | 2026-04-07 |
-| 4. Fragility | 0/2 | Not started | - |
+| 4. Fragility | 2/2 | Complete   | 2026-04-07 |

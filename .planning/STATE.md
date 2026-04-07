@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 03-001-auth-utility-demo-data-PLAN.md
-last_updated: "2026-04-07T13:30:50.205Z"
+stopped_at: Completed 04-02-PLAN.md
+last_updated: "2026-04-07T13:50:39.639Z"
 progress:
   total_phases: 4
-  completed_phases: 3
-  total_plans: 8
-  completed_plans: 8
+  completed_phases: 4
+  total_plans: 10
+  completed_plans: 10
 ---
 
 # Project State
@@ -23,8 +23,8 @@ See: .planning/PROJECT.md (updated 2026-04-07)
 
 ## Current Position
 
-Phase: 4
-Plan: Not started
+Phase: 04 (fragility) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -51,6 +51,7 @@ Plan: Not started
 | Phase 02 P001 | 1 | 2 tasks | 2 files |
 | Phase 02 P002 | 2m | 2 tasks | 3 files |
 | Phase 03-tech-debt P001 | 2 | 2 tasks | 7 files |
+| Phase 04-fragility P02 | 5 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -70,6 +71,8 @@ Recent decisions affecting current work:
 - [Phase 03-tech-debt]: getAuthHeaders throws on null token — callers have try/catch, errors propagate correctly instead of silent 401s
 - [Phase 03-tech-debt]: useCallback removed from getAuthHeaders — pure async function needs no memoization
 - [Phase 03-tech-debt]: UserContext.jsx left unchanged — uses fetchAuthSession for auth error detection, not header building (D-03)
+- [Phase 04-fragility]: Delete formatDateFromKey entirely — JSX already uses item.created_at which is the correct API field; no need for S3 key filename parsing
+- [Phase 04-fragility]: Delete the escape() try/catch entirely — AWS SDK returns native JS strings; no re-encoding needed or useful
 
 ### Pending Todos
 
@@ -81,6 +84,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-07
-Stopped at: Phase 03 complete, ready to plan Phase 04
+Last session: 2026-04-07T13:50:31.381Z
+Stopped at: Completed 04-02-PLAN.md
 Resume file: None
