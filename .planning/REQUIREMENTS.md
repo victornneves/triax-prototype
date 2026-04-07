@@ -10,7 +10,7 @@ Requirements for UI/UX Overhaul. Each maps to roadmap phases.
 ### Design System
 
 - [x] **DSGN-01**: App uses CSS custom property design tokens with immutable `--mts-*` clinical color namespace
-- [ ] **DSGN-02**: Non-clinical UI uses soft color palette (muted greens/blues) replacing Bootstrap hex values
+- [x] **DSGN-02**: Non-clinical UI uses soft color palette (muted greens/blues) replacing Bootstrap hex values
 - [ ] **DSGN-03**: User can toggle between light and dark mode with preference persisted in localStorage
 - [ ] **DSGN-04**: All buttons use unified variant system (primary, secondary, danger) from shared component
 
@@ -73,7 +73,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | DSGN-01 | Phase 5 | Complete |
-| DSGN-02 | Phase 5 | Pending |
+| DSGN-02 | Phase 5 | Complete |
 | DSGN-03 | Phase 8 | Pending |
 | DSGN-04 | Phase 6 | Pending |
 | LAYT-01 | Phase 7 | Pending |

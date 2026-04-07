@@ -23,7 +23,7 @@ Full details: `.planning/milestones/v1.1.0-ROADMAP.md`
 
 **Milestone Goal:** Transform the functional prototype into a polished, clinician-centric triage tool with a cohesive design system, responsive layout, improved interactions, and WCAG-compliant accessibility.
 
-- [ ] **Phase 5: Design Token Foundation** — CSS custom property system, provider stack, and Amplify coexistence
+- [x] **Phase 5: Design Token Foundation** — CSS custom property system, provider stack, and Amplify coexistence (completed 2026-04-07)
 - [ ] **Phase 6: UI Primitives + Toast System** — Reusable component library and toast notifications replacing alert()
 - [ ] **Phase 7: Component Migration + Accessibility** — Inline style elimination, semantic HTML, ARIA, WCAG 2.1 AA, form improvements, responsive layout
 - [ ] **Phase 8: New Interactions** — Dark mode toggle, keyboard shortcuts, and voice recording UX
@@ -39,10 +39,10 @@ Full details: `.planning/milestones/v1.1.0-ROADMAP.md`
   2. The Amplify Authenticator login screen renders without visual regression after the token layer is added
   3. No existing component shows broken styles — the app looks identical to v1.1.0 from a clinician's perspective
   4. Non-clinical UI colors (buttons, backgrounds, text) in at least one migrated file use `--token` references instead of hardcoded Bootstrap hex values
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 Plans:
 - [x] 05-01-PLAN.md — Token infrastructure: create tokens.css, FOUC script, clean Vite defaults, wire imports
-- [ ] 05-02-PLAN.md — Header migration: extract inline styles to token-backed CSS, visual refresh
+- [x] 05-02-PLAN.md — Header migration: extract inline styles to token-backed CSS, visual refresh
 
 ### Phase 6: UI Primitives + Toast System
 **Goal**: A shared component library exists in `src/components/ui/` and every `alert()` call in the app has been replaced with accessible toast notifications.
@@ -86,7 +86,7 @@ Plans:
 | 2. Auth & Security | v1.1.0 | 2/2 | Complete | 2026-03-30 |
 | 3. Tech Debt | v1.1.0 | 2/2 | Complete | 2026-04-07 |
 | 4. Fragility | v1.1.0 | 2/2 | Complete | 2026-04-07 |
-| 5. Design Token Foundation | v2.0.0 | 1/2 | In Progress|  |
+| 5. Design Token Foundation | v2.0.0 | 2/2 | Complete   | 2026-04-07 |
 | 6. UI Primitives + Toast System | v2.0.0 | 0/? | Not started | - |
 | 7. Component Migration + Accessibility | v2.0.0 | 0/? | Not started | - |
 | 8. New Interactions | v2.0.0 | 0/? | Not started | - |

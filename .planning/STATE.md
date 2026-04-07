@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v2.0.0
 milestone_name: UI/UX Overhaul
 status: unknown
-stopped_at: Completed 05-01-PLAN.md
-last_updated: "2026-04-07T18:45:05.880Z"
+stopped_at: Completed 05-02-PLAN.md
+last_updated: "2026-04-07T18:48:23.834Z"
 progress:
   total_phases: 4
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 2
-  completed_plans: 1
+  completed_plans: 2
 ---
 
 # Project State
@@ -42,6 +42,7 @@ Plan: 2 of 2
 
 *Updated after each plan completion*
 | Phase 05-design-token-foundation P01 | 8min | 2 tasks | 5 files |
+| Phase 05-design-token-foundation P02 | 2min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -56,6 +57,8 @@ Plan: 2 of 2
 - [Phase 05-design-token-foundation]: MTS priority colors (--mts-*) kept byte-for-byte from v1.1.0 App.css — immutable clinical constraint
 - [Phase 05-design-token-foundation]: Semantic tokens scoped to [data-app-theme] not :root to prevent Amplify Authenticator visual regression
 - [Phase 05-design-token-foundation]: FOUC script stubs to light mode in Phase 5; full toggle and localStorage logic deferred to Phase 8
+- [Phase 05-design-token-foundation]: Atomic migration: no mixed inline/token state in Header.jsx; full swap in one commit
+- [Phase 05-design-token-foundation]: Sign-out button uses var(--mts-red) for destructive-action semantics; brand gradient changed to teal tokens (D-02/D-11)
 
 ### Pending Todos
 
@@ -69,6 +72,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-07T18:45:05.879Z
-Stopped at: Completed 05-01-PLAN.md
+Last session: 2026-04-07T18:48:23.832Z
+Stopped at: Completed 05-02-PLAN.md
 Resume file: None
