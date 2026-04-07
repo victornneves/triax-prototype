@@ -1,0 +1,100 @@
+# Requirements: Triax Prototype
+
+**Defined:** 2026-04-07
+**Core Value:** Clinicians reach a triage priority decision faster and more consistently because the AI traverses the protocol decision tree for them.
+
+## v2.0.0 Requirements
+
+Requirements for UI/UX Overhaul. Each maps to roadmap phases.
+
+### Design System
+
+- [ ] **DSGN-01**: App uses CSS custom property design tokens with immutable `--mts-*` clinical color namespace
+- [ ] **DSGN-02**: Non-clinical UI uses soft color palette (muted greens/blues) replacing Bootstrap hex values
+- [ ] **DSGN-03**: User can toggle between light and dark mode with preference persisted in localStorage
+- [ ] **DSGN-04**: All buttons use unified variant system (primary, secondary, danger) from shared component
+
+### Layout
+
+- [ ] **LAYT-01**: Sensor/vitals panel collapses on narrow screens and can be toggled on wider screens
+- [ ] **LAYT-02**: Global status bar displays current session ID, selected protocol, and connection status
+
+### Interactions
+
+- [ ] **INTR-01**: All error feedback uses accessible toast notifications (role="alert", 8s minimum dismiss) instead of alert()
+- [ ] **INTR-02**: Clinician can use keyboard shortcuts in triage flow (modifier+key for yes/no, Esc to cancel recording)
+- [ ] **INTR-03**: Voice recording shows waveform animation, elapsed timer, and live transcript preview before sending
+- [ ] **INTR-04**: UI transitions use subtle animations (<300ms) for chat bubbles, page transitions, and feedback states
+
+### Accessibility
+
+- [ ] **A11Y-01**: All text and interactive elements meet WCAG 2.1 AA contrast ratio (4.5:1 minimum)
+- [ ] **A11Y-02**: All interactive elements use semantic HTML (button, nav, label) with appropriate ARIA attributes
+- [ ] **A11Y-03**: All focusable elements have visible, high-contrast focus indicators for keyboard navigation
+
+### Forms
+
+- [ ] **FORM-01**: Required form fields show inline validation feedback on blur/submit
+- [ ] **FORM-02**: Patient age is auto-calculated from birth date input
+- [ ] **FORM-03**: All form fields have contextual help tooltips explaining purpose and expected values
+- [ ] **FORM-04**: Date, CPF, and blood pressure fields use input masking with auto-formatting
+
+## v2.x Requirements
+
+Deferred to future release. Tracked but not in current roadmap.
+
+### Layout
+
+- **LAYT-03**: Triage progress indicator showing position in decision tree (depends on /traverse API exposing step data)
+- **LAYT-04**: Session summary timeline showing decision path during and after triage
+
+### Interactions
+
+- **INTR-05**: Command palette (Ctrl+K) for quick actions (new triage, download PDF, fill normal vitals)
+
+## Out of Scope
+
+| Feature | Reason |
+|---------|--------|
+| i18n framework (react-i18next) | Strings stay hardcoded PT-BR; localization is a separate milestone |
+| AudioWorklet migration | High effort, low urgency for pilot phase |
+| API response caching | Nice-to-have, deferred |
+| Hospital system integration (EHR auto-fill) | Requires backend work outside current scope |
+| Pause/resume triage sessions | Requires backend session persistence changes |
+| Auto-submit on triage completion | Patient safety risk — clinician must confirm |
+| Swipe gestures | Clinical staff use gloves — touch gestures unreliable |
+| Inline PDF preview | Removed in v1.1.0; server-side PDF download is correct pattern |
+| Test suite | Zero coverage is known risk; adding tests is a future milestone |
+
+## Traceability
+
+Which phases cover which requirements. Updated during roadmap creation.
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| DSGN-01 | — | Pending |
+| DSGN-02 | — | Pending |
+| DSGN-03 | — | Pending |
+| DSGN-04 | — | Pending |
+| LAYT-01 | — | Pending |
+| LAYT-02 | — | Pending |
+| INTR-01 | — | Pending |
+| INTR-02 | — | Pending |
+| INTR-03 | — | Pending |
+| INTR-04 | — | Pending |
+| A11Y-01 | — | Pending |
+| A11Y-02 | — | Pending |
+| A11Y-03 | — | Pending |
+| FORM-01 | — | Pending |
+| FORM-02 | — | Pending |
+| FORM-03 | — | Pending |
+| FORM-04 | — | Pending |
+
+**Coverage:**
+- v2.0.0 requirements: 16 total
+- Mapped to phases: 0
+- Unmapped: 16 ⚠️
+
+---
+*Requirements defined: 2026-04-07*
+*Last updated: 2026-04-07 after initial definition*
