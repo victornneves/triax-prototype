@@ -54,7 +54,7 @@ Clinicians reach a triage priority decision faster and more consistently because
 <!-- v2.0.0 scope — UI/UX Overhaul -->
 
 - [ ] Design system adoption with reusable component library
-- [ ] Softer color palette with clinical MTS colors preserved
+- [x] Softer color palette with clinical MTS colors preserved — Validated in Phase 5: Design Token Foundation
 - [ ] Dark mode support
 - [ ] Responsive grid layout with collapsible sensor panel
 - [ ] Triage progress indicator (stepper/progress bar)
@@ -81,7 +81,7 @@ Clinicians reach a triage priority decision faster and more consistently because
 
 ## Context
 
-- **Current state:** v1.1.0 shipped (alignment & cleanup). v2.0.0 in progress — UI/UX overhaul. ~3,390 LOC across JS/JSX/CSS.
+- **Current state:** v2.0.0 in progress — Phase 5 (Design Token Foundation) complete. CSS custom property token system with `--mts-*` clinical colors, warm-professional teal palette, Header.jsx migrated to token-backed CSS. ~3,500 LOC across JS/JSX/CSS.
 - **Deployment:** AWS Amplify auto-deploys on every commit to `main`. Working on `v2-ui-overhaul` branch; merging to `main` at milestone completion.
 - **Backend:** External REST API at AWS API Gateway (sa-east-1). Frontend owns no backend code.
 - **Language:** App targets Brazilian Portuguese-speaking clinical staff (São Paulo region).
