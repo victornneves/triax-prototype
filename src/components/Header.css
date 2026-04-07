@@ -1,0 +1,133 @@
+/* Header.css — Token-backed classes for Header component */
+/* Reference pattern for Phase 7 migration */
+
+.app-header {
+  height: 64px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 var(--spacing-lg);
+  background-color: var(--color-header-bg);
+  border-bottom: 1px solid var(--color-header-border);
+  flex-shrink: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xl);
+}
+
+.header-brand-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.header-brand {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  background: linear-gradient(45deg, var(--color-teal-600), var(--color-teal-400));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.header-nav {
+  display: flex;
+  gap: var(--spacing-lg);
+}
+
+.header-nav-link {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  cursor: pointer;
+  padding: 0.4rem var(--spacing-md);
+  border-radius: 20px;
+  transition: all 0.2s;
+  background-color: var(--color-nav-bg);
+  color: var(--color-nav-text);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.header-nav-link:hover {
+  background-color: var(--color-nav-bg-hover);
+  color: var(--color-nav-text-hover);
+}
+
+.header-admin-link {
+  text-decoration: none;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.header-admin-link:hover {
+  color: var(--color-text-primary);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+.header-loading-text {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.header-profile-link {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  cursor: pointer;
+  padding: 0.4rem var(--spacing-md);
+  border-radius: 20px;
+  transition: all 0.2s;
+  background-color: var(--color-nav-bg);
+  color: var(--color-nav-text);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.header-profile-link:hover {
+  background-color: var(--color-nav-bg-hover);
+  color: var(--color-nav-text-hover);
+}
+
+.header-signout-btn {
+  padding: 0.5rem var(--spacing-md);
+  background-color: transparent;
+  color: var(--mts-red);
+  border: 1px solid var(--mts-red);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.header-signout-btn:hover {
+  background-color: var(--mts-red);
+  color: white;
+}
+
+/* Role badge classes — replace getRoleBadgeColor() JS function */
+.role-badge {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 10px;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: white;
+}
+
+.role-badge--admin        { background-color: var(--mts-red); }
+.role-badge--tenant-admin { background-color: var(--mts-orange); }
+.role-badge--doctor       { background-color: var(--color-primary); }
+.role-badge--nurse        { background-color: var(--color-teal-700); }
+.role-badge--default      { background-color: var(--color-gray-500); }
