@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { fetchAuthSession } from 'aws-amplify/auth';
+import { getAuthHeaders } from '../utils/auth';
 import TriageDetailsModal from '../components/TriageDetailsModal';
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -15,13 +15,10 @@ const Profile = () => {
         const fetchHistory = async () => {
             setLoadingHistory(true);
             try {
-                const session = await fetchAuthSession();
-                const token = session.tokens?.idToken?.toString();
+                const headers = await getAuthHeaders();
 
                 const response = await fetch(`${API_URL}/history`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
+                    headers: headers
                 });
 
                 if (response.ok) {
