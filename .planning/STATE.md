@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 04-02-PLAN.md
-last_updated: "2026-04-07T13:50:39.639Z"
+stopped_at: Completed 04-fragility-01-PLAN.md
+last_updated: "2026-04-07T13:50:50.028Z"
 progress:
   total_phases: 4
   completed_phases: 4
@@ -52,6 +52,7 @@ Plan: 2 of 2
 | Phase 02 P002 | 2m | 2 tasks | 3 files |
 | Phase 03-tech-debt P001 | 2 | 2 tasks | 7 files |
 | Phase 04-fragility P02 | 5 | 2 tasks | 2 files |
+| Phase 04-fragility P01 | 8 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -73,6 +74,8 @@ Recent decisions affecting current work:
 - [Phase 03-tech-debt]: UserContext.jsx left unchanged — uses fetchAuthSession for auth error detection, not header building (D-03)
 - [Phase 04-fragility]: Delete formatDateFromKey entirely — JSX already uses item.created_at which is the correct API field; no need for S3 key filename parsing
 - [Phase 04-fragility]: Delete the escape() try/catch entirely — AWS SDK returns native JS strings; no re-encoding needed or useful
+- [Phase 04-fragility]: /transcription failures use silent console.error — fire-and-forget logging must not interrupt patient triage flow
+- [Phase 04-fragility]: blob URL revoked after 60s delay (not synchronously) to allow browser time to load PDF in opened tab
 
 ### Pending Todos
 
@@ -84,6 +87,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-07T13:50:31.381Z
-Stopped at: Completed 04-02-PLAN.md
+Last session: 2026-04-07T13:50:50.027Z
+Stopped at: Completed 04-fragility-01-PLAN.md
 Resume file: None

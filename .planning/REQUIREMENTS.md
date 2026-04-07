@@ -30,10 +30,10 @@
 
 ### Fragility
 
-- [ ] **FRAG-01**: Every `fetch` call in the app checks `response.ok` before proceeding, and surfaces an error on non-2xx responses
+- [x] **FRAG-01**: Every `fetch` call in the app checks `response.ok` before proceeding, and surfaces an error on non-2xx responses
 - [x] **FRAG-02**: Session date display in `Profile.jsx` does not depend on splitting S3 key filenames — dates come from a reliable field (`created_at` or equivalent from the API response)
 - [x] **FRAG-03**: `useTranscribe.js` does not use the deprecated `escape()` function — encoding uses `TextDecoder` or a supported alternative
-- [ ] **FRAG-04**: PDF blob URLs created in `HistoryPage.jsx` are revoked via `URL.revokeObjectURL` after the download link is clicked
+- [x] **FRAG-04**: PDF blob URLs created in `HistoryPage.jsx` are revoked via `URL.revokeObjectURL` after the download link is clicked
 
 ## v2 Requirements
 
@@ -77,10 +77,10 @@
 | DEBT-01 | Phase 3 | Complete |
 | DEBT-02 | Phase 3 | Complete |
 | DEBT-03 | Phase 3 | Pending |
-| FRAG-01 | Phase 4 | Pending |
+| FRAG-01 | Phase 4 | Complete |
 | FRAG-02 | Phase 4 | Complete |
 | FRAG-03 | Phase 4 | Complete |
-| FRAG-04 | Phase 4 | Pending |
+| FRAG-04 | Phase 4 | Complete |
 
 **Coverage:**
 - v1 requirements: 18 total
