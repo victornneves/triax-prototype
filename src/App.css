@@ -76,24 +76,24 @@ input[type=number] {
 }
 
 .priority-red {
-  background-color: #dc3545;
+  background-color: var(--mts-red);
 }
 
 .priority-orange {
-  background-color: #fd7e14;
+  background-color: var(--mts-orange);
 }
 
 .priority-yellow {
-  background-color: #ffc107;
-  color: #333;
+  background-color: var(--mts-yellow);
+  color: var(--mts-yellow-text);
 }
 
 .priority-green {
-  background-color: #28a745;
+  background-color: var(--mts-green);
 }
 
 .priority-blue {
-  background-color: #007bff;
+  background-color: var(--mts-blue);
 }
 
 .history-log {
