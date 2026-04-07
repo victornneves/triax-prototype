@@ -840,6 +840,7 @@ const ProtocolTriage = () => {
             const blob = await response.blob();
             const url = window.URL.createObjectURL(blob);
             window.open(url, '_blank');
+            setTimeout(() => URL.revokeObjectURL(url), 60000);
         } catch (error) {
             console.error("Falha ao gerar PDF:", error);
             alert("Erro ao gerar PDF. Tente novamente.");
