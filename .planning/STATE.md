@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v2.0.0
 milestone_name: UI/UX Overhaul
-status: ready-to-plan
-stopped_at: Roadmap created; Phase 5 ready to plan
-last_updated: "2026-04-07"
+status: unknown
+stopped_at: Completed 05-01-PLAN.md
+last_updated: "2026-04-07T18:45:05.880Z"
 progress:
   total_phases: 4
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_plans: 2
+  completed_plans: 1
 ---
 
 # Project State
@@ -19,20 +19,17 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-07)
 
 **Core value:** Clinicians reach a triage priority decision faster and more consistently because the AI traverses the protocol decision tree for them.
-**Current focus:** Phase 5 — Design Token Foundation
+**Current focus:** Phase 05 — design-token-foundation
 
 ## Current Position
 
-Phase: 5 of 8 (Design Token Foundation)
-Plan: 0 of ? in current phase
-Status: Ready to plan
-Last activity: 2026-04-07 — v2.0.0 roadmap created; all 16 requirements mapped to phases 5-8
-
-Progress: [░░░░░░░░░░] 0% (v2.0.0 phases not started)
+Phase: 05 (design-token-foundation) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
 **Velocity:**
+
 - Total plans completed: 0 (v2.0.0)
 - Average duration: —
 - Total execution time: —
@@ -44,6 +41,7 @@ Progress: [░░░░░░░░░░] 0% (v2.0.0 phases not started)
 | — | — | — | — |
 
 *Updated after each plan completion*
+| Phase 05-design-token-foundation P01 | 8min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -55,6 +53,9 @@ Progress: [░░░░░░░░░░] 0% (v2.0.0 phases not started)
 - [v2.0.0]: `react-input-mask` archived Dec 2025 — use `react-imask` 7 for CPF/date/BP masking
 - [v2.0.0]: FOUC prevention needs blocking `<script>` in `index.html` reading localStorage before React hydrates
 - v2.0.0 work on `v2-ui-overhaul` branch; merge to main only at milestone completion
+- [Phase 05-design-token-foundation]: MTS priority colors (--mts-*) kept byte-for-byte from v1.1.0 App.css — immutable clinical constraint
+- [Phase 05-design-token-foundation]: Semantic tokens scoped to [data-app-theme] not :root to prevent Amplify Authenticator visual regression
+- [Phase 05-design-token-foundation]: FOUC script stubs to light mode in Phase 5; full toggle and localStorage logic deferred to Phase 8
 
 ### Pending Todos
 
@@ -68,6 +69,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-07
-Stopped at: Roadmap created; Phase 5 ready to plan
+Last session: 2026-04-07T18:45:05.879Z
+Stopped at: Completed 05-01-PLAN.md
 Resume file: None

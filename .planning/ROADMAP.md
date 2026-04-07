@@ -39,9 +39,9 @@ Full details: `.planning/milestones/v1.1.0-ROADMAP.md`
   2. The Amplify Authenticator login screen renders without visual regression after the token layer is added
   3. No existing component shows broken styles — the app looks identical to v1.1.0 from a clinician's perspective
   4. Non-clinical UI colors (buttons, backgrounds, text) in at least one migrated file use `--token` references instead of hardcoded Bootstrap hex values
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 Plans:
-- [ ] 05-01-PLAN.md — Token infrastructure: create tokens.css, FOUC script, clean Vite defaults, wire imports
+- [x] 05-01-PLAN.md — Token infrastructure: create tokens.css, FOUC script, clean Vite defaults, wire imports
 - [ ] 05-02-PLAN.md — Header migration: extract inline styles to token-backed CSS, visual refresh
 
 ### Phase 6: UI Primitives + Toast System
@@ -86,7 +86,7 @@ Plans:
 | 2. Auth & Security | v1.1.0 | 2/2 | Complete | 2026-03-30 |
 | 3. Tech Debt | v1.1.0 | 2/2 | Complete | 2026-04-07 |
 | 4. Fragility | v1.1.0 | 2/2 | Complete | 2026-04-07 |
-| 5. Design Token Foundation | v2.0.0 | 0/2 | Not started | - |
+| 5. Design Token Foundation | v2.0.0 | 1/2 | In Progress|  |
 | 6. UI Primitives + Toast System | v2.0.0 | 0/? | Not started | - |
 | 7. Component Migration + Accessibility | v2.0.0 | 0/? | Not started | - |
 | 8. New Interactions | v2.0.0 | 0/? | Not started | - |
