@@ -16,10 +16,10 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-23)
+See: .planning/PROJECT.md (updated 2026-04-07)
 
 **Core value:** Clinicians reach a triage priority decision faster and more consistently because the AI traverses the protocol decision tree for them.
-**Current focus:** Phase 03 — tech-debt
+**Current focus:** Phase 04 — fragility
 
 ## Current Position
 
@@ -81,6 +81,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-07T13:28:14.975Z
-Stopped at: Completed 03-001-auth-utility-demo-data-PLAN.md
+Last session: 2026-04-07
+Stopped at: Phase 03 complete, ready to plan Phase 04
 Resume file: None
