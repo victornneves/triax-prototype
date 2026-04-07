@@ -40,33 +40,6 @@ const Profile = () => {
         fetchHistory();
     }, []);
 
-    const formatDateFromKey = (key) => {
-        if (!key) return '-';
-        try {
-            // key example: default/UUID/YEAR/MONTH/DAY/session-TIMESTAMP-RANDOM.json
-            const filename = key.split('/').pop();
-            const parts = filename.split('-');
-            if (parts.length < 2) return '-';
-
-            const timestamp = parseInt(parts[1], 10);
-            if (isNaN(timestamp)) return '-';
-
-            const date = new Date(timestamp);
-            return date.toLocaleString('pt-BR', {
-                timeZone: 'America/Sao_Paulo',
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-        } catch (e) {
-            console.error("Error parsing date from key", key, e);
-            return '-';
-        }
-    };
-
-
     return (
         <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '2rem' }}>
 
