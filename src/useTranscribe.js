@@ -134,10 +134,6 @@ export function useTranscribe() {
 
                 let text = alternatives[0].Transcript || "";
 
-                try {
-                    text = decodeURIComponent(escape(text));
-                } catch { }
-
                 if (result.IsPartial) {
                     // legenda ao vivo — igual YouTube
                     setPartialTranscript(text);
