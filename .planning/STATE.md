@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 02-002-auth-error-admin-guard-PLAN.md
-last_updated: "2026-03-30T18:59:43.669Z"
+stopped_at: Completed 03-001-auth-utility-demo-data-PLAN.md
+last_updated: "2026-04-07T13:28:14.977Z"
 progress:
   total_phases: 4
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 8
-  completed_plans: 6
+  completed_plans: 8
 ---
 
 # Project State
@@ -24,7 +24,7 @@ See: .planning/PROJECT.md (updated 2026-03-23)
 ## Current Position
 
 Phase: 03 (tech-debt) — EXECUTING
-Plan: 1 of 2
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -50,6 +50,7 @@ Plan: 1 of 2
 | Phase 01 P004 | 2 | 2 tasks | 2 files |
 | Phase 02 P001 | 1 | 2 tasks | 2 files |
 | Phase 02 P002 | 2m | 2 tasks | 3 files |
+| Phase 03-tech-debt P001 | 2 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -66,6 +67,9 @@ Recent decisions affecting current work:
 - [Phase 02]: Non-secret config (region, loginWith, passwordFormat, allowGuestAccess) stays hardcoded; only resource IDs moved to env vars
 - [Phase 02]: RequireAdmin renders loading state while profile fetches to prevent flash redirect to non-admins
 - [Phase 02]: AppContent inner component pattern used to access useUser() inside UserProvider scope for auth error interception
+- [Phase 03-tech-debt]: getAuthHeaders throws on null token — callers have try/catch, errors propagate correctly instead of silent 401s
+- [Phase 03-tech-debt]: useCallback removed from getAuthHeaders — pure async function needs no memoization
+- [Phase 03-tech-debt]: UserContext.jsx left unchanged — uses fetchAuthSession for auth error detection, not header building (D-03)
 
 ### Pending Todos
 
@@ -77,6 +81,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-30T18:35:52.476Z
-Stopped at: Completed 02-002-auth-error-admin-guard-PLAN.md
+Last session: 2026-04-07T13:28:14.975Z
+Stopped at: Completed 03-001-auth-utility-demo-data-PLAN.md
 Resume file: None

@@ -24,8 +24,8 @@
 
 ### Tech Debt
 
-- [ ] **DEBT-01**: `getAuthHeaders` function exists in a single shared utility (`src/utils/auth.js`) and is imported from there in all 5 files that previously duplicated it
-- [ ] **DEBT-02**: `PatientForm` initial state contains no demo/hardcoded patient data (no "João da Silva", age 45, ticket "AZ001")
+- [x] **DEBT-01**: `getAuthHeaders` function exists in a single shared utility (`src/utils/auth.js`) and is imported from there in all 5 files that previously duplicated it
+- [x] **DEBT-02**: `PatientForm` initial state contains no demo/hardcoded patient data (no "João da Silva", age 45, ticket "AZ001")
 - [ ] **DEBT-03**: `jspdf` and `html2canvas` packages are removed from `package.json` and `package-lock.json`
 
 ### Fragility
@@ -74,8 +74,8 @@
 | AUTH-01 | Phase 2 | Complete |
 | AUTH-02 | Phase 2 | Complete |
 | AUTH-03 | Phase 2 | Complete |
-| DEBT-01 | Phase 3 | Pending |
-| DEBT-02 | Phase 3 | Pending |
+| DEBT-01 | Phase 3 | Complete |
+| DEBT-02 | Phase 3 | Complete |
 | DEBT-03 | Phase 3 | Pending |
 | FRAG-01 | Phase 4 | Pending |
 | FRAG-02 | Phase 4 | Pending |

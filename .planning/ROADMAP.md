@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [ ] **Phase 1: API Alignment** - Align all frontend API calls with openapi.yaml v1.1.0 endpoint paths and schemas
 - [x] **Phase 2: Auth & Security** - Harden authentication headers, config sourcing, and admin route protection (completed 2026-03-30)
-- [ ] **Phase 3: Tech Debt** - Extract shared auth utility, remove demo data, and prune unused dependencies
+- [x] **Phase 3: Tech Debt** - Extract shared auth utility, remove demo data, and prune unused dependencies (completed 2026-04-07)
 - [ ] **Phase 4: Fragility** - Replace brittle patterns: missing ok-checks, fragile date parsing, deprecated APIs, memory leak
 
 ## Phase Details
@@ -56,10 +56,10 @@ Plans:
   1. `src/utils/auth.js` exports `getAuthHeaders` and all five previously-duplicating files import from it — no inline copies remain
   2. `PatientForm` initial state contains no hardcoded patient data; form fields are empty or use neutral placeholders on load
   3. `jspdf` and `html2canvas` are absent from `package.json` and the production bundle does not include them
-**Plans:** 2 plans
+**Plans:** 2/2 plans complete
 Plans:
-- [ ] 03-001-auth-utility-demo-data-PLAN.md — Extract getAuthHeaders to shared utility, refactor 5 consumers, clear demo patient data
-- [ ] 03-002-prune-unused-deps-PLAN.md — Remove unused jspdf and html2canvas dependencies
+- [x] 03-001-auth-utility-demo-data-PLAN.md — Extract getAuthHeaders to shared utility, refactor 5 consumers, clear demo patient data
+- [x] 03-002-prune-unused-deps-PLAN.md — Remove unused jspdf and html2canvas dependencies
 
 ### Phase 4: Fragility
 **Goal**: Every fetch call fails visibly on non-2xx responses, dates come from reliable API fields, deprecated encoding is replaced, and PDF blob URLs are cleaned up
@@ -81,5 +81,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. API Alignment | 2/3 | In Progress|  |
 | 2. Auth & Security | 2/2 | Complete   | 2026-03-30 |
-| 3. Tech Debt | 0/2 | Not started | - |
+| 3. Tech Debt | 2/2 | Complete   | 2026-04-07 |
 | 4. Fragility | 0/TBD | Not started | - |
