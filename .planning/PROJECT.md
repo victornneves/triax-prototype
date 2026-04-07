@@ -30,16 +30,16 @@ Clinicians reach a triage priority decision faster and more consistently because
 - ✓ Shared `getAuthHeaders` utility extracted (no duplication across 5 files) — Validated in Phase 03: tech-debt
 - ✓ Demo patient data removed from PatientForm — Validated in Phase 03: tech-debt
 - ✓ Unused `jspdf` and `html2canvas` dependencies removed — Validated in Phase 03: tech-debt
+- ✓ All fetch calls include `response.ok` check — Validated in Phase 04: fragility
+- ✓ Fragile S3 date parsing replaced (dead code removed, `created_at` already in use) — Validated in Phase 04: fragility
+- ✓ Deprecated `escape()` encoding removed (SDK returns decoded strings) — Validated in Phase 04: fragility
+- ✓ Blob URL memory leak fixed (PDF download) — Validated in Phase 04: fragility
 
 ### Active
 
 <!-- Current scope: what we are building toward. -->
 
 - [ ] Frontend aligned with openapi.yaml v1.1.0 — all endpoint paths, request/response schemas correct
-- [ ] All fetch calls include `response.ok` check
-- [ ] Fragile S3 date parsing replaced with a robust solution
-- [ ] Deprecated `escape()` encoding replaced
-- [ ] Blob URL memory leak fixed (PDF download)
 
 ### Out of Scope
 
@@ -91,4 +91,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-07 — Phase 03 (tech-debt) complete*
+*Last updated: 2026-04-07 — Phase 04 (fragility) complete*
