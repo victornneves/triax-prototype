@@ -8,6 +8,19 @@ React SPA for clinical emergency triage using the Manchester Triage System (MTS)
 
 Clinicians reach a triage priority decision faster and more consistently because the AI traverses the protocol decision tree for them.
 
+## Current Milestone: v2.0.0 UI/UX Overhaul
+
+**Goal:** Transform the functional prototype into a polished, clinician-centric triage tool with cohesive design system, responsive layout, improved interactions, and accessibility.
+
+**Target features:**
+- Cohesive design system replacing scattered inline styles
+- Softer color palette with dark mode support (preserving MTS priority colors)
+- Responsive layout with collapsible panels and progress indicators
+- Unified button styling, keyboard shortcuts, and micro-interactions
+- WCAG-compliant accessibility (contrast, ARIA, focus indicators)
+- Reduced cognitive load (smart defaults, contextual help, toast notifications)
+- Improved voice input UX (waveform, timer, transcription preview)
+
 ## Requirements
 
 ### Validated
@@ -38,21 +51,38 @@ Clinicians reach a triage priority decision faster and more consistently because
 
 ### Active
 
-<!-- Next milestone scope — to be defined via /gsd:new-milestone -->
+<!-- v2.0.0 scope — UI/UX Overhaul -->
 
-(None yet — define next milestone to populate)
+- [ ] Design system adoption with reusable component library
+- [ ] Softer color palette with clinical MTS colors preserved
+- [ ] Dark mode support
+- [ ] Responsive grid layout with collapsible sensor panel
+- [ ] Triage progress indicator (stepper/progress bar)
+- [ ] Unified button system (primary, secondary, danger variants)
+- [ ] Keyboard shortcuts for triage flow (number keys for quick replies, Esc to cancel)
+- [ ] Toast notification system replacing alert() calls
+- [ ] Improved voice recording UX (waveform, timer, transcription preview)
+- [ ] WCAG-compliant color contrast across all components
+- [ ] Semantic HTML and ARIA labels for screen reader support
+- [ ] Focus indicators for keyboard navigation
+- [ ] Smart form defaults and auto-calculation (e.g., age from birth date)
+- [ ] Contextual help tooltips for all form fields
+- [ ] Session summary timeline during triage
 
 ### Out of Scope
 
 - Test suite — zero coverage is a known risk; adding tests is a future milestone
 - `ScriptProcessorNode` → `AudioWorklet` migration — high effort, low urgency for pilot phase
 - API response caching (/protocol_names, /me) — nice-to-have, deferred
-- UI redesign / new features — pilot phase, stakeholder feedback first
+- i18n framework (react-i18next) — strings stay hardcoded PT-BR for now; localization is a future milestone
+- Command palette (Ctrl+K) — over-engineered for pilot; revisit after core UX ships
+- Hospital system integration (auto-fill from EHR) — requires backend work outside current scope
+- Pause/resume triage sessions — requires backend session persistence changes
 
 ## Context
 
-- **Current state:** v1.1.0 shipped. Frontend aligned with API contract, auth hardened, tech debt cleared, brittle patterns fixed. 3,390 LOC across JS/JSX/CSS.
-- **Deployment:** AWS Amplify auto-deploys on every commit to `main`. Working on `dev` branch; merging to `main` at milestone checkpoints.
+- **Current state:** v1.1.0 shipped (alignment & cleanup). v2.0.0 in progress — UI/UX overhaul. ~3,390 LOC across JS/JSX/CSS.
+- **Deployment:** AWS Amplify auto-deploys on every commit to `main`. Working on `v2-ui-overhaul` branch; merging to `main` at milestone completion.
 - **Backend:** External REST API at AWS API Gateway (sa-east-1). Frontend owns no backend code.
 - **Language:** App targets Brazilian Portuguese-speaking clinical staff (São Paulo region).
 - **Auth:** Cognito User Pool + Identity Pool. JWT id token sent as Bearer on every authenticated request. Shared `getAuthHeaders` utility in `src/utils/auth.js`.
@@ -62,8 +92,9 @@ Clinicians reach a triage priority decision faster and more consistently because
 
 - **Tech stack:** React 19 + Vite + AWS Amplify — no framework changes
 - **Deployment target:** Static SPA (no SSR), Amplify builds from `main` branch
-- **Branch strategy:** All work on `dev` branch; merge to `main` only at verified milestone checkpoints
+- **Branch strategy:** All work on `v2-ui-overhaul` branch; merge to `main` only at verified milestone completion
 - **Healthcare context:** Changes to triage logic require extra care — wrong priority assignment is a patient safety issue
+- **MTS priority colors:** Red/orange/yellow/green/blue are clinical standard — do not alter these specific colors
 
 ## Key Decisions
 
@@ -95,4 +126,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-07 after v1.1.0 milestone*
+*Last updated: 2026-04-07 after v2.0.0 milestone start*
