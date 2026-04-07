@@ -27,15 +27,15 @@ Clinicians reach a triage priority decision faster and more consistently because
 - ✓ AWS config moved to environment variables (no hardcoded Cognito IDs in source) — Validated in Phase 02: auth-security
 - ✓ Silent token omission replaced with explicit auth error (UserContext) — Validated in Phase 02: auth-security
 - ✓ Route-level admin guard hardened via RequireAdmin component — Validated in Phase 02: auth-security
+- ✓ Shared `getAuthHeaders` utility extracted (no duplication across 5 files) — Validated in Phase 03: tech-debt
+- ✓ Demo patient data removed from PatientForm — Validated in Phase 03: tech-debt
+- ✓ Unused `jspdf` and `html2canvas` dependencies removed — Validated in Phase 03: tech-debt
 
 ### Active
 
 <!-- Current scope: what we are building toward. -->
 
 - [ ] Frontend aligned with openapi.yaml v1.1.0 — all endpoint paths, request/response schemas correct
-- [ ] Shared `getAuthHeaders` utility extracted (no duplication across 5 files)
-- [ ] Demo patient data removed from PatientForm
-- [ ] Unused `jspdf` and `html2canvas` dependencies removed
 - [ ] All fetch calls include `response.ok` check
 - [ ] Fragile S3 date parsing replaced with a robust solution
 - [ ] Deprecated `escape()` encoding replaced
@@ -91,4 +91,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-30 — Phase 02 (auth-security) complete*
+*Last updated: 2026-04-07 — Phase 03 (tech-debt) complete*
