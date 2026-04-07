@@ -1,6 +1,7 @@
 import { Amplify } from 'aws-amplify';
 import { Authenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
+import './styles/tokens.css';
 import awsConfig from './aws-config';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import ProtocolTriage from './components/ProtocolTriage';
@@ -45,7 +46,7 @@ function AppContent({ signOut }) {
 
     return (
         <BrowserRouter>
-            <div className="app-container" style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
+            <div className="app-container" data-app-theme="light" style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
                 <Header signOut={signOut} />
 
                 <main style={{ flex: 1, overflow: 'auto', position: 'relative', backgroundColor: '#f8f9fa' }}>

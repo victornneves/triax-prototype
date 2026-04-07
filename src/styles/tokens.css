@@ -1,0 +1,135 @@
+/* ===================================================================
+ * TRIAX DESIGN TOKENS
+ * Single source of truth for all CSS custom properties.
+ *
+ * Structure:
+ *   1. PRIMITIVE LAYER  — raw values on :root (safe for Amplify coexistence)
+ *   2. SEMANTIC LAYER   — intent-mapped aliases on [data-app-theme] (light)
+ *   3. DARK MODE SHELL  — dark overrides on [data-app-theme="dark"]
+ * =================================================================== */
+
+/* ===================================================================
+ * PRIMITIVE LAYER
+ * Passive values. Safe to declare on :root — they do not change any
+ * rendered color by themselves. The semantic layer consumes them.
+ * =================================================================== */
+:root {
+  /* --- Teal scale (warm-professional, soft teal primary — D-01, D-02) --- */
+  --color-teal-300: #5eead4;
+  --color-teal-400: #2dd4bf;
+  --color-teal-500: #14b8a6;
+  --color-teal-600: #0d9488;
+  --color-teal-700: #0f766e;
+
+  /* --- Warm gray scale (Tailwind Stone — D-01 warm-professional) --- */
+  --color-gray-50:  #fafaf9;
+  --color-gray-100: #f5f5f4;
+  --color-gray-200: #e7e5e4;
+  --color-gray-300: #d6d3d1;
+  --color-gray-400: #a8a29e;
+  --color-gray-500: #78716c;
+  --color-gray-600: #57534e;
+  --color-gray-700: #44403c;
+  --color-gray-800: #292524;
+  --color-gray-900: #1c1917;
+
+  /* --- Muted feedback colors — DISTINCT from MTS clinical colors (D-04) --- */
+  --color-feedback-error-bg:   #fef2f2;
+  --color-feedback-error-text: #991b1b;
+  --color-feedback-warn-bg:    #fffbeb;
+  --color-feedback-warn-text:  #92400e;
+  --color-feedback-ok-bg:      #f0fdf4;
+  --color-feedback-ok-text:    #166534;
+
+  /* --- MTS Clinical Colors — IMMUTABLE — patient safety constraint ---
+   * Byte-for-byte from v1.1.0 App.css. Never alias or soften these values.
+   * These match the Manchester Triage System priority color standard.
+   * --------------------------------------------------------------------- */
+  --mts-red:         #dc3545;   /* .priority-red background   */
+  --mts-orange:      #fd7e14;   /* .priority-orange background */
+  --mts-yellow:      #ffc107;   /* .priority-yellow background */
+  --mts-yellow-text: #000000;   /* .priority-yellow text (black for WCAG contrast) */
+  --mts-green:       #28a745;   /* .priority-green background  */
+  --mts-blue:        #007bff;   /* .priority-blue background   */
+
+  /* --- Spacing scale (D-07) --- */
+  --spacing-xs:  0.25rem;
+  --spacing-sm:  0.5rem;
+  --spacing-md:  1rem;
+  --spacing-lg:  1.5rem;
+  --spacing-xl:  2rem;
+  --spacing-2xl: 3rem;
+
+  /* --- Typography scale (D-07) --- */
+  --font-size-xs:  0.75rem;
+  --font-size-sm:  0.85rem;
+  --font-size-md:  1rem;
+  --font-size-lg:  1.125rem;
+  --font-size-xl:  1.25rem;
+  --font-size-2xl: 1.5rem;
+}
+
+/* ===================================================================
+ * SEMANTIC LAYER — Light mode (default)
+ * Scoped to [data-app-theme] on the app-container div.
+ * This prevents cascade into the Amplify Authenticator login screen,
+ * which renders outside the app-container.
+ * =================================================================== */
+[data-app-theme] {
+  --color-primary:        var(--color-teal-500);
+  --color-primary-hover:  var(--color-teal-600);
+  --color-primary-text:   #ffffff;
+
+  --color-surface:        #ffffff;
+  --color-surface-subtle: var(--color-gray-50);
+  --color-surface-muted:  var(--color-gray-100);
+
+  --color-border:         var(--color-gray-200);
+  --color-border-strong:  var(--color-gray-300);
+
+  --color-text-primary:   var(--color-gray-900);
+  --color-text-secondary: var(--color-gray-600);
+  --color-text-muted:     var(--color-gray-400);
+
+  --color-nav-bg:         var(--color-gray-100);
+  --color-nav-bg-hover:   var(--color-gray-200);
+  --color-nav-text:       var(--color-gray-600);
+  --color-nav-text-hover: var(--color-gray-800);
+
+  --color-header-bg:      var(--color-surface);
+  --color-header-border:  var(--color-border);
+
+  --color-error-bg:       var(--color-feedback-error-bg);
+  --color-error-text:     var(--color-feedback-error-text);
+}
+
+/* ===================================================================
+ * DARK MODE SHELL — placeholder values
+ * Toggle ships in Phase 8. Structure is ready now.
+ * MTS clinical colors are unchanged — their meaning is sacrosanct.
+ * =================================================================== */
+[data-app-theme="dark"] {
+  --color-primary:        var(--color-teal-400);
+  --color-primary-hover:  var(--color-teal-300);
+
+  --color-surface:        var(--color-gray-900);
+  --color-surface-subtle: var(--color-gray-800);
+  --color-surface-muted:  var(--color-gray-700);
+
+  --color-border:         var(--color-gray-700);
+  --color-border-strong:  var(--color-gray-600);
+
+  --color-text-primary:   var(--color-gray-50);
+  --color-text-secondary: var(--color-gray-300);
+  --color-text-muted:     var(--color-gray-500);
+
+  --color-header-bg:      var(--color-gray-900);
+  --color-header-border:  var(--color-gray-700);
+
+  --color-nav-bg:         var(--color-gray-800);
+  --color-nav-bg-hover:   var(--color-gray-700);
+  --color-nav-text:       var(--color-gray-300);
+  --color-nav-text-hover: var(--color-gray-100);
+
+  /* MTS colors unchanged in dark mode — clinical meaning is sacrosanct */
+}
