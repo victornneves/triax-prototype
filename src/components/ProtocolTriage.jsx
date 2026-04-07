@@ -335,7 +335,7 @@ const ProtocolTriage = () => {
     useEffect(() => {
         getAuthHeaders().then(headers => {
             fetch(`${API_URL}/protocol_names`, { headers })
-                .then(res => res.json())
+                .then(res => { if (!res.ok) throw new Error('Erro ao carregar protocolos: ' + res.status); return res.json(); })
                 .then(data => {
                     const list = data.protocols || data;
                     // Sort by name (human readable)
@@ -384,7 +384,7 @@ const ProtocolTriage = () => {
 
             // 2. Log initial context to transcription
             const infoString = `PACIENTE: ${data.name}, IDADE: ${data.age}, SEXO: ${data.sex === 'M' ? 'Masculino' : 'Feminino'}.`;
-            await fetch(`${API_URL}/transcription`, {
+            const transcriptionRes = await fetch(`${API_URL}/transcription`, {
                 method: 'POST',
                 headers: headers,
                 body: JSON.stringify({
@@ -392,6 +392,7 @@ const ProtocolTriage = () => {
                     transcription: `CONTEXTO INICIAL: ${infoString}`
                 })
             });
+            if (!transcriptionRes.ok) console.error('Transcription context log failed:', transcriptionRes.status);
 
             setPatientInfo(data);
             setIsPatientInfoSubmitted(true);
@@ -412,7 +413,7 @@ const ProtocolTriage = () => {
     const logSystemMessage = async (text) => {
         try {
             const headers = await getAuthHeaders();
-            await fetch(`${API_URL}/transcription`, {
+            const res = await fetch(`${API_URL}/transcription`, {
                 method: 'POST',
                 headers: headers,
                 body: JSON.stringify({
@@ -420,6 +421,7 @@ const ProtocolTriage = () => {
                     transcription: `Sistema: ${text}`
                 })
             });
+            if (!res.ok) console.error('Transcription system log failed:', res.status);
         } catch (e) {
             console.error("Failed to log system message", e);
         }
@@ -455,7 +457,7 @@ const ProtocolTriage = () => {
                     session_id: sessionId,
                     transcription: userMsg
                 })
-            }).catch(e => console.error("Transcription upload failed", e));
+            }).then(res => { if (!res.ok) console.error('Transcription upload failed:', res.status); }).catch(e => console.error("Transcription upload failed", e));
 
             // 2. Decide next action based on state
             if (!protocolRef.current) {
@@ -639,6 +641,7 @@ const ProtocolTriage = () => {
                     await new Promise(r => setTimeout(r, delay));
                     continue;
                 }
+                if (!response.ok) throw new Error('Erro no protocolo de triagem: ' + response.status);
                 const data = await response.json();
                 handleTraversalResponse(data);
                 return;
