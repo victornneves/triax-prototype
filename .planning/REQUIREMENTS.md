@@ -72,29 +72,29 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DSGN-01 | — | Pending |
-| DSGN-02 | — | Pending |
-| DSGN-03 | — | Pending |
-| DSGN-04 | — | Pending |
-| LAYT-01 | — | Pending |
-| LAYT-02 | — | Pending |
-| INTR-01 | — | Pending |
-| INTR-02 | — | Pending |
-| INTR-03 | — | Pending |
-| INTR-04 | — | Pending |
-| A11Y-01 | — | Pending |
-| A11Y-02 | — | Pending |
-| A11Y-03 | — | Pending |
-| FORM-01 | — | Pending |
-| FORM-02 | — | Pending |
-| FORM-03 | — | Pending |
-| FORM-04 | — | Pending |
+| DSGN-01 | Phase 5 | Pending |
+| DSGN-02 | Phase 5 | Pending |
+| DSGN-03 | Phase 8 | Pending |
+| DSGN-04 | Phase 6 | Pending |
+| LAYT-01 | Phase 7 | Pending |
+| LAYT-02 | Phase 7 | Pending |
+| INTR-01 | Phase 6 | Pending |
+| INTR-02 | Phase 8 | Pending |
+| INTR-03 | Phase 8 | Pending |
+| INTR-04 | Phase 6 | Pending |
+| A11Y-01 | Phase 7 | Pending |
+| A11Y-02 | Phase 7 | Pending |
+| A11Y-03 | Phase 7 | Pending |
+| FORM-01 | Phase 7 | Pending |
+| FORM-02 | Phase 7 | Pending |
+| FORM-03 | Phase 7 | Pending |
+| FORM-04 | Phase 7 | Pending |
 
 **Coverage:**
 - v2.0.0 requirements: 16 total
-- Mapped to phases: 0
-- Unmapped: 16 ⚠️
+- Mapped to phases: 16
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-04-07*
-*Last updated: 2026-04-07 after initial definition*
+*Last updated: 2026-04-07 — traceability complete, all 16 requirements mapped to phases 5-8*
