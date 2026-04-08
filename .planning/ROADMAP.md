@@ -69,10 +69,10 @@ Plans:
   3. A keyboard-only user can tab through every interactive element on every page and see a visible focus indicator at each step
   4. The sensor/vitals panel collapses automatically on a narrow (mobile) viewport and a toggle button restores it on wider screens
   5. The patient form auto-fills the age field when a birth date is entered, shows inline validation errors on blur for required fields, and all fields have visible tooltip help; CPF, date, and blood pressure fields format themselves as the clinician types
-**Plans:** 2/6 plans executed
+**Plans:** 3/6 plans executed
 Plans:
 - [x] 07-01-PLAN.md -- Foundation tokens + focus-visible + simple migrations (AdminUsers, RequireAdmin, App.jsx)
-- [ ] 07-02-PLAN.md -- Profile + HistoryPage inline style migration with table semantic HTML
+- [x] 07-02-PLAN.md -- Profile + HistoryPage inline style migration with table semantic HTML
 - [ ] 07-03-PLAN.md -- TriageDetailsModal migration + modal ARIA + focus trap
 - [x] 07-04-PLAN.md -- Tooltip + StatusBar shared UI components
 - [ ] 07-05-PLAN.md -- ProtocolTriage inline style migration + responsive sensor panel
@@ -99,5 +99,5 @@ Plans:
 | 4. Fragility | v1.1.0 | 2/2 | Complete | 2026-04-07 |
 | 5. Design Token Foundation | v2.0.0 | 2/2 | Complete   | 2026-04-07 |
 | 6. UI Primitives + Toast System | v2.0.0 | 3/3 | Complete   | 2026-04-08 |
-| 7. Component Migration + Accessibility | v2.0.0 | 2/6 | In Progress|  |
+| 7. Component Migration + Accessibility | v2.0.0 | 3/6 | In Progress|  |
 | 8. New Interactions | v2.0.0 | 0/? | Not started | - |
