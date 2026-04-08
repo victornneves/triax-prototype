@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v2.0.0
 milestone_name: UI/UX Overhaul
 status: unknown
-stopped_at: Completed 05-02-PLAN.md
-last_updated: "2026-04-07T18:48:23.834Z"
+stopped_at: Completed 06-02-PLAN.md
+last_updated: "2026-04-08T12:45:40.584Z"
 progress:
   total_phases: 4
   completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
+  total_plans: 5
+  completed_plans: 4
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-07)
 
 **Core value:** Clinicians reach a triage priority decision faster and more consistently because the AI traverses the protocol decision tree for them.
-**Current focus:** Phase 05 — design-token-foundation
+**Current focus:** Phase 06 — ui-primitives-toast
 
 ## Current Position
 
-Phase: 05 (design-token-foundation) — EXECUTING
-Plan: 2 of 2
+Phase: 06 (ui-primitives-toast) — EXECUTING
+Plan: 3 of 3
 
 ## Performance Metrics
 
@@ -43,6 +43,8 @@ Plan: 2 of 2
 *Updated after each plan completion*
 | Phase 05-design-token-foundation P01 | 8min | 2 tasks | 5 files |
 | Phase 05-design-token-foundation P02 | 2min | 2 tasks | 2 files |
+| Phase 06-ui-primitives-toast P01 | 2min | 2 tasks | 3 files |
+| Phase 06-ui-primitives-toast P02 | 1min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -59,6 +61,10 @@ Plan: 2 of 2
 - [Phase 05-design-token-foundation]: FOUC script stubs to light mode in Phase 5; full toggle and localStorage logic deferred to Phase 8
 - [Phase 05-design-token-foundation]: Atomic migration: no mixed inline/token state in Header.jsx; full swap in one commit
 - [Phase 05-design-token-foundation]: Sign-out button uses var(--mts-red) for destructive-action semantics; brand gradient changed to teal tokens (D-02/D-11)
+- [Phase 06-ui-primitives-toast]: Button spinner uses child <span> not ::after pseudo-element — cleaner in flex context, avoids z-index edge cases
+- [Phase 06-ui-primitives-toast]: Dark error-bg/text token overrides added with toast tokens (same commit) — Button danger variant required them and had no dark coverage
+- [Phase 06-ui-primitives-toast]: Toaster renders as sibling to children (not inside BrowserRouter) so toasts survive route changes
+- [Phase 06-ui-primitives-toast]: aria-live Toaster div always in DOM even when empty for NVDA/JAWS pre-registration compatibility
 
 ### Pending Todos
 
@@ -72,6 +78,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-07T18:48:23.832Z
-Stopped at: Completed 05-02-PLAN.md
+Last session: 2026-04-08T12:45:40.581Z
+Stopped at: Completed 06-02-PLAN.md
 Resume file: None

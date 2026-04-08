@@ -53,10 +53,10 @@ Plans:
   2. Button variants (primary, secondary, danger) are visually distinct and rendered from a single shared Button component — not duplicated inline styles
   3. UI transitions on chat bubbles and page changes are visibly animated and complete in under 300ms
   4. Toast notifications are visible and readable in both light and dark environments (contrast passes even before dark mode is wired up)
-**Plans:** 3 plans
+**Plans:** 2/3 plans executed
 Plans:
-- [ ] 06-01-PLAN.md — Button component + toast color tokens
-- [ ] 06-02-PLAN.md — Toast system (ToastProvider, Toast, App.jsx wiring)
+- [x] 06-01-PLAN.md — Button component + toast color tokens
+- [x] 06-02-PLAN.md — Toast system (ToastProvider, Toast, App.jsx wiring)
 - [ ] 06-03-PLAN.md — Alert replacement + chat bubble animation
 
 ### Phase 7: Component Migration + Accessibility
@@ -91,6 +91,6 @@ Plans:
 | 3. Tech Debt | v1.1.0 | 2/2 | Complete | 2026-04-07 |
 | 4. Fragility | v1.1.0 | 2/2 | Complete | 2026-04-07 |
 | 5. Design Token Foundation | v2.0.0 | 2/2 | Complete   | 2026-04-07 |
-| 6. UI Primitives + Toast System | v2.0.0 | 0/3 | Planned | - |
+| 6. UI Primitives + Toast System | v2.0.0 | 2/3 | In Progress|  |
 | 7. Component Migration + Accessibility | v2.0.0 | 0/? | Not started | - |
 | 8. New Interactions | v2.0.0 | 0/? | Not started | - |
