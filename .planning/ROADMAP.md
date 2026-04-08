@@ -76,7 +76,7 @@ Plans:
 - [x] 07-03-PLAN.md -- TriageDetailsModal migration + modal ARIA + focus trap
 - [x] 07-04-PLAN.md -- Tooltip + StatusBar shared UI components
 - [x] 07-05-PLAN.md -- ProtocolTriage inline style migration + responsive sensor panel
-- [ ] 07-06-PLAN.md -- Form validation, age auto-calc, tooltips, input masking, StatusBar wiring
+- [x] 07-06-PLAN.md -- Form validation, age auto-calc, tooltips, input masking, StatusBar wiring
 
 ### Phase 8: New Interactions
 **Goal**: Clinicians have a dark mode toggle persisted across sessions, keyboard shortcuts for triage answers, and a voice recording UI that shows real-time feedback before submission.

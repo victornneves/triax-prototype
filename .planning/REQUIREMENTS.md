@@ -16,7 +16,7 @@ Requirements for UI/UX Overhaul. Each maps to roadmap phases.
 
 ### Layout
 
-- [ ] **LAYT-01**: Sensor/vitals panel collapses on narrow screens and can be toggled on wider screens
+- [x] **LAYT-01**: Sensor/vitals panel collapses on narrow screens and can be toggled on wider screens
 - [x] **LAYT-02**: Global status bar displays current session ID, selected protocol, and connection status
 
 ### Interactions
@@ -34,8 +34,8 @@ Requirements for UI/UX Overhaul. Each maps to roadmap phases.
 
 ### Forms
 
-- [ ] **FORM-01**: Required form fields show inline validation feedback on blur/submit
-- [ ] **FORM-02**: Patient age is auto-calculated from birth date input
+- [x] **FORM-01**: Required form fields show inline validation feedback on blur/submit
+- [x] **FORM-02**: Patient age is auto-calculated from birth date input
 - [x] **FORM-03**: All form fields have contextual help tooltips explaining purpose and expected values
 - [x] **FORM-04**: Date, CPF, and blood pressure fields use input masking with auto-formatting
 
@@ -76,7 +76,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DSGN-02 | Phase 5 | Complete |
 | DSGN-03 | Phase 8 | Pending |
 | DSGN-04 | Phase 6 | Complete |
-| LAYT-01 | Phase 7 | Pending |
+| LAYT-01 | Phase 7 | Complete |
 | LAYT-02 | Phase 7 | Complete |
 | INTR-01 | Phase 6 | Complete |
 | INTR-02 | Phase 8 | Pending |
@@ -85,8 +85,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | A11Y-01 | Phase 7 | Complete |
 | A11Y-02 | Phase 7 | Complete |
 | A11Y-03 | Phase 7 | Complete |
-| FORM-01 | Phase 7 | Pending |
-| FORM-02 | Phase 7 | Pending |
+| FORM-01 | Phase 7 | Complete |
+| FORM-02 | Phase 7 | Complete |
 | FORM-03 | Phase 7 | Complete |
 | FORM-04 | Phase 7 | Complete |
 
