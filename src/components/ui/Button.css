@@ -1,0 +1,98 @@
+/* Button.css — Token-backed shared button primitive (Phase 6, DSGN-04) */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  line-height: 1.4;
+  position: relative;
+}
+
+/* --- Sizes (D-11) --- */
+.btn--md {
+  min-height: 40px;
+  padding: 0.5rem var(--spacing-md);
+  font-size: var(--font-size-md);
+}
+
+.btn--sm {
+  min-height: 36px;
+  padding: 0.3rem var(--spacing-sm);
+  font-size: var(--font-size-sm);
+}
+
+/* --- Variants (D-10) --- */
+.btn--primary {
+  background-color: var(--color-primary);
+  color: var(--color-primary-text);
+  border-color: transparent;
+}
+.btn--primary:hover:not(:disabled) {
+  background-color: var(--color-primary-hover);
+}
+
+.btn--secondary {
+  background-color: transparent;
+  color: var(--color-text-primary);
+  border-color: var(--color-border);
+}
+.btn--secondary:hover:not(:disabled) {
+  background-color: var(--color-surface-muted);
+  border-color: var(--color-border-strong);
+}
+
+.btn--danger {
+  background-color: transparent;
+  color: var(--color-error-text);
+  border-color: var(--color-error-text);
+}
+.btn--danger:hover:not(:disabled) {
+  background-color: var(--color-error-bg);
+}
+
+/* --- Disabled state --- */
+.btn:disabled {
+  background-color: var(--color-surface-muted);
+  color: var(--color-text-muted);
+  border-color: transparent;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* --- Focus ring (WCAG 2.1 AA) --- */
+.btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* --- Loading state (D-12) --- */
+.btn--loading {
+  color: transparent;
+  pointer-events: none;
+}
+
+.btn__spinner {
+  position: absolute;
+  width: 1em;
+  height: 1em;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: btn-spin 0.6s linear infinite;
+}
+
+/* Inherit variant text color for spinner visibility */
+.btn--primary .btn__spinner { border-color: var(--color-primary-text); border-top-color: transparent; }
+.btn--secondary .btn__spinner { border-color: var(--color-text-primary); border-top-color: transparent; }
+.btn--danger .btn__spinner { border-color: var(--color-error-text); border-top-color: transparent; }
+
+@keyframes btn-spin {
+  to { transform: rotate(360deg); }
+}
