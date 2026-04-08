@@ -11,6 +11,7 @@ import Profile from './pages/Profile';
 import AdminUsers from './pages/AdminUsers';
 import RequireAdmin from './components/RequireAdmin';
 import { UserProvider, useUser } from './contexts/UserContext';
+import { ToastProvider } from './components/ui/ToastProvider';
 import './App.css';
 
 Amplify.configure(awsConfig);
@@ -66,9 +67,11 @@ function App() {
     return (
         <Authenticator>
             {({ signOut, user }) => (
-                <UserProvider>
-                    <AppContent signOut={signOut} />
-                </UserProvider>
+                <ToastProvider>
+                    <UserProvider>
+                        <AppContent signOut={signOut} />
+                    </UserProvider>
+                </ToastProvider>
             )}
         </Authenticator>
     );

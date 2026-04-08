@@ -1,0 +1,101 @@
+/* Toast.css — Token-backed toast notification styles (Phase 6, INTR-01) */
+
+/* --- Container: fixed top-right, below Header (64px) --- */
+.toaster {
+  position: fixed;
+  top: calc(64px + var(--spacing-md));
+  right: var(--spacing-md);
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  pointer-events: none;
+  max-width: 360px;
+  width: calc(100vw - 2 * var(--spacing-md));
+}
+
+/* --- Individual toast item --- */
+.toast {
+  pointer-events: all;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: 8px;
+  border: 1px solid transparent;
+  border-left: 4px solid transparent;
+  font-size: var(--font-size-md);
+  line-height: 1.5;
+  animation: toast-enter 250ms ease-out forwards;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* --- Type variants (D-05) — use toast semantic tokens, NOT primitives --- */
+.toast--error {
+  background-color: var(--color-toast-error-bg);
+  color: var(--color-toast-error-text);
+  border-left-color: var(--color-toast-error-text);
+}
+
+.toast--success {
+  background-color: var(--color-toast-ok-bg);
+  color: var(--color-toast-ok-text);
+  border-left-color: var(--color-toast-ok-text);
+}
+
+.toast--info {
+  background-color: var(--color-toast-info-bg);
+  color: var(--color-toast-info-text);
+  border-left-color: var(--color-toast-info-text);
+}
+
+/* --- Toast message --- */
+.toast__message {
+  flex: 1;
+}
+
+/* --- Close button (D-03: always visible) --- */
+.toast__close {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: var(--font-size-lg);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+
+.toast__close:hover {
+  opacity: 1;
+}
+
+/* --- Entrance animation (D-15: slide-in from right + fade, 250ms) --- */
+@keyframes toast-enter {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* --- Exit animation (D-15: fade-out, 200ms) --- */
+.toast--exiting {
+  animation: toast-exit 200ms ease-in forwards;
+}
+
+@keyframes toast-exit {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(50%);
+  }
+}
