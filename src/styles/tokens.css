@@ -101,6 +101,14 @@
 
   --color-error-bg:       var(--color-feedback-error-bg);
   --color-error-text:     var(--color-feedback-error-text);
+
+  /* --- Toast feedback colors (Phase 6 — D-05, D-07) --- */
+  --color-toast-error-bg:   var(--color-feedback-error-bg);
+  --color-toast-error-text: var(--color-feedback-error-text);
+  --color-toast-ok-bg:      var(--color-feedback-ok-bg);
+  --color-toast-ok-text:    var(--color-feedback-ok-text);
+  --color-toast-info-bg:    var(--color-gray-100);
+  --color-toast-info-text:  var(--color-primary);
 }
 
 /* ===================================================================
@@ -132,4 +140,16 @@
   --color-nav-text-hover: var(--color-gray-100);
 
   /* MTS colors unchanged in dark mode — clinical meaning is sacrosanct */
+
+  /* --- Toast feedback colors — dark overrides (Phase 6 — D-05, D-07) --- */
+  --color-toast-error-bg:   #450a0a;
+  --color-toast-error-text: #fca5a5;
+  --color-toast-ok-bg:      #052e16;
+  --color-toast-ok-text:    #86efac;
+  --color-toast-info-bg:    var(--color-gray-800);
+  --color-toast-info-text:  var(--color-teal-400);
+
+  /* --- Error feedback — dark overrides (Phase 6) --- */
+  --color-error-bg:         #450a0a;
+  --color-error-text:       #fca5a5;
 }
