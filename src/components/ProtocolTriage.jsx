@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { getAuthHeaders } from '../utils/auth';
 import { useTranscribe } from '../useTranscribe'; // Import hook
 import { useToast } from './ui/ToastProvider';
+import './ProtocolTriage.css';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -74,8 +75,10 @@ const SENSOR_CONFIG = {
 
 const PainInput = ({ value, onChange }) => {
     const val = value ? parseInt(value) : 0;
+    // accentColor is a dynamic clinical value (red=severe, yellow=moderate, green=mild) — kept inline
+    const accentColor = val > 7 ? 'var(--mts-red)' : (val > 3 ? 'var(--mts-yellow)' : 'var(--mts-green)');
     return (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%', minWidth: 0 }}>
+        <div className="triage-sensors__pain-group">
             <input
                 type="range"
                 min="0"
@@ -83,20 +86,22 @@ const PainInput = ({ value, onChange }) => {
                 value={val}
                 name="pain_scale"
                 onChange={onChange}
-                style={{ flex: 1, accentColor: val > 7 ? '#dc3545' : ((val > 3) ? '#ffc107' : '#198754'), minWidth: 0, cursor: 'pointer' }}
+                className="triage-sensors__pain-range"
+                style={{ accentColor }}
             />
-            <span style={{ fontWeight: 'bold', width: '20px', textAlign: 'right', fontSize: '0.9rem' }}>{val}</span>
+            <span className="triage-sensors__pain-value">{val}</span>
         </div>
     );
 };
 
 const GCSInput = ({ value, onChange }) => {
+    // Border color is a dynamic clinical severity indicator — kept inline per plan guidance
     const getColor = (v) => {
-        if (!v) return '#ced4da';
+        if (!v) return 'var(--color-border-strong)';
         const num = parseInt(v);
-        if (num <= 8) return '#dc3545'; // Severe
-        if (num <= 12) return '#ffc107'; // Moderate
-        return '#198754'; // Mild/Normal
+        if (num <= 8) return 'var(--mts-red)';    // Severe
+        if (num <= 12) return 'var(--mts-yellow)'; // Moderate
+        return 'var(--mts-green)';                  // Mild/Normal
     };
 
     return (
@@ -104,16 +109,10 @@ const GCSInput = ({ value, onChange }) => {
             name="gcs"
             value={value || ""}
             onChange={onChange}
+            className="triage-sensors__gcs-select"
             style={{
-                width: '100%',
-                padding: '10px',
-                borderRadius: '4px',
                 border: `1px solid ${getColor(value)}`,
-                borderLeftWidth: '5px', // Emphasis on color
-                outline: 'none',
-                backgroundColor: '#ffffff',
-                color: value ? '#212529' : '#6c757d',
-                cursor: 'pointer',
+                color: value ? 'var(--color-text-primary)' : 'var(--color-text-secondary)',
                 fontWeight: value ? '600' : 'normal'
             }}
         >
@@ -127,22 +126,11 @@ const GCSInput = ({ value, onChange }) => {
     );
 };
 
-const SensorLabel = ({ config, setTooltipState }) => (
-    <div
-        style={{ position: 'relative', cursor: 'help', display: 'flex', flexDirection: 'column' }}
-        className="sensor-label-group"
-        onMouseEnter={(e) => {
-            const rect = e.currentTarget.getBoundingClientRect();
-            setTooltipState({
-                x: rect.left + rect.width / 2,
-                y: rect.top,
-                config
-            });
-        }}
-        onMouseLeave={() => setTooltipState(null)}
-    >
-        <span style={{ fontWeight: '600', color: '#333' }}>{config.label}</span>
-        <span style={{ fontSize: '0.75rem', color: '#666' }}>({config.hint})</span>
+// Tooltip re-wiring deferred to Plan 06 — SensorLabel is functional without popup
+const SensorLabel = ({ config }) => (
+    <div className="sensor-label-group">
+        <span className="sensor-label-group__name">{config.label}</span>
+        <span className="sensor-label-group__hint">({config.hint})</span>
     </div>
 );
 
@@ -163,110 +151,72 @@ const PatientForm = ({ onSubmit, loading }) => {
         setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
-    const inputStyle = {
-        width: '100%',
-        padding: '10px',
-        borderRadius: '6px',
-        border: '1px solid #ced4da',
-        boxSizing: 'border-box',
-        backgroundColor: '#ffffff',
-        color: '#212529',
-        fontSize: '0.95rem'
-    };
-
     const handleSubmit = (e) => {
         e.preventDefault();
         onSubmit(formData);
     };
 
     return (
-        <div style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: '100%',
-            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
-        }}>
-            <form onSubmit={handleSubmit} style={{
-                background: '#fff',
-                padding: '2rem',
-                borderRadius: '12px',
-                boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
-                width: '100%',
-                maxWidth: '600px',
-                border: '1px solid #dee2e6'
-            }}>
-                <h3 style={{ marginTop: 0, marginBottom: '2rem', color: '#212529', textAlign: 'center', fontSize: '1.5rem', fontWeight: 700 }}>Identificação do Paciente</h3>
+        <div className="patient-form-wrapper">
+            <form onSubmit={handleSubmit} className="patient-form">
+                <h3 className="patient-form__title">Identificação do Paciente</h3>
 
                 {/* Patient Header Info */}
-                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
+                <div className="patient-form__grid-2">
                     <div>
-                        <label style={{ display: 'block', marginBottom: '0.4rem', fontWeight: 600, color: '#495057', fontSize: '0.9rem' }}>Nome Completo</label>
-                        <input required name="name" value={formData.name} onChange={handleChange} placeholder="Ex: Maria Souza" style={inputStyle} />
+                        <label htmlFor="patient-name" className="patient-form__label">Nome Completo</label>
+                        <input id="patient-name" required name="name" value={formData.name} onChange={handleChange} placeholder="Ex: Maria Souza" className="patient-form__input" />
                     </div>
                     <div>
-                        <label style={{ display: 'block', marginBottom: '0.4rem', fontWeight: 600, color: '#495057', fontSize: '0.9rem' }}>Cód. Paciente</label>
-                        <input name="patient_code" value={formData.patient_code} onChange={handleChange} placeholder="00000" style={inputStyle} />
+                        <label htmlFor="patient-patient_code" className="patient-form__label">Cód. Paciente</label>
+                        <input id="patient-patient_code" name="patient_code" value={formData.patient_code} onChange={handleChange} placeholder="00000" className="patient-form__input" />
                     </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
+                <div className="patient-form__grid-3">
                     <div>
-                        <label style={{ display: 'block', marginBottom: '0.4rem', fontWeight: 600, color: '#495057', fontSize: '0.9rem' }}>Nascimento</label>
-                        <input type="text" name="birth_date" value={formData.birth_date} onChange={handleChange} placeholder="DD/MM/AAAA" style={inputStyle} />
+                        <label htmlFor="patient-birth_date" className="patient-form__label">Nascimento</label>
+                        <input id="patient-birth_date" type="text" name="birth_date" value={formData.birth_date} onChange={handleChange} placeholder="DD/MM/AAAA" className="patient-form__input" />
                     </div>
                     <div>
-                        <label style={{ display: 'block', marginBottom: '0.4rem', fontWeight: 600, color: '#495057', fontSize: '0.9rem' }}>Idade</label>
-                        <input required type="number" name="age" value={formData.age} onChange={handleChange} placeholder="Anos" style={inputStyle} />
+                        <label htmlFor="patient-age" className="patient-form__label">Idade</label>
+                        <input id="patient-age" required type="number" name="age" value={formData.age} onChange={handleChange} placeholder="Anos" className="patient-form__input" />
                     </div>
                     <div>
-                        <label style={{ display: 'block', marginBottom: '0.4rem', fontWeight: 600, color: '#495057', fontSize: '0.9rem' }}>Sexo</label>
-                        <select name="sex" value={formData.sex} onChange={handleChange} style={inputStyle}>
+                        <label htmlFor="patient-sex" className="patient-form__label">Sexo</label>
+                        <select id="patient-sex" name="sex" value={formData.sex} onChange={handleChange} className="patient-form__input">
                             <option value="M">Masculino</option>
                             <option value="F">Feminino</option>
                         </select>
                     </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: '1rem', marginBottom: '1.5rem' }}>
+                <div className="patient-form__grid-half">
                     <div>
-                        <label style={{ display: 'block', marginBottom: '0.4rem', fontWeight: 600, color: '#495057', fontSize: '0.9rem' }}>Senha (Ticket)</label>
-                        <input name="ticket_number" value={formData.ticket_number} onChange={handleChange} placeholder="Ex: PU0022" style={inputStyle} />
+                        <label htmlFor="patient-ticket_number" className="patient-form__label">Senha (Ticket)</label>
+                        <input id="patient-ticket_number" name="ticket_number" value={formData.ticket_number} onChange={handleChange} placeholder="Ex: PU0022" className="patient-form__input" />
                     </div>
                     <div>
-                        <label style={{ display: 'block', marginBottom: '0.4rem', fontWeight: 600, color: '#495057', fontSize: '0.9rem' }}>Convênio</label>
-                        <input name="insurance" value={formData.insurance} onChange={handleChange} placeholder="Ex: SUS-SIA" style={inputStyle} />
+                        <label htmlFor="patient-insurance" className="patient-form__label">Convênio</label>
+                        <input id="patient-insurance" name="insurance" value={formData.insurance} onChange={handleChange} placeholder="Ex: SUS-SIA" className="patient-form__input" />
                     </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '2rem' }}>
+                <div className="patient-form__grid-equal">
                     <div>
-                        <label style={{ display: 'block', marginBottom: '0.4rem', fontWeight: 600, color: '#495057', fontSize: '0.9rem' }}>Atendimento (Visit ID)</label>
-                        <input name="visit_id" value={formData.visit_id} onChange={handleChange} placeholder="Ex: ATEND123" style={inputStyle} />
+                        <label htmlFor="patient-visit_id" className="patient-form__label">Atendimento (Visit ID)</label>
+                        <input id="patient-visit_id" name="visit_id" value={formData.visit_id} onChange={handleChange} placeholder="Ex: ATEND123" className="patient-form__input" />
                     </div>
                     <div>
-                        <label style={{ display: 'block', marginBottom: '0.4rem', fontWeight: 600, color: '#495057', fontSize: '0.9rem' }}>SAME</label>
-                        <input name="same" value={formData.same} onChange={handleChange} placeholder="Ex: 45678" style={inputStyle} />
+                        <label htmlFor="patient-same" className="patient-form__label">SAME</label>
+                        <input id="patient-same" name="same" value={formData.same} onChange={handleChange} placeholder="Ex: 45678" className="patient-form__input" />
                     </div>
                 </div>
 
                 <button
                     type="submit"
                     disabled={loading}
-                    style={{
-                        width: '100%',
-                        padding: '14px',
-                        background: '#0d6efd',
-                        color: '#fff',
-                        border: 'none',
-                        borderRadius: '6px',
-                        fontSize: '1.1rem',
-                        fontWeight: 700,
-                        cursor: 'pointer',
-                        transition: 'background 0.2s',
-                        boxShadow: '0 4px 12px rgba(13,110,253,0.3)',
-                        opacity: loading ? 0.7 : 1
-                    }}
+                    className="patient-form__submit"
                 >
                     {loading ? 'Iniciando Triagem...' : 'Iniciar Triagem'}
                 </button>
@@ -295,8 +245,8 @@ const ProtocolTriage = () => {
     const [triageResult, setTriageResult] = useState(null);
     const [triageReport, setTriageReport] = useState(null);
     const [sensorInputs, setSensorInputs] = useState({});
-    const [tooltipState, setTooltipState] = useState(null);
     const [allProtocols, setAllProtocols] = useState([]);
+    const [sensorPanelOpen, setSensorPanelOpen] = useState(false);
     const [pendingProtocol, setPendingProtocol] = useState(null);
     const [pdfLoading, setPdfLoading] = useState(false);
     const [pendingQuestion, setPendingQuestion] = useState(null); // { question, nodeId }
@@ -852,117 +802,66 @@ const ProtocolTriage = () => {
     };
 
     if (triageResult) {
+        // MTS priority colors are immutable clinical values — backgroundColor set inline
+        const priorityBg =
+            triageResult.priority === 'red' ? 'var(--mts-red)' :
+                triageResult.priority === 'orange' ? 'var(--mts-orange)' :
+                    triageResult.priority === 'yellow' ? 'var(--mts-yellow)' :
+                        triageResult.priority === 'green' ? 'var(--mts-green)' :
+                            triageResult.priority === 'blue' ? 'var(--mts-blue)' : 'var(--color-gray-500)';
+        const priorityColor = triageResult.priority === 'yellow' ? 'var(--mts-yellow-text)' : 'var(--color-primary-text)';
+
         return (
-            <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                height: '100%',
-                padding: '2rem',
-                fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
-            }}>
-                <div style={{
-                    background: '#fff',
-                    borderRadius: '8px',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                    padding: '2.5rem',
-                    maxWidth: '600px',
-                    width: '100%',
-                    textAlign: 'center',
-                    border: '1px solid #dee2e6'
-                }}>
-                    <h2 style={{ marginTop: 0, color: '#212529', marginBottom: '0.5rem' }}>Triagem Completa</h2>
-                    <p style={{ color: '#6c757d', marginBottom: '2rem' }}>
+            <div className="triage-complete">
+                <div className="triage-complete__card">
+                    <h2 className="triage-complete__title">Triagem Completa</h2>
+                    <p className="triage-complete__patient-info">
                         Paciente: <strong>{patientInfo?.name}</strong> ({patientInfo?.age} anos)
                     </p>
 
-                    <div style={{
-                        padding: '1.5rem',
-                        borderRadius: '12px',
-                        marginBottom: '2rem',
-                        backgroundColor:
-                            triageResult.priority === 'red' ? '#dc3545' :
-                                triageResult.priority === 'orange' ? '#fd7e14' :
-                                    triageResult.priority === 'yellow' ? '#ffc107' :
-                                        triageResult.priority === 'green' ? '#198754' :
-                                            triageResult.priority === 'blue' ? '#0d6efd' : '#6c757d',
-                        color: triageResult.priority === 'yellow' ? '#000' : '#fff',
-                        boxShadow: '0 8px 16px rgba(0,0,0,0.1)'
-                    }}>
-                        <div style={{
-                            fontSize: '1rem',
-                            fontWeight: 700,
-                            marginBottom: '0.5rem',
-                            opacity: 0.9,
-                            textTransform: 'uppercase',
-                            letterSpacing: '1px'
-                        }}>
+                    <div
+                        className="triage-complete__priority-badge"
+                        style={{ backgroundColor: priorityBg, color: priorityColor }}
+                    >
+                        <div className="triage-complete__priority-label">
                             {triageResult.priority === 'red' ? 'VERMELHO - EMERGÊNCIA' :
                                 triageResult.priority === 'orange' ? 'LARANJA - MUITO URGENTE' :
                                     triageResult.priority === 'yellow' ? 'AMARELO - URGENTE' :
                                         triageResult.priority === 'green' ? 'VERDE - POUCO URGENTE' :
-                                            triageResult.priority === 'blue' ? 'AZUL - NÃO URGENTE' : ' INDEFINIDO'}
+                                            triageResult.priority === 'blue' ? 'AZUL - NÃO URGENTE' : 'INDEFINIDO'}
                         </div>
-                        <h1 style={{ margin: 0, fontSize: '2.5rem', fontWeight: 900, textTransform: 'uppercase' }}>
+                        <h1 className="triage-complete__priority-text">
                             {triageResult.text}
                         </h1>
                     </div>
 
                     {triageReport && (
-                        <div style={{ textAlign: 'left', marginBottom: '2rem', fontSize: '0.95rem' }}>
-                            <div style={{ marginBottom: '1rem', padding: '1rem', background: '#f8f9fa', borderRadius: '8px', border: '1px solid #dee2e6' }}>
-                                <h4 style={{ marginTop: 0, marginBottom: '0.5rem', color: '#495057' }}>Estatísticas da Sessão</h4>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', color: '#212529' }}>
+                        <div className="triage-complete__report">
+                            <div className="triage-complete__stats-card">
+                                <h4 className="triage-complete__stats-title">Estatísticas da Sessão</h4>
+                                <div className="triage-complete__stats-grid">
                                     <span><strong>Início:</strong> {triageReport.stats.start_time ? new Date(triageReport.stats.start_time.endsWith('Z') ? triageReport.stats.start_time : triageReport.stats.start_time + 'Z').toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo' }) : '-'}</span>
                                     <span><strong>Fim:</strong> {triageReport.stats.end_time ? new Date(triageReport.stats.end_time.endsWith('Z') ? triageReport.stats.end_time : triageReport.stats.end_time + 'Z').toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo' }) : '-'}</span>
-                                    <span style={{ gridColumn: 'span 2' }}>
+                                    <span className="triage-complete__stats-duration">
                                         <strong>Duração:</strong> {triageReport.stats.duration_seconds ? `${Math.floor(triageReport.stats.duration_seconds / 60)}m ${triageReport.stats.duration_seconds % 60}s` : '-'}
                                     </span>
                                 </div>
                             </div>
 
-                            <div style={{ padding: '1rem', background: '#e8f4fd', borderRadius: '8px', border: '1px solid #b6effb' }}>
-                                <h4 style={{ marginTop: 0, marginBottom: '0.5rem', color: '#055160' }}>Raciocínio Clínico (IA)</h4>
-                                <p style={{ margin: 0, lineHeight: 1.5, color: '#055160' }}>
+                            <div className="triage-complete__reasoning-card">
+                                <h4 className="triage-complete__reasoning-title">Raciocínio Clínico (IA)</h4>
+                                <p className="triage-complete__reasoning-text">
                                     {triageReport.reasoning || "Raciocínio não disponível."}
                                 </p>
                             </div>
                         </div>
                     )}
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                    <div className="triage-complete__actions">
                         <button
                             onClick={handleDownloadPDF}
                             disabled={pdfLoading}
-                            style={{
-                                width: '100%',
-                                padding: '12px',
-                                background: '#fff',
-                                color: '#dc3545',
-                                border: '2px solid #dc3545',
-                                borderRadius: '6px',
-                                fontWeight: '700',
-                                cursor: 'pointer',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                gap: '8px',
-                                transition: 'all 0.2s',
-                                opacity: pdfLoading ? 0.7 : 1
-                            }}
-                            onMouseOver={(e) => {
-                                if (!pdfLoading) {
-                                    e.currentTarget.style.background = '#dc3545';
-                                    e.currentTarget.style.color = '#fff';
-                                }
-                            }}
-                            onMouseOut={(e) => {
-                                if (!pdfLoading) {
-                                    e.currentTarget.style.background = '#fff';
-                                    e.currentTarget.style.color = '#dc3545';
-                                }
-                            }}
+                            className="triage-complete__pdf-btn"
                         >
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -974,19 +873,7 @@ const ProtocolTriage = () => {
 
                         <button
                             onClick={handleNewTriage}
-                            style={{
-                                width: '100%',
-                                padding: '12px',
-                                background: '#0d6efd',
-                                color: '#fff',
-                                border: 'none',
-                                borderRadius: '6px',
-                                fontWeight: '700',
-                                cursor: 'pointer',
-                                transition: 'all 0.2s'
-                            }}
-                            onMouseOver={(e) => e.target.style.background = '#0b5ed7'}
-                            onMouseOut={(e) => e.target.style.background = '#0d6efd'}
+                            className="triage-complete__new-btn"
                         >
                             Nova Triagem
                         </button>
@@ -1002,66 +889,26 @@ const ProtocolTriage = () => {
 
     return (
 
-        <div style={{
-            display: 'grid',
-            gridTemplateColumns: '70% 30%',
-            gap: '1.5rem',
-            height: '100%',
-            maxHeight: '100%',
-            maxWidth: '1400px', // Increased slightly for better widescreen use
-            margin: '0 auto',
-            padding: '1.5rem', // Moved padding here from root
-            boxSizing: 'border-box',
-            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-            color: '#212529',
-            overflow: 'hidden' // Prevent global scroll
-        }}>
+        <div className="triage-layout">
 
             {/* Left: Chat Interface */}
-            <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                background: '#ffffff',
-                borderRadius: '8px',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                overflow: 'hidden',
-                border: '1px solid #dee2e6',
-                height: '100%', // Ensure it fills the grid cell
-                maxHeight: '100%'
-            }}>
-                <div style={{ flex: 1, padding: '1.5rem', overflowY: 'auto', background: '#f8f9fa' }}>
+            <section className="triage-chat-column" aria-label="Conversa de triagem">
+                <div className="chat-messages">
                     {messages.map((msg, idx) => {
                         if (msg.type === 'protocol_confirmation') {
                             return (
-                                <div key={idx} style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '1rem' }}>
-                                    <div style={{
-                                        maxWidth: '85%',
-                                        padding: '16px',
-                                        borderRadius: '12px',
-                                        background: '#ffffff',
-                                        border: '1px solid #198754', // Green border to signify action
-                                        borderTopLeftRadius: '0',
-                                        boxShadow: '0 2px 8px rgba(25, 135, 84, 0.1)'
-                                    }}>
-                                        <h4 style={{ margin: '0 0 10px 0', color: '#198754' }}>
+                                <div key={idx} className="chat-message-row chat-message-row--system">
+                                    <div className="chat-bubble--confirmation">
+                                        <h4 className="chat-bubble__confirmation-title">
                                             {msg.text}
                                         </h4>
-                                        <p style={{ margin: '0 0 10px 0', fontSize: '0.9rem', color: '#555' }}>
+                                        <p className="chat-bubble__confirmation-subtitle">
                                             Deseja seguir com este protocolo ou selecionar outro?
                                         </p>
-                                        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                                        <div className="chat-bubble__confirmation-actions">
                                             <button
                                                 onClick={() => confirmProtocol(msg.protocol)}
-                                                style={{
-                                                    padding: '8px 16px',
-                                                    background: '#198754',
-                                                    color: 'white',
-                                                    border: 'none',
-                                                    borderRadius: '6px',
-                                                    cursor: 'pointer',
-                                                    fontWeight: '600',
-                                                    fontSize: '0.9rem'
-                                                }}
+                                                className="chat-bubble__accept-btn"
                                             >
                                                 Aceitar
                                             </button>
@@ -1078,15 +925,7 @@ const ProtocolTriage = () => {
                                                         confirmProtocol(pObj);
                                                     }
                                                 }}
-                                                style={{
-                                                    padding: '8px',
-                                                    borderRadius: '6px',
-                                                    border: '1px solid #ced4da',
-                                                    background: '#fff',
-                                                    color: '#212529',
-                                                    cursor: 'pointer',
-                                                    fontSize: '0.9rem'
-                                                }}
+                                                className="chat-protocol-select"
                                                 defaultValue=""
                                             >
                                                 <option value="" disabled>Mudar Protocolo...</option>
@@ -1103,44 +942,19 @@ const ProtocolTriage = () => {
                         }
 
                         return (
-                            <div key={idx} className="animate-fade-in" style={{
-                                display: 'flex',
-                                justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start',
-                                marginBottom: '1rem'
-                            }}>
-                                <div style={{
-                                    maxWidth: '75%',
-                                    padding: '12px 16px',
-                                    borderRadius: '12px',
-                                    background: msg.role === 'user' ? '#0d6efd' : '#ffffff',
-                                    color: msg.role === 'user' ? '#ffffff' : '#212529',
-                                    border: msg.role === 'user' ? 'none' : '1px solid #dee2e6',
-                                    borderTopRightRadius: msg.role === 'user' ? '0' : '12px',
-                                    borderTopLeftRadius: msg.role === 'system' ? '0' : '12px',
-                                    boxShadow: msg.role === 'user' ? '0 2px 4px rgba(13, 110, 253, 0.2)' : '0 1px 2px rgba(0,0,0,0.05)',
-                                    lineHeight: '1.5'
-                                }}>
+                            <div
+                                key={idx}
+                                className={`animate-fade-in chat-message-row chat-message-row--${msg.role}`}
+                            >
+                                <div className={`chat-bubble chat-bubble--${msg.role}`}>
                                     {msg.text}
                                 </div>
                             </div>
                         );
                     })}
                     {loading && (
-                        <div style={{
-                            display: 'flex',
-                            justifyContent: 'flex-start',
-                            marginBottom: '1rem'
-                        }}>
-                            <div style={{
-                                padding: '12px 16px',
-                                borderRadius: '12px',
-                                background: '#ffffff',
-                                border: '1px solid #dee2e6',
-                                borderTopLeftRadius: '0',
-                                boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
-                                display: 'flex',
-                                alignItems: 'center'
-                            }}>
+                        <div className="chat-loading-row">
+                            <div className="chat-loading-bubble">
                                 <span className="typing-dot"></span>
                                 <span className="typing-dot"></span>
                                 <span className="typing-dot"></span>
@@ -1152,51 +966,25 @@ const ProtocolTriage = () => {
 
                 {/* Quick Replies */}
                 {currentNode?.yesNo && missingSensors.length === 0 && !loading && (
-                    <div style={{ padding: '0.5rem 1rem 0', background: '#ffffff', display: 'flex', gap: '8px', borderTop: '1px solid #dee2e6' }}>
+                    <div className="chat-quick-replies">
                         <button
                             onClick={() => handleSendMessage('Sim')}
                             disabled={loading}
-                            style={{
-                                padding: '6px 16px',
-                                background: '#e9ecef',
-                                color: '#495057',
-                                border: '1px solid #ced4da',
-                                borderRadius: '20px',
-                                fontSize: '0.9rem',
-                                cursor: 'pointer',
-                                fontWeight: '500',
-                                transition: 'all 0.2s',
-                                opacity: loading ? 0.6 : 1
-                            }}
-                            onMouseOver={(e) => !loading && (e.target.style.background = '#dee2e6')}
-                            onMouseOut={(e) => !loading && (e.target.style.background = '#e9ecef')}
+                            className="chat-quick-reply-btn"
                         >
                             Sim
                         </button>
                         <button
                             onClick={() => handleSendMessage('Não')}
                             disabled={loading}
-                            style={{
-                                padding: '6px 16px',
-                                background: '#e9ecef',
-                                color: '#495057',
-                                border: '1px solid #ced4da',
-                                borderRadius: '20px',
-                                fontSize: '0.9rem',
-                                cursor: 'pointer',
-                                fontWeight: '500',
-                                transition: 'all 0.2s',
-                                opacity: loading ? 0.6 : 1
-                            }}
-                            onMouseOver={(e) => !loading && (e.target.style.background = '#dee2e6')}
-                            onMouseOut={(e) => !loading && (e.target.style.background = '#e9ecef')}
+                            className="chat-quick-reply-btn"
                         >
                             Não
                         </button>
                     </div>
                 )}
 
-                <div style={{ padding: '1rem', background: '#ffffff', display: 'flex', gap: '10px' }}>
+                <div className="chat-input-bar">
                     <input
                         type="text"
                         value={inputText}
@@ -1204,40 +992,19 @@ const ProtocolTriage = () => {
                         onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                         placeholder="Digite a queixa do paciente..."
                         disabled={loading}
-                        style={{
-                            flex: 1,
-                            padding: '12px',
-                            borderRadius: '6px',
-                            border: '1px solid #ced4da',
-                            fontSize: '1rem',
-                            outline: 'none',
-                            backgroundColor: '#ffffff',
-                            color: '#212529'
-                        }}
+                        className="chat-text-input"
                     />
 
                     {/* Microphone Button */}
                     <button
                         onClick={handleToggleRecording}
                         disabled={loading}
-                        style={{
-                            padding: '0 12px',
-                            background: isRecording ? '#dc3545' : 'transparent', // Red when recording
-                            color: isRecording ? '#fff' : '#6c757d',
-                            border: '1px solid #ced4da',
-                            borderRadius: '6px',
-                            cursor: 'pointer',
-                            fontSize: '1.2rem',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            transition: 'all 0.2s'
-                        }}
+                        className={`chat-mic-btn${isRecording ? ' chat-mic-btn--recording' : ''}`}
                         title={isRecording ? "Parar Gravação" : "Gravar Áudio"}
                     >
                         {isRecording ? (
                             // Stop Icon (Square)
-                            <div style={{ width: 12, height: 12, background: 'currentColor', borderRadius: 2 }} />
+                            <div className="chat-mic-stop-icon" />
                         ) : (
                             // Mic Icon (SVG)
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -1250,41 +1017,23 @@ const ProtocolTriage = () => {
                     <button
                         onClick={() => handleSendMessage()}
                         disabled={loading}
-                        style={{
-                            padding: '0 24px',
-                            background: '#0d6efd',
-                            color: '#ffffff',
-                            border: 'none',
-                            borderRadius: '6px',
-                            cursor: 'pointer',
-                            fontWeight: '600',
-                            transition: 'background 0.2s',
-                            opacity: loading ? 0.7 : 1
-                        }}
+                        className="chat-send-btn"
                     >
                         Enviar
                     </button>
                 </div>
-            </div>
+            </section>
 
-            {/* Right: Sensors & Info */}
-            <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '1rem',
-                height: '100%',
-                maxHeight: '100%',
-                overflowY: 'auto', // Enable scrolling for this column
-                paddingRight: '4px' // Minor padding for scrollbar aesthetics
-            }}>
+            {/* Right: Sensors & Info — desktop sidebar */}
+            <div className="triage-sensors-column">
 
                 {/* Session Info */}
-                <div style={{ position: 'sticky', top: 0, zIndex: 10, padding: '1.25rem', background: '#ffffff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', border: '1px solid #dee2e6' }}>
-                    <div style={{ marginTop: '0', marginBottom: '10px', fontSize: '1.1rem', fontWeight: 'bold' }}>
+                <div className="triage-session-info">
+                    <div className="triage-session-info__patient-name">
                         {patientInfo ? `${patientInfo.name} (${patientInfo.age} anos, ${patientInfo.sex})` : 'Paciente'}
                     </div>
-                    <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#6c757d', letterSpacing: '0.05em', marginBottom: '5px' }}>Protocolo Atual</div>
-                    <div style={{ fontSize: '1.1rem', fontWeight: 'bold', color: '#198754', marginBottom: '1rem' }}>{suggestedProtocol ? suggestedProtocol.text : 'Aguardando...'}</div>
+                    <div className="triage-session-info__protocol-label">Protocolo Atual</div>
+                    <div className="triage-session-info__protocol-value">{suggestedProtocol ? suggestedProtocol.text : 'Aguardando...'}</div>
 
                     <button
                         onClick={() => {
@@ -1292,53 +1041,26 @@ const ProtocolTriage = () => {
                                 handleNewTriage();
                             }
                         }}
-                        style={{
-                            width: '100%',
-                            padding: '8px',
-                            background: '#fff',
-                            color: '#dc3545',
-                            border: '1px solid #dc3545',
-                            borderRadius: '4px',
-                            cursor: 'pointer',
-                            fontSize: '0.9rem',
-                            fontWeight: '600',
-                            transition: 'all 0.2s'
-                        }}
-                        onMouseOver={(e) => {
-                            e.target.style.background = '#dc3545';
-                            e.target.style.color = '#fff';
-                        }}
-                        onMouseOut={(e) => {
-                            e.target.style.background = '#fff';
-                            e.target.style.color = '#dc3545';
-                        }}
+                        className="triage-cancel-btn"
                     >
                         Cancelar Triagem
                     </button>
                 </div>
 
                 {/* Sensors */}
-                <div style={{ padding: '1.25rem', background: '#ffffff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', border: '1px solid #dee2e6', display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid #f1f3f5', paddingBottom: '1rem' }}>
-                        <h4 style={{ margin: 0, color: '#212529', fontSize: '1.1rem' }}>Sinais Vitais</h4>
+                <div className="triage-sensors">
+                    <div className="triage-sensors__header">
+                        <h4 className="triage-sensors__title">Sinais Vitais</h4>
                         <button
                             onClick={handleFillNormals}
-                            style={{
-                                fontSize: '0.75rem',
-                                padding: '4px 8px',
-                                cursor: 'pointer',
-                                background: '#f8f9fa',
-                                border: '1px solid #dee2e6',
-                                borderRadius: '4px',
-                                color: '#6c757d'
-                            }}
+                            className="triage-sensors__fill-btn"
                             title="Preencher valores normais (Debug)"
                         >
                             Preencher Normais
                         </button>
                     </div>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', overflowY: 'auto', paddingRight: '5px' }}>
+                    <div className="triage-sensors__list">
                         {Object.keys(SENSOR_CONFIG).map(key => {
                             const conf = SENSOR_CONFIG[key];
                             const isMissing = missingSensors.includes(key);
@@ -1361,39 +1083,21 @@ const ProtocolTriage = () => {
                                 );
                             } else if (conf.composite) {
                                 inputComponent = (
-                                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                    <div className="triage-sensors__bp-group">
                                         <input
                                             placeholder="SIS"
                                             name="bp_systolic"
                                             value={sensorInputs.bp_systolic || ''}
                                             onChange={handleSensorChange}
-                                            style={{
-                                                width: '60px',
-                                                padding: '8px',
-                                                borderRadius: '4px',
-                                                border: '1px solid #ced4da',
-                                                color: '#212529',
-                                                backgroundColor: '#ffffff',
-                                                textAlign: 'center',
-                                                fontSize: '0.95rem', boxSizing: 'border-box'
-                                            }}
+                                            className="triage-sensors__bp-input"
                                         />
-                                        <span style={{ color: '#6c757d', fontWeight: 'bold' }}>/</span>
+                                        <span className="triage-sensors__bp-separator">/</span>
                                         <input
                                             placeholder="DIA"
                                             name="bp_diastolic"
                                             value={sensorInputs.bp_diastolic || ''}
                                             onChange={handleSensorChange}
-                                            style={{
-                                                width: '60px',
-                                                padding: '8px',
-                                                borderRadius: '4px',
-                                                border: '1px solid #ced4da',
-                                                color: '#212529',
-                                                backgroundColor: '#ffffff',
-                                                textAlign: 'center',
-                                                fontSize: '0.95rem', boxSizing: 'border-box'
-                                            }}
+                                            className="triage-sensors__bp-input"
                                         />
                                     </div>
                                 );
@@ -1405,15 +1109,7 @@ const ProtocolTriage = () => {
                                         onChange={handleSensorChange}
                                         placeholder="-"
                                         type="number"
-                                        style={{
-                                            width: '100%',
-                                            padding: '8px',
-                                            borderRadius: '4px',
-                                            border: '1px solid #ced4da',
-                                            color: '#212529',
-                                            backgroundColor: '#ffffff',
-                                            fontSize: '0.95rem', boxSizing: 'border-box'
-                                        }}
+                                        className="triage-sensors__input"
                                     />
                                 );
                             }
@@ -1421,19 +1117,9 @@ const ProtocolTriage = () => {
                             return (
                                 <div
                                     key={key}
-                                    className={isMissing ? 'sensor-missing-pulse' : ''}
-                                    style={{
-                                        display: 'grid',
-                                        gridTemplateColumns: '90px minmax(0, 1fr)',
-                                        alignItems: 'center',
-                                        gap: '10px',
-                                        padding: '8px',
-                                        borderRadius: '6px',
-                                        backgroundColor: isMissing ? '#fff3f3' : '#f8f9fa',
-                                        border: isMissing ? '1px solid #ffc9c9' : '1px solid #e9ecef',
-                                        transition: 'all 0.3s'
-                                    }}>
-                                    <SensorLabel config={conf} setTooltipState={setTooltipState} />
+                                    className={`triage-sensors__item${isMissing ? ' triage-sensors__item--missing sensor-missing-pulse' : ''}`}
+                                >
+                                    <SensorLabel config={conf} />
                                     {inputComponent}
                                 </div>
                             );
@@ -1443,21 +1129,7 @@ const ProtocolTriage = () => {
                     <button
                         onClick={handleSendSensors}
                         disabled={loading}
-                        style={{
-                            marginTop: 'auto',
-                            width: '100%',
-                            padding: '12px',
-                            background: '#198754',
-                            color: '#ffffff',
-                            border: 'none',
-                            borderRadius: '6px',
-                            cursor: 'pointer',
-                            fontWeight: '600',
-                            fontSize: '1rem',
-                            boxShadow: '0 2px 4px rgba(25, 135, 84, 0.2)',
-                            transition: 'background 0.2s',
-                            opacity: loading ? 0.7 : 1
-                        }}
+                        className="triage-sensors__submit-btn"
                     >
                         {loading ? 'Processando...' : 'Atualizar Sinais Vitais'}
                     </button>
@@ -1465,41 +1137,105 @@ const ProtocolTriage = () => {
 
             </div>
 
-            {/* Global Tooltip Portal */}
-            {
-                tooltipState && (
-                    <div style={{
-                        position: 'fixed',
-                        top: tooltipState.y - 8,
-                        left: tooltipState.x,
-                        transform: 'translate(-50%, -100%)',
-                        background: '#333',
-                        color: '#fff',
-                        padding: '8px',
-                        borderRadius: '4px',
-                        fontSize: '0.75rem',
-                        width: '180px',
-                        zIndex: 9999,
-                        textAlign: 'center',
-                        boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
-                        pointerEvents: 'none'
-                    }}>
-                        <div style={{ marginBottom: '4px', fontWeight: 'bold' }}>{tooltipState.config.desc}</div>
-                        <div>{tooltipState.config.range}</div>
-                        {/* Arrow */}
-                        <div style={{
-                            position: 'absolute',
-                            top: '100%',
-                            left: '50%',
-                            marginLeft: '-5px',
-                            borderWidth: '5px',
-                            borderStyle: 'solid',
-                            borderColor: '#333 transparent transparent transparent'
-                        }} />
+            {/* Sensor panel — slide-up aside on mobile */}
+            <aside
+                id="sensor-panel"
+                className={`triage-sensors-aside${sensorPanelOpen ? ' triage-sensors-aside--open' : ''}`}
+                aria-label="Painel de sinais vitais"
+            >
+                {/* Session Info */}
+                <div className="triage-session-info">
+                    <div className="triage-session-info__patient-name">
+                        {patientInfo ? `${patientInfo.name} (${patientInfo.age} anos, ${patientInfo.sex})` : 'Paciente'}
                     </div>
-                )
-            }
-        </div >
+                    <div className="triage-session-info__protocol-label">Protocolo Atual</div>
+                    <div className="triage-session-info__protocol-value">{suggestedProtocol ? suggestedProtocol.text : 'Aguardando...'}</div>
+                    <button
+                        onClick={() => {
+                            if (window.confirm("Tem certeza que deseja cancelar esta triagem? O progresso será perdido.")) {
+                                handleNewTriage();
+                            }
+                        }}
+                        className="triage-cancel-btn"
+                    >
+                        Cancelar Triagem
+                    </button>
+                </div>
+
+                {/* Sensors */}
+                <div className="triage-sensors">
+                    <div className="triage-sensors__header">
+                        <h4 className="triage-sensors__title">Sinais Vitais</h4>
+                        <button
+                            onClick={handleFillNormals}
+                            className="triage-sensors__fill-btn"
+                            title="Preencher valores normais (Debug)"
+                        >
+                            Preencher Normais
+                        </button>
+                    </div>
+
+                    <div className="triage-sensors__list">
+                        {Object.keys(SENSOR_CONFIG).map(key => {
+                            const conf = SENSOR_CONFIG[key];
+                            const isMissing = missingSensors.includes(key);
+
+                            let inputComponent;
+                            if (key === 'pain_scale') {
+                                inputComponent = <PainInput value={sensorInputs[key]} onChange={handleSensorChange} />;
+                            } else if (key === 'gcs') {
+                                inputComponent = <GCSInput value={sensorInputs[key]} onChange={handleSensorChange} />;
+                            } else if (conf.composite) {
+                                inputComponent = (
+                                    <div className="triage-sensors__bp-group">
+                                        <input placeholder="SIS" name="bp_systolic" value={sensorInputs.bp_systolic || ''} onChange={handleSensorChange} className="triage-sensors__bp-input" />
+                                        <span className="triage-sensors__bp-separator">/</span>
+                                        <input placeholder="DIA" name="bp_diastolic" value={sensorInputs.bp_diastolic || ''} onChange={handleSensorChange} className="triage-sensors__bp-input" />
+                                    </div>
+                                );
+                            } else {
+                                inputComponent = <input name={key} value={sensorInputs[key] || ''} onChange={handleSensorChange} placeholder="-" type="number" className="triage-sensors__input" />;
+                            }
+
+                            return (
+                                <div key={key} className={`triage-sensors__item${isMissing ? ' triage-sensors__item--missing sensor-missing-pulse' : ''}`}>
+                                    <SensorLabel config={conf} />
+                                    {inputComponent}
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    <button onClick={handleSendSensors} disabled={loading} className="triage-sensors__submit-btn">
+                        {loading ? 'Processando...' : 'Atualizar Sinais Vitais'}
+                    </button>
+                </div>
+            </aside>
+
+            {/* Compact vitals summary strip — mobile only */}
+            <div className="triage-sensors__summary" aria-hidden="true">
+                SpO2: {sensorInputs.oxygen_saturation || '\u2014'}% | FC: {sensorInputs.heart_rate || '\u2014'} bpm | T: {sensorInputs.temperature || '\u2014'}°C
+            </div>
+
+            {/* Toggle button — mobile only */}
+            <button
+                className="triage-sensors__toggle"
+                onClick={() => setSensorPanelOpen(prev => !prev)}
+                aria-expanded={sensorPanelOpen}
+                aria-controls="sensor-panel"
+            >
+                {sensorPanelOpen ? 'Ocultar Sinais Vitais' : 'Mostrar Sinais Vitais'}
+            </button>
+
+            {/* Backdrop — mobile only, visible when panel is open */}
+            {sensorPanelOpen && (
+                <div
+                    className="triage-sensors__backdrop"
+                    onClick={() => setSensorPanelOpen(false)}
+                    aria-hidden="true"
+                />
+            )}
+        </div>
     );
 };
 
