@@ -52,6 +52,20 @@
   --mts-green:       #28a745;   /* .priority-green background  */
   --mts-blue:        #007bff;   /* .priority-blue background   */
 
+  /* --- MTS Priority Tints — light bg for priority result boxes (D-20) ---
+   * Derived from MTS solid colors. Used in TriageDetailsModal result box.
+   * Text colors are accessible AA compliant on white (#fff). */
+  --mts-red-tint:        #ffeaea;
+  --mts-red-text:        #842029;
+  --mts-orange-tint:     #fff5e6;
+  --mts-orange-text:     #854000;
+  --mts-yellow-tint:     #fff9db;
+  --mts-yellow-dark-text: #856404;
+  --mts-green-tint:      #e8f5e9;
+  --mts-green-text:      #0f5132;
+  --mts-blue-tint:       #e7f1ff;
+  --mts-blue-text:       #084298;
+
   /* --- Spacing scale (D-07) --- */
   --spacing-xs:  0.25rem;
   --spacing-sm:  0.5rem;
