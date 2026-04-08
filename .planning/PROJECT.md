@@ -58,9 +58,9 @@ Clinicians reach a triage priority decision faster and more consistently because
 - [ ] Dark mode support
 - [ ] Responsive grid layout with collapsible sensor panel
 - [ ] Triage progress indicator (stepper/progress bar)
-- [ ] Unified button system (primary, secondary, danger variants)
+- [x] Unified button system (primary, secondary, danger variants) — Validated in Phase 6: UI Primitives + Toast
 - [ ] Keyboard shortcuts for triage flow (number keys for quick replies, Esc to cancel)
-- [ ] Toast notification system replacing alert() calls
+- [x] Toast notification system replacing alert() calls — Validated in Phase 6: UI Primitives + Toast
 - [ ] Improved voice recording UX (waveform, timer, transcription preview)
 - [ ] WCAG-compliant color contrast across all components
 - [ ] Semantic HTML and ARIA labels for screen reader support
@@ -81,7 +81,7 @@ Clinicians reach a triage priority decision faster and more consistently because
 
 ## Context
 
-- **Current state:** v2.0.0 in progress — Phase 5 (Design Token Foundation) complete. CSS custom property token system with `--mts-*` clinical colors, warm-professional teal palette, Header.jsx migrated to token-backed CSS. ~3,500 LOC across JS/JSX/CSS.
+- **Current state:** v2.0.0 in progress — Phase 6 (UI Primitives + Toast) complete. Button primitive with 3 variants + toast notification system live. All alert() calls replaced. Design token system with semantic toast tokens. ~3,800 LOC across JS/JSX/CSS.
 - **Deployment:** AWS Amplify auto-deploys on every commit to `main`. Working on `v2-ui-overhaul` branch; merging to `main` at milestone completion.
 - **Backend:** External REST API at AWS API Gateway (sa-east-1). Frontend owns no backend code.
 - **Language:** App targets Brazilian Portuguese-speaking clinical staff (São Paulo region).
@@ -126,4 +126,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-07 after v2.0.0 milestone start*
+*Last updated: 2026-04-08 after Phase 6 completion*
