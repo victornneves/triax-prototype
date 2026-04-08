@@ -28,16 +28,16 @@ Requirements for UI/UX Overhaul. Each maps to roadmap phases.
 
 ### Accessibility
 
-- [ ] **A11Y-01**: All text and interactive elements meet WCAG 2.1 AA contrast ratio (4.5:1 minimum)
-- [ ] **A11Y-02**: All interactive elements use semantic HTML (button, nav, label) with appropriate ARIA attributes
-- [ ] **A11Y-03**: All focusable elements have visible, high-contrast focus indicators for keyboard navigation
+- [x] **A11Y-01**: All text and interactive elements meet WCAG 2.1 AA contrast ratio (4.5:1 minimum)
+- [x] **A11Y-02**: All interactive elements use semantic HTML (button, nav, label) with appropriate ARIA attributes
+- [x] **A11Y-03**: All focusable elements have visible, high-contrast focus indicators for keyboard navigation
 
 ### Forms
 
 - [ ] **FORM-01**: Required form fields show inline validation feedback on blur/submit
 - [ ] **FORM-02**: Patient age is auto-calculated from birth date input
 - [ ] **FORM-03**: All form fields have contextual help tooltips explaining purpose and expected values
-- [ ] **FORM-04**: Date, CPF, and blood pressure fields use input masking with auto-formatting
+- [x] **FORM-04**: Date, CPF, and blood pressure fields use input masking with auto-formatting
 
 ## v2.x Requirements
 
@@ -82,13 +82,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | INTR-02 | Phase 8 | Pending |
 | INTR-03 | Phase 8 | Pending |
 | INTR-04 | Phase 6 | Complete |
-| A11Y-01 | Phase 7 | Pending |
-| A11Y-02 | Phase 7 | Pending |
-| A11Y-03 | Phase 7 | Pending |
+| A11Y-01 | Phase 7 | Complete |
+| A11Y-02 | Phase 7 | Complete |
+| A11Y-03 | Phase 7 | Complete |
 | FORM-01 | Phase 7 | Pending |
 | FORM-02 | Phase 7 | Pending |
 | FORM-03 | Phase 7 | Pending |
-| FORM-04 | Phase 7 | Pending |
+| FORM-04 | Phase 7 | Complete |
 
 **Coverage:**
 - v2.0.0 requirements: 16 total
