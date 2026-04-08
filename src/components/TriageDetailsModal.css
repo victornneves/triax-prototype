@@ -1,6 +1,23 @@
 /* TriageDetailsModal.css — Token-backed classes for TriageDetailsModal component */
 
 /* ===========================================================================
+ * ACCESSIBILITY UTILITIES
+ * =========================================================================== */
+
+/* Visually hidden — accessible to screen readers, invisible on screen */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ===========================================================================
  * OVERLAY & CONTAINER
  * =========================================================================== */
 
@@ -331,6 +348,28 @@
   font-weight: 800;
   color: var(--color-text-primary);
 }
+
+/* ===========================================================================
+ * PRIORITY RESULT BOX VARIANTS
+ * Uses data-priority attribute for data-driven MTS clinical color display.
+ * Background tints and text colors keyed from immutable MTS clinical standard.
+ * =========================================================================== */
+
+/* Background tint + left accent border by priority (data-attribute pattern) */
+.modal-result-box[data-priority="red"]    { background-color: var(--mts-red-tint);    border-left: 10px solid var(--mts-red); }
+.modal-result-box[data-priority="orange"] { background-color: var(--mts-orange-tint); border-left: 10px solid var(--mts-orange); }
+.modal-result-box[data-priority="yellow"] { background-color: var(--mts-yellow-tint); border-left: 10px solid var(--mts-yellow); }
+.modal-result-box[data-priority="green"]  { background-color: var(--mts-green-tint);  border-left: 10px solid var(--mts-green); }
+.modal-result-box[data-priority="blue"]   { background-color: var(--mts-blue-tint);   border-left: 10px solid var(--mts-blue); }
+.modal-result-box[data-priority="default"] { background-color: var(--color-surface-subtle); border-left: 10px solid var(--color-border-strong); }
+
+/* Priority name text color by priority (data-attribute pattern) */
+.modal-result-priority-name[data-priority="red"]    { color: var(--mts-red-text); }
+.modal-result-priority-name[data-priority="orange"] { color: var(--mts-orange-text); }
+.modal-result-priority-name[data-priority="yellow"] { color: var(--mts-yellow-dark-text); }
+.modal-result-priority-name[data-priority="green"]  { color: var(--mts-green-text); }
+.modal-result-priority-name[data-priority="blue"]   { color: var(--mts-blue-text); }
+.modal-result-priority-name[data-priority="default"] { color: var(--color-text-primary); }
 
 /* ===========================================================================
  * CLINICAL DATA CARDS GRID
