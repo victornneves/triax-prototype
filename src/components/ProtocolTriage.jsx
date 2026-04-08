@@ -1103,7 +1103,7 @@ const ProtocolTriage = () => {
                         }
 
                         return (
-                            <div key={idx} style={{
+                            <div key={idx} className="animate-fade-in" style={{
                                 display: 'flex',
                                 justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start',
                                 marginBottom: '1rem'
