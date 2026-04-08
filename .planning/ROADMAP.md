@@ -24,7 +24,7 @@ Full details: `.planning/milestones/v1.1.0-ROADMAP.md`
 **Milestone Goal:** Transform the functional prototype into a polished, clinician-centric triage tool with a cohesive design system, responsive layout, improved interactions, and WCAG-compliant accessibility.
 
 - [x] **Phase 5: Design Token Foundation** — CSS custom property system, provider stack, and Amplify coexistence (completed 2026-04-07)
-- [ ] **Phase 6: UI Primitives + Toast System** — Reusable component library and toast notifications replacing alert()
+- [x] **Phase 6: UI Primitives + Toast System** — Reusable component library and toast notifications replacing alert() (completed 2026-04-08)
 - [ ] **Phase 7: Component Migration + Accessibility** — Inline style elimination, semantic HTML, ARIA, WCAG 2.1 AA, form improvements, responsive layout
 - [ ] **Phase 8: New Interactions** — Dark mode toggle, keyboard shortcuts, and voice recording UX
 
@@ -53,11 +53,11 @@ Plans:
   2. Button variants (primary, secondary, danger) are visually distinct and rendered from a single shared Button component — not duplicated inline styles
   3. UI transitions on chat bubbles and page changes are visibly animated and complete in under 300ms
   4. Toast notifications are visible and readable in both light and dark environments (contrast passes even before dark mode is wired up)
-**Plans:** 2/3 plans executed
+**Plans:** 3/3 plans complete
 Plans:
 - [x] 06-01-PLAN.md — Button component + toast color tokens
 - [x] 06-02-PLAN.md — Toast system (ToastProvider, Toast, App.jsx wiring)
-- [ ] 06-03-PLAN.md — Alert replacement + chat bubble animation
+- [x] 06-03-PLAN.md — Alert replacement + chat bubble animation
 
 ### Phase 7: Component Migration + Accessibility
 **Goal**: Every component uses design tokens instead of inline styles, the app meets WCAG 2.1 AA contrast and semantic HTML requirements, form interactions are improved, and the sensor panel is responsive.
@@ -91,6 +91,6 @@ Plans:
 | 3. Tech Debt | v1.1.0 | 2/2 | Complete | 2026-04-07 |
 | 4. Fragility | v1.1.0 | 2/2 | Complete | 2026-04-07 |
 | 5. Design Token Foundation | v2.0.0 | 2/2 | Complete   | 2026-04-07 |
-| 6. UI Primitives + Toast System | v2.0.0 | 2/3 | In Progress|  |
+| 6. UI Primitives + Toast System | v2.0.0 | 3/3 | Complete   | 2026-04-08 |
 | 7. Component Migration + Accessibility | v2.0.0 | 0/? | Not started | - |
 | 8. New Interactions | v2.0.0 | 0/? | Not started | - |
