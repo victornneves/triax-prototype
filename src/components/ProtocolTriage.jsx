@@ -961,14 +961,13 @@ const ProtocolTriage = () => {
     };
 
     if (triageResult) {
-        // MTS priority colors are immutable clinical values — backgroundColor set inline
-        const priorityBg =
-            triageResult.priority === 'red' ? 'var(--mts-red)' :
-                triageResult.priority === 'orange' ? 'var(--mts-orange)' :
-                    triageResult.priority === 'yellow' ? 'var(--mts-yellow)' :
-                        triageResult.priority === 'green' ? 'var(--mts-green)' :
-                            triageResult.priority === 'blue' ? 'var(--mts-blue)' : 'var(--color-gray-500)';
-        const priorityColor = triageResult.priority === 'yellow' ? 'var(--mts-yellow-text)' : 'var(--color-primary-text)';
+        // MTS priority colors applied via .priority-{color} CSS classes from App.css
+        const priorityClass =
+            triageResult.priority === 'red' ? 'priority-red' :
+                triageResult.priority === 'orange' ? 'priority-orange' :
+                    triageResult.priority === 'yellow' ? 'priority-yellow' :
+                        triageResult.priority === 'green' ? 'priority-green' :
+                            triageResult.priority === 'blue' ? 'priority-blue' : '';
 
         return (
             <div className="triage-complete">
@@ -979,8 +978,7 @@ const ProtocolTriage = () => {
                     </p>
 
                     <div
-                        className="triage-complete__priority-badge"
-                        style={{ backgroundColor: priorityBg, color: priorityColor }}
+                        className={`triage-complete__priority-badge priority-badge ${priorityClass}`}
                     >
                         <div className="triage-complete__priority-label">
                             {triageResult.priority === 'red' ? 'VERMELHO - EMERGÊNCIA' :
@@ -1252,6 +1250,10 @@ const ProtocolTriage = () => {
                                         <input
                                             placeholder="SIS"
                                             name="bp_systolic"
+                                            type="number"
+                                            maxLength={3}
+                                            min={0}
+                                            max={300}
                                             value={sensorInputs.bp_systolic || ''}
                                             onChange={handleSensorChange}
                                             className="triage-sensors__bp-input"
@@ -1260,6 +1262,10 @@ const ProtocolTriage = () => {
                                         <input
                                             placeholder="DIA"
                                             name="bp_diastolic"
+                                            type="number"
+                                            maxLength={3}
+                                            min={0}
+                                            max={300}
                                             value={sensorInputs.bp_diastolic || ''}
                                             onChange={handleSensorChange}
                                             className="triage-sensors__bp-input"
