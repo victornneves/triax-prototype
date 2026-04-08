@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getAuthHeaders } from '../utils/auth';
 import { useUser } from '../contexts/UserContext';
 import { useNavigate } from 'react-router-dom';
+import './AdminUsers.css';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -49,66 +50,50 @@ const AdminUsers = () => {
         fetchUsers();
     }, [userProfile]);
 
-    if (userLoading) return <div style={{ padding: '2rem' }}>Verificando permissões...</div>;
+    if (userLoading) return <div className="admin-page__permissions-loading">Verificando permissões...</div>;
     if (userProfile?.effective_role !== 'admin') return null; // Should redirect ideally
 
     return (
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem' }}>
-            <h1 style={{ marginBottom: '2rem', color: '#212529' }}>Administração de Usuários</h1>
+        <div className="admin-page">
+            <h1 className="admin-page__title">Administração de Usuários</h1>
 
-            <div style={{
-                backgroundColor: '#fff',
-                borderRadius: '12px',
-                padding: '2rem',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-                border: '1px solid #e9ecef'
-            }}>
-                {error && <div style={{ color: '#dc3545', marginBottom: '1rem' }}>Erro ao carregar usuários.</div>}
+            <div className="admin-page__card">
+                {error && <div className="admin-page__error">Erro ao carregar usuários.</div>}
 
                 {loading ? (
-                    <div style={{ textAlign: 'center', padding: '2rem', color: '#adb5bd' }}>Carregando lista de usuários...</div>
+                    <div className="admin-page__loading">Carregando lista de usuários...</div>
                 ) : (
-                    <div style={{ overflowX: 'auto' }}>
-                        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                    <div className="admin-page__table-wrap">
+                        <table className="admin-page__table">
+                            <caption>Usuarios cadastrados na plataforma</caption>
                             <thead>
-                                <tr style={{ borderBottom: '2px solid #f1f3f5', backgroundColor: '#f8f9fa' }}>
-                                    <th style={{ padding: '1rem', color: '#495057', fontWeight: 600 }}>Usuário</th>
-                                    <th style={{ padding: '1rem', color: '#495057', fontWeight: 600 }}>Tenant</th>
-                                    <th style={{ padding: '1rem', color: '#495057', fontWeight: 600 }}>Funções (Roles)</th>
-                                    <th style={{ padding: '1rem', color: '#495057', fontWeight: 600 }}>Status / Detalhes</th>
+                                <tr>
+                                    <th scope="col">Usuário</th>
+                                    <th scope="col">Tenant</th>
+                                    <th scope="col">Funções (Roles)</th>
+                                    <th scope="col">Status / Detalhes</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {users.map((u, idx) => (
-                                    <tr key={idx} style={{ borderBottom: '1px solid #f8f9fa' }}>
-                                        <td style={{ padding: '1rem', fontWeight: 500 }}>
-                                            {u.username}
-                                            {u.email && <div style={{ fontSize: '0.8rem', color: '#868e96', fontWeight: 400 }}>{u.email}</div>}
+                                    <tr key={idx}>
+                                        <td>
+                                            <span className="admin-page__username">{u.username}</span>
+                                            {u.email && <div className="admin-page__email">{u.email}</div>}
                                         </td>
-                                        <td style={{ padding: '1rem' }}>
-                                            <span style={{
-                                                backgroundColor: '#e9ecef',
-                                                padding: '0.2rem 0.5rem',
-                                                borderRadius: '4px',
-                                                fontSize: '0.9rem'
-                                            }}>{u.tenant_id || '-'}</span>
+                                        <td>
+                                            <span className="admin-page__tenant-badge">{u.tenant_id || '-'}</span>
                                         </td>
-                                        <td style={{ padding: '1rem' }}>
-                                            <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
+                                        <td>
+                                            <div className="admin-page__roles">
                                                 {(u.roles || []).map((r, i) => (
-                                                    <span key={i} style={{
-                                                        fontSize: '0.8rem',
-                                                        padding: '0.1rem 0.5rem',
-                                                        border: '1px solid #dee2e6',
-                                                        borderRadius: '12px',
-                                                        color: '#495057'
-                                                    }}>
+                                                    <span key={i} className="admin-page__role-tag">
                                                         {r}
                                                     </span>
                                                 ))}
                                             </div>
                                         </td>
-                                        <td style={{ padding: '1rem', color: '#adb5bd', fontSize: '0.9rem' }}>
+                                        <td className="admin-page__action-cell">
                                             {/* Future: Edit/Delete/Audit buttons */}
                                             Visualizar
                                         </td>
@@ -116,7 +101,7 @@ const AdminUsers = () => {
                                 ))}
                                 {users.length === 0 && !loading && (
                                     <tr>
-                                        <td colSpan="4" style={{ padding: '2rem', textAlign: 'center', color: '#adb5bd' }}>
+                                        <td colSpan="4" className="admin-page__empty">
                                             Nenhum usuário encontrado.
                                         </td>
                                     </tr>

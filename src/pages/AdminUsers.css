@@ -1,0 +1,108 @@
+/* AdminUsers.css — Token-backed classes for AdminUsers page */
+/* Migration: Phase 7 — D-03, D-16, D-20 */
+
+.admin-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing-xl);
+}
+
+.admin-page__title {
+  margin-bottom: var(--spacing-xl);
+  color: var(--color-text-primary);
+}
+
+.admin-page__card {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+}
+
+.admin-page__error {
+  color: var(--color-error-text);
+  margin-bottom: var(--spacing-md);
+}
+
+.admin-page__loading {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--color-text-secondary);
+}
+
+.admin-page__table-wrap {
+  overflow-x: auto;
+}
+
+.admin-page__table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.admin-page__table thead tr {
+  border-bottom: 2px solid var(--color-border);
+  background-color: var(--color-surface-subtle);
+}
+
+.admin-page__table th {
+  padding: var(--spacing-md);
+  color: var(--color-text-primary);
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+}
+
+.admin-page__table tbody tr {
+  border-bottom: 1px solid var(--color-surface-subtle);
+}
+
+.admin-page__table td {
+  padding: var(--spacing-md);
+}
+
+.admin-page__username {
+  font-weight: 500;
+}
+
+.admin-page__email {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  font-weight: 400;
+}
+
+.admin-page__tenant-badge {
+  background-color: var(--color-surface-muted);
+  padding: 0.2rem var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+}
+
+.admin-page__roles {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.admin-page__role-tag {
+  font-size: var(--font-size-xs);
+  padding: 0.1rem var(--spacing-sm);
+  border: 1px solid var(--color-border-strong);
+  border-radius: 12px;
+  color: var(--color-text-primary);
+}
+
+.admin-page__action-cell {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.admin-page__empty {
+  padding: var(--spacing-xl);
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+
+.admin-page__permissions-loading {
+  padding: var(--spacing-xl);
+}

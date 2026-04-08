@@ -21,23 +21,15 @@ function AppContent({ signOut }) {
 
     if (error) {
         return (
-            <div style={{
-                display: 'flex', flexDirection: 'column', justifyContent: 'center',
-                alignItems: 'center', height: '100vh', padding: '2rem',
-                backgroundColor: '#f8f9fa', textAlign: 'center'
-            }}>
-                <h1 style={{ color: '#dc3545', marginBottom: '1rem' }}>Erro de Autenticacao</h1>
-                <p style={{ fontSize: '1.1rem', color: '#333', marginBottom: '1.5rem' }}>
+            <div className="app-error">
+                <h1 className="app-error__title">Erro de Autenticacao</h1>
+                <p className="app-error__message">
                     Sua sessao expirou ou ocorreu um erro de autenticacao.
                     Por favor, tente novamente.
                 </p>
                 <button
                     onClick={signOut}
-                    style={{
-                        padding: '0.75rem 1.5rem', backgroundColor: '#dc3545',
-                        color: 'white', border: 'none', borderRadius: '4px',
-                        cursor: 'pointer', fontSize: '1rem'
-                    }}
+                    className="app-error__button"
                 >
                     Sair e tentar novamente
                 </button>
@@ -47,10 +39,10 @@ function AppContent({ signOut }) {
 
     return (
         <BrowserRouter>
-            <div className="app-container" data-app-theme="light" style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
+            <div className="app-container" data-app-theme="light">
                 <Header signOut={signOut} />
 
-                <main style={{ flex: 1, overflow: 'auto', position: 'relative', backgroundColor: '#f8f9fa' }}>
+                <main className="app-main">
                     <Routes>
                         <Route path="/" element={<ProtocolTriage />} />
                         <Route path="/history" element={<HistoryPage />} />

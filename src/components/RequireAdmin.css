@@ -1,0 +1,10 @@
+/* RequireAdmin.css — Token-backed classes for RequireAdmin component */
+/* Migration: Phase 7 — D-03 */
+
+.require-admin-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: var(--spacing-xl);
+}

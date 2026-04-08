@@ -1,11 +1,10 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useUser } from '../contexts/UserContext';
 import './Header.css';
 
 const Header = ({ signOut }) => {
     const { userProfile, loading } = useUser();
-    const navigate = useNavigate();
 
     return (
         <header className="app-header">
@@ -32,12 +31,12 @@ const Header = ({ signOut }) => {
                 {loading ? (
                     <span className="header-loading-text">Carregando perfil...</span>
                 ) : userProfile ? (
-                    <div
-                        onClick={() => navigate('/profile')}
+                    <Link
+                        to="/profile"
                         className="header-profile-link"
                     >
                         Histórico de Triagens
-                    </div>
+                    </Link>
                 ) : (
                     // Fallback if profile fails
                     <span>Usuário Conectado</span>
