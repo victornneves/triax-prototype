@@ -1,0 +1,896 @@
+/* =================================================================
+ * ProtocolTriage.css — Token-backed classes
+ * Organized by render section: Layout, Form, Chat, Sensors, Complete
+ * ================================================================= */
+
+/* ----------------------------------------------------------------
+ * LAYOUT — top-level triage layout container
+ * ---------------------------------------------------------------- */
+.triage-layout {
+  display: grid;
+  grid-template-columns: 70% 30%;
+  gap: var(--spacing-lg);
+  height: 100%;
+  max-height: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: var(--spacing-lg);
+  box-sizing: border-box;
+  color: var(--color-text-primary);
+  overflow: hidden;
+}
+
+.triage-chat-column {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  height: 100%;
+  max-height: 100%;
+}
+
+/* ----------------------------------------------------------------
+ * PATIENT FORM — registration form (PatientForm sub-component)
+ * ---------------------------------------------------------------- */
+.patient-form-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.patient-form {
+  background-color: var(--color-surface);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  width: 100%;
+  max-width: 600px;
+  border: 1px solid var(--color-border-strong);
+}
+
+.patient-form__title {
+  margin-top: 0;
+  margin-bottom: var(--spacing-xl);
+  color: var(--color-text-primary);
+  text-align: center;
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+}
+
+.patient-form__grid-2 {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.patient-form__grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.patient-form__grid-half {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.patient-form__grid-equal {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
+}
+
+.patient-form__label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+}
+
+.patient-form__input {
+  width: 100%;
+  padding: 10px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-strong);
+  box-sizing: border-box;
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-md);
+}
+
+.patient-form__input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.15);
+}
+
+.patient-form__submit {
+  width: 100%;
+  padding: 14px;
+  background-color: var(--color-primary);
+  color: var(--color-primary-text);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  box-shadow: var(--shadow-md);
+}
+
+.patient-form__submit:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.patient-form__submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* ----------------------------------------------------------------
+ * CHAT COLUMN — messages, input bar, quick replies
+ * ---------------------------------------------------------------- */
+.chat-messages {
+  flex: 1;
+  padding: var(--spacing-lg);
+  overflow-y: auto;
+  background-color: var(--color-surface-subtle);
+}
+
+.chat-message-row {
+  display: flex;
+  margin-bottom: var(--spacing-md);
+}
+
+.chat-message-row--user {
+  justify-content: flex-end;
+}
+
+.chat-message-row--system {
+  justify-content: flex-start;
+}
+
+.chat-bubble {
+  max-width: 75%;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  line-height: 1.5;
+}
+
+.chat-bubble--user {
+  background-color: var(--color-primary);
+  color: var(--color-primary-text);
+  border-top-right-radius: 0;
+  box-shadow: 0 2px 4px rgba(20, 184, 166, 0.2);
+}
+
+.chat-bubble--system {
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  border-top-left-radius: 0;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Protocol confirmation message bubble */
+.chat-bubble--confirmation {
+  max-width: 85%;
+  padding: 16px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-feedback-ok-text);
+  border-top-left-radius: 0;
+  box-shadow: 0 2px 8px rgba(22, 101, 52, 0.1);
+}
+
+.chat-bubble__confirmation-title {
+  margin: 0 0 10px 0;
+  color: var(--color-feedback-ok-text);
+}
+
+.chat-bubble__confirmation-subtitle {
+  margin: 0 0 10px 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.chat-bubble__confirmation-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.chat-bubble__accept-btn {
+  padding: 8px 16px;
+  background-color: var(--color-feedback-ok-text);
+  color: var(--color-surface);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+}
+
+.chat-bubble__accept-btn:hover {
+  opacity: 0.9;
+}
+
+.chat-protocol-select {
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border-strong);
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+}
+
+/* Typing indicator */
+.chat-loading-row {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: var(--spacing-md);
+}
+
+.chat-loading-bubble {
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-top-left-radius: 0;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+}
+
+/* Quick reply buttons (Sim / Não) */
+.chat-quick-replies {
+  padding: var(--spacing-sm) var(--spacing-md) 0;
+  background-color: var(--color-surface);
+  display: flex;
+  gap: var(--spacing-sm);
+  border-top: 1px solid var(--color-border);
+}
+
+.chat-quick-reply-btn {
+  padding: 6px 16px;
+  background-color: var(--color-surface-muted);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  font-weight: 500;
+  transition: all var(--transition-fast);
+}
+
+.chat-quick-reply-btn:hover:not(:disabled) {
+  background-color: var(--color-border);
+}
+
+.chat-quick-reply-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Input bar */
+.chat-input-bar {
+  padding: var(--spacing-md);
+  background-color: var(--color-surface);
+  display: flex;
+  gap: 10px;
+}
+
+.chat-text-input {
+  flex: 1;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-strong);
+  font-size: var(--font-size-md);
+  outline: none;
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+}
+
+.chat-text-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.15);
+}
+
+.chat-mic-btn {
+  padding: 0 12px;
+  background-color: transparent;
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: var(--font-size-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.chat-mic-btn--recording {
+  background-color: var(--mts-red);
+  color: var(--color-primary-text);
+  border-color: var(--mts-red);
+}
+
+.chat-mic-btn:hover:not(:disabled) {
+  background-color: var(--color-surface-muted);
+}
+
+.chat-mic-btn--recording:hover:not(:disabled) {
+  opacity: 0.9;
+  background-color: var(--mts-red);
+}
+
+.chat-send-btn {
+  padding: 0 24px;
+  background-color: var(--color-primary);
+  color: var(--color-primary-text);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color var(--transition-fast);
+}
+
+.chat-send-btn:hover:not(:disabled) {
+  background-color: var(--color-primary-hover);
+}
+
+.chat-send-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.chat-mic-stop-icon {
+  width: 12px;
+  height: 12px;
+  background: currentColor;
+  border-radius: 2px;
+}
+
+/* ----------------------------------------------------------------
+ * SENSORS PANEL — sidebar (desktop) / slide-up overlay (mobile)
+ * ---------------------------------------------------------------- */
+.triage-sensors-column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  height: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+/* Session info card */
+.triage-session-info {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 1.25rem;
+  background-color: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+}
+
+.triage-session-info__patient-name {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: var(--font-size-lg);
+  font-weight: bold;
+  color: var(--color-text-primary);
+}
+
+.triage-session-info__protocol-label {
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.05em;
+  margin-bottom: 5px;
+}
+
+.triage-session-info__protocol-value {
+  font-size: var(--font-size-lg);
+  font-weight: bold;
+  color: var(--color-feedback-ok-text);
+  margin-bottom: var(--spacing-md);
+}
+
+/* Sensors card */
+.triage-sensors {
+  padding: 1.25rem;
+  background-color: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.triage-sensors__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--spacing-md);
+}
+
+.triage-sensors__title {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-lg);
+}
+
+.triage-sensors__fill-btn {
+  font-size: var(--font-size-xs);
+  padding: 4px 8px;
+  cursor: pointer;
+  background-color: var(--color-surface-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+}
+
+.triage-sensors__fill-btn:hover {
+  background-color: var(--color-surface-muted);
+}
+
+.triage-sensors__list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+.triage-sensors__item {
+  display: grid;
+  grid-template-columns: 90px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-subtle);
+  border: 1px solid var(--color-border);
+  transition: all 0.3s;
+}
+
+.triage-sensors__item--missing {
+  background-color: var(--color-feedback-error-bg);
+  border-color: var(--color-feedback-error-text);
+}
+
+.triage-sensors__input {
+  width: 100%;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border-strong);
+  color: var(--color-text-primary);
+  background-color: var(--color-surface);
+  font-size: var(--font-size-md);
+  box-sizing: border-box;
+}
+
+.triage-sensors__input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.triage-sensors__bp-group {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.triage-sensors__bp-input {
+  width: 60px;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border-strong);
+  color: var(--color-text-primary);
+  background-color: var(--color-surface);
+  text-align: center;
+  font-size: var(--font-size-md);
+  box-sizing: border-box;
+}
+
+.triage-sensors__bp-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.triage-sensors__bp-separator {
+  color: var(--color-text-secondary);
+  font-weight: bold;
+}
+
+.triage-sensors__submit-btn {
+  margin-top: auto;
+  width: 100%;
+  padding: 12px;
+  background-color: var(--color-feedback-ok-text);
+  color: var(--color-surface);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: var(--font-size-md);
+  box-shadow: var(--shadow-sm);
+  transition: background-color var(--transition-fast);
+  margin-top: var(--spacing-md);
+}
+
+.triage-sensors__submit-btn:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.triage-sensors__submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Sensor label sub-component */
+.sensor-label-group {
+  position: relative;
+  cursor: help;
+  display: flex;
+  flex-direction: column;
+}
+
+.sensor-label-group__name {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.sensor-label-group__hint {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+/* GCS select — dynamic border color is set inline (clinical state indicator) */
+.triage-sensors__gcs-select {
+  width: 100%;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  border-left-width: 5px;
+  outline: none;
+  background-color: var(--color-surface);
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+/* Pain scale (range input) */
+.triage-sensors__pain-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+}
+
+.triage-sensors__pain-range {
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.triage-sensors__pain-value {
+  font-weight: bold;
+  width: 20px;
+  text-align: right;
+  font-size: var(--font-size-sm);
+}
+
+/* --- Compact vitals summary strip (mobile only) --- */
+.triage-sensors__summary {
+  display: none;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  padding: var(--spacing-sm) var(--spacing-md);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --- Toggle button (mobile only) --- */
+.triage-sensors__toggle {
+  display: none;
+}
+
+/* --- Mobile backdrop (mobile only) --- */
+.triage-sensors__backdrop {
+  display: none;
+}
+
+/* ----------------------------------------------------------------
+ * CANCEL BUTTON — top of sensors column
+ * ---------------------------------------------------------------- */
+.triage-cancel-btn {
+  width: 100%;
+  padding: 8px;
+  background-color: var(--color-surface);
+  color: var(--mts-red);
+  border: 1px solid var(--mts-red);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  transition: all var(--transition-fast);
+}
+
+.triage-cancel-btn:hover {
+  background-color: var(--mts-red);
+  color: var(--color-surface);
+}
+
+/* ----------------------------------------------------------------
+ * TRIAGE COMPLETE — result screen
+ * ---------------------------------------------------------------- */
+.triage-complete {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: var(--spacing-xl);
+}
+
+.triage-complete__card {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: 2.5rem;
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+  border: 1px solid var(--color-border);
+}
+
+.triage-complete__title {
+  margin-top: 0;
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.triage-complete__patient-info {
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-xl);
+}
+
+/* MTS priority badge — background color set inline (clinical colors immutable) */
+.triage-complete__priority-badge {
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-xl);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.triage-complete__priority-label {
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  margin-bottom: var(--spacing-sm);
+  opacity: 0.9;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.triage-complete__priority-text {
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+/* Session stats card */
+.triage-complete__stats-card {
+  margin-bottom: var(--spacing-md);
+  padding: var(--spacing-md);
+  background-color: var(--color-surface-subtle);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+.triage-complete__stats-title {
+  margin-top: 0;
+  margin-bottom: var(--spacing-sm);
+  color: var(--color-text-secondary);
+}
+
+.triage-complete__stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-sm);
+  color: var(--color-text-primary);
+}
+
+.triage-complete__stats-duration {
+  grid-column: span 2;
+}
+
+/* AI reasoning card */
+.triage-complete__reasoning-card {
+  padding: var(--spacing-md);
+  background-color: var(--color-surface-subtle);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+.triage-complete__reasoning-title {
+  margin-top: 0;
+  margin-bottom: var(--spacing-sm);
+  color: var(--color-text-secondary);
+}
+
+.triage-complete__reasoning-text {
+  margin: 0;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+}
+
+/* Report section wrapper */
+.triage-complete__report {
+  text-align: left;
+  margin-bottom: var(--spacing-xl);
+  font-size: var(--font-size-md);
+}
+
+/* Action buttons */
+.triage-complete__actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+}
+
+.triage-complete__pdf-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--color-surface);
+  color: var(--mts-red);
+  border: 2px solid var(--mts-red);
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all var(--transition-fast);
+}
+
+.triage-complete__pdf-btn:hover:not(:disabled) {
+  background-color: var(--mts-red);
+  color: var(--color-surface);
+}
+
+.triage-complete__pdf-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.triage-complete__new-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--color-primary);
+  color: var(--color-primary-text);
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.triage-complete__new-btn:hover {
+  background-color: var(--color-primary-hover);
+}
+
+/* ----------------------------------------------------------------
+ * RESPONSIVE — mobile sensor panel (< 768px)
+ * ---------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .triage-layout {
+    display: block;
+    position: relative;
+    padding: var(--spacing-md);
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .triage-chat-column {
+    height: 100%;
+  }
+
+  .triage-sensors-column {
+    display: none; /* replaced by the fixed aside on mobile */
+  }
+
+  /* Fixed slide-up panel on mobile */
+  .triage-sensors-aside {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: auto;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    z-index: 200;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-md);
+    padding: 0;
+  }
+
+  .triage-sensors-aside--open {
+    max-height: 70vh;
+    overflow-y: auto;
+    padding: var(--spacing-lg);
+  }
+
+  /* Compact vitals summary strip — visible mobile only */
+  .triage-sensors__summary {
+    display: block;
+    position: fixed;
+    bottom: 56px;
+    left: 0;
+    right: 0;
+    background-color: var(--color-surface-muted);
+    border-top: 1px solid var(--color-border);
+    z-index: 199;
+    text-align: center;
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  /* Toggle pill button — visible mobile only */
+  .triage-sensors__toggle {
+    display: block;
+    position: fixed;
+    bottom: var(--spacing-md);
+    right: var(--spacing-md);
+    z-index: 201;
+    min-height: 44px;
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-primary);
+    color: var(--color-primary-text);
+    border: none;
+    font-weight: 600;
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
+  }
+
+  .triage-sensors__toggle:hover {
+    background-color: var(--color-primary-hover);
+  }
+
+  /* Backdrop — visible mobile only when panel is open */
+  .triage-sensors__backdrop {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 199;
+  }
+}
