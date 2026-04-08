@@ -1,0 +1,340 @@
+/* HistoryPage.css — Token-backed classes for HistoryPage component */
+/* Phase 7 — Plan 02 migration. Zero raw hex values. All colors via var(--). */
+
+.history-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing-xl);
+}
+
+.history-page__header {
+  margin-bottom: var(--spacing-xl);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.history-page__title {
+  margin: 0;
+  color: var(--color-text-primary);
+}
+
+.history-page__back-btn {
+  padding: 0.625rem 1.25rem;
+  background-color: var(--color-text-secondary);
+  color: var(--color-surface);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: var(--font-size-md);
+  font-weight: 500;
+  transition: background-color var(--transition-fast);
+}
+
+.history-page__back-btn:hover {
+  background-color: var(--color-text-primary);
+}
+
+.history-page__layout {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: var(--spacing-xl);
+  height: calc(100vh - 150px);
+}
+
+/* === List Column === */
+.history-page__list-col {
+  border-right: 1px solid var(--color-border);
+  padding-right: var(--spacing-md);
+  overflow-y: auto;
+}
+
+/* Loading and empty states — contrast fix: #999 (3.73:1 FAIL) -> text-secondary (7.63:1 PASS) per D-20 */
+.history-page__loading {
+  color: var(--color-text-secondary);
+}
+
+.history-page__empty {
+  color: var(--color-text-secondary);
+}
+
+.history-page__table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.history-page__table caption {
+  caption-side: top;
+  text-align: left;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-sm);
+  font-weight: 600;
+}
+
+.history-page__table thead tr {
+  border-bottom: 2px solid var(--color-border);
+}
+
+.history-page__table th {
+  padding: var(--spacing-sm) var(--spacing-md);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.history-page__session-row {
+  cursor: pointer;
+  border-bottom: 1px solid var(--color-surface-subtle);
+  transition: background-color var(--transition-fast);
+}
+
+.history-page__session-row:hover {
+  background-color: var(--color-surface-subtle);
+}
+
+.history-page__session-row--active {
+  background-color: var(--color-surface-muted);
+}
+
+.history-page__session-date {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-weight: bold;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+}
+
+/* Contrast fix: #666 -> text-secondary (7.63:1 PASS) per D-20 */
+.history-page__session-time {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+/* Contrast fix: #999 (3.73:1 FAIL) -> text-secondary (7.63:1 PASS) per D-20 */
+.history-page__session-id {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+/* === Detail Column === */
+.history-page__detail-col {
+  overflow-y: auto;
+  padding-left: var(--spacing-md);
+}
+
+.history-page__detail-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--color-text-secondary);
+}
+
+.history-page__detail-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--color-text-secondary);
+}
+
+/* Empty state per UI-SPEC (D-16) */
+.history-page__empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  gap: var(--spacing-sm);
+}
+
+.history-page__empty-state-title {
+  color: var(--color-text-primary);
+  font-size: var(--font-size-xl);
+  margin: 0;
+}
+
+.history-page__empty-state-body {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-md);
+  margin: 0;
+}
+
+.history-page__detail-card {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Priority banner — MTS color applied inline via className derived from priority */
+.history-page__priority-banner {
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-lg);
+  color: var(--color-surface);
+}
+
+.history-page__priority-banner--yellow {
+  color: var(--mts-yellow-text);
+}
+
+.history-page__discriminator {
+  margin: 0;
+  font-size: var(--font-size-2xl);
+}
+
+.history-page__priority-label {
+  margin: var(--spacing-sm) 0 0;
+}
+
+.history-page__info-row {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
+  align-items: stretch;
+}
+
+.history-page__info-card {
+  flex: 1;
+  padding: var(--spacing-md);
+  background-color: var(--color-surface-subtle);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+/* Contrast fix: #6c757d -> text-secondary (7.63:1 PASS) per D-20 */
+.history-page__info-label {
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-sm);
+  font-size: var(--font-size-md);
+}
+
+.history-page__info-name {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: 800;
+  color: var(--color-text-primary);
+}
+
+/* Contrast fix: #666 -> text-secondary per D-20 */
+.history-page__info-meta {
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+.history-page__pdf-btn-wrap {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: stretch;
+}
+
+/* PDF download button — uses mts-red border/color for destructive-download semantics */
+.history-page__pdf-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 0 var(--spacing-lg);
+  background-color: var(--color-surface);
+  color: var(--mts-red);
+  border: 2px solid var(--mts-red);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: 700;
+  font-size: var(--font-size-sm);
+  transition: all var(--transition-fast);
+}
+
+.history-page__pdf-btn:hover:not(:disabled) {
+  background-color: var(--mts-red);
+  color: var(--color-surface);
+}
+
+.history-page__pdf-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.history-page__clinical-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+  padding: var(--spacing-md);
+  background-color: var(--color-surface-subtle);
+  border-radius: var(--radius-md);
+}
+
+.history-page__clinical-item {
+  margin-top: var(--spacing-sm);
+}
+
+/* Contrast fix: #6c757d -> text-secondary per D-20 */
+.history-page__clinical-label {
+  margin: 0 0 var(--spacing-xs) 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.history-page__clinical-label--alert {
+  color: var(--mts-red);
+}
+
+.history-page__clinical-value {
+  margin: 0;
+  color: var(--color-text-primary);
+}
+
+.history-page__divider {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: var(--spacing-lg) 0;
+}
+
+.history-page__reasoning-section {
+  margin-bottom: var(--spacing-xl);
+}
+
+/* Contrast fix: #6c757d -> text-secondary per D-20 */
+.history-page__section-title {
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.history-page__reasoning-text {
+  line-height: 1.6;
+  background-color: var(--color-surface-subtle);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  margin: 0;
+  color: var(--color-text-primary);
+}
+
+/* Contrast fix: #666 -> text-secondary per D-20 */
+.history-page__stats-row {
+  display: flex;
+  gap: var(--spacing-xl);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+/* Modifier: medium-weight text for protocol name in info card */
+.history-page__info-name--medium {
+  font-weight: 500;
+}
+
+/* Modifier: semibold for specialty clinical value */
+.history-page__clinical-value--semibold {
+  font-weight: 600;
+}
