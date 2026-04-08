@@ -1,7 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
+import { IMaskInput } from 'react-imask';
 import { getAuthHeaders } from '../utils/auth';
 import { useTranscribe } from '../useTranscribe'; // Import hook
 import { useToast } from './ui/ToastProvider';
+import { Tooltip } from './ui/Tooltip';
+import { StatusBar } from './ui/StatusBar';
 import './ProtocolTriage.css';
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -126,13 +129,29 @@ const GCSInput = ({ value, onChange }) => {
     );
 };
 
-// Tooltip re-wiring deferred to Plan 06 — SensorLabel is functional without popup
 const SensorLabel = ({ config }) => (
-    <div className="sensor-label-group">
-        <span className="sensor-label-group__name">{config.label}</span>
-        <span className="sensor-label-group__hint">({config.hint})</span>
+    <div className="triage-sensors__label">
+        <span className="triage-sensors__label-text">
+            {config.label}
+            <Tooltip
+                content={`${config.desc} ${config.range}`}
+                label={config.label}
+            />
+        </span>
+        <div className="triage-sensors__hint">{config.hint}</div>
     </div>
 );
+
+function calcAgeFromDDMMYYYY(ddmmyyyy) {
+    if (!ddmmyyyy || ddmmyyyy.length !== 10) return null;
+    const [dd, mm, yyyy] = ddmmyyyy.split('/').map(Number);
+    if (!dd || !mm || !yyyy) return null;
+    const today = new Date();
+    let age = today.getFullYear() - yyyy;
+    const monthDiff = today.getMonth() + 1 - mm;
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dd)) age--;
+    return age >= 1 && age <= 150 ? String(age) : null;
+}
 
 const PatientForm = ({ onSubmit, loading }) => {
     const [formData, setFormData] = useState({
@@ -141,18 +160,76 @@ const PatientForm = ({ onSubmit, loading }) => {
         sex: '',
         patient_code: '',
         birth_date: '',
+        cpf: '',
         ticket_number: '',
         insurance: '',
         visit_id: '',
         same: ''
     });
 
+    const [errors, setErrors] = useState({});
+
+    function validateField(name, value) {
+        switch (name) {
+            case 'name':
+                if (!value || !value.trim()) return 'Nome e obrigatorio';
+                return null;
+            case 'age': {
+                if (!value) return null;
+                const ageNum = Number(value);
+                if (!Number.isInteger(ageNum)) return 'Informe apenas numeros inteiros';
+                if (ageNum < 1 || ageNum > 150) return 'Idade deve ser entre 1 e 150 anos';
+                return null;
+            }
+            case 'birth_date':
+                if (!value || value.length < 10) return null;
+                {
+                    const [dd, mm, yyyy] = value.split('/').map(Number);
+                    if (!dd || !mm || !yyyy || dd > 31 || mm > 12 || yyyy < 1900 || yyyy > new Date().getFullYear()) {
+                        return 'Data invalida. Use o formato DD/MM/AAAA';
+                    }
+                }
+                return null;
+            case 'cpf':
+                if (!value) return null;
+                if (value.replace(/\D/g, '').length !== 11) return 'CPF deve ter 11 digitos';
+                return null;
+            default:
+                return null;
+        }
+    }
+
+    function handleBlur(e) {
+        const { name, value } = e.target;
+        const error = validateField(name, value);
+        setErrors(prev => ({ ...prev, [name]: error }));
+    }
+
+    function validateAll() {
+        const newErrors = {};
+        newErrors.name = validateField('name', formData.name);
+        newErrors.age = validateField('age', formData.age);
+        if (formData.birth_date) newErrors.birth_date = validateField('birth_date', formData.birth_date);
+        if (formData.cpf) newErrors.cpf = validateField('cpf', formData.cpf);
+        setErrors(newErrors);
+        return !Object.values(newErrors).some(Boolean);
+    }
+
     const handleChange = (e) => {
         setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
+    const handleBirthDateAccept = (value) => {
+        setFormData(prev => ({ ...prev, birth_date: value }));
+        const age = calcAgeFromDDMMYYYY(value);
+        if (age !== null) {
+            setFormData(prev => ({ ...prev, age }));
+        }
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
+        if (!validateAll()) return;
         onSubmit(formData);
     };
 
@@ -162,25 +239,76 @@ const PatientForm = ({ onSubmit, loading }) => {
                 <h3 className="patient-form__title">Identificação do Paciente</h3>
 
                 {/* Patient Header Info */}
-                <div className="patient-form__grid-2">
-                    <div>
-                        <label htmlFor="patient-name" className="patient-form__label">Nome Completo</label>
-                        <input id="patient-name" required name="name" value={formData.name} onChange={handleChange} placeholder="Ex: Maria Souza" className="patient-form__input" />
-                    </div>
-                    <div>
-                        <label htmlFor="patient-patient_code" className="patient-form__label">Cód. Paciente</label>
-                        <input id="patient-patient_code" name="patient_code" value={formData.patient_code} onChange={handleChange} placeholder="00000" className="patient-form__input" />
-                    </div>
+                <div>
+                    <label htmlFor="patient-name" className="patient-form__label">
+                        Nome Completo <span className="patient-form__required" aria-hidden="true">*</span>
+                        <Tooltip content="Nome completo do paciente conforme documento" label="nome" />
+                    </label>
+                    <input
+                        id="patient-name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        placeholder="Ex: Maria Souza"
+                        className={`patient-form__input${errors.name ? ' patient-form__input--error' : ''}`}
+                        aria-invalid={!!errors.name}
+                        aria-describedby={errors.name ? 'patient-name-error' : undefined}
+                    />
+                    {errors.name && (
+                        <span id="patient-name-error" className="patient-form__error" role="alert">
+                            {errors.name}
+                        </span>
+                    )}
                 </div>
 
                 <div className="patient-form__grid-3">
                     <div>
-                        <label htmlFor="patient-birth_date" className="patient-form__label">Nascimento</label>
-                        <input id="patient-birth_date" type="text" name="birth_date" value={formData.birth_date} onChange={handleChange} placeholder="DD/MM/AAAA" className="patient-form__input" />
+                        <label htmlFor="patient-birth_date" className="patient-form__label">
+                            Nascimento
+                            <Tooltip content="Formato: DD/MM/AAAA. A idade sera calculada automaticamente." label="data de nascimento" />
+                        </label>
+                        <IMaskInput
+                            id="patient-birth_date"
+                            name="birth_date"
+                            mask="00/00/0000"
+                            unmask={false}
+                            value={formData.birth_date}
+                            onAccept={handleBirthDateAccept}
+                            onBlur={handleBlur}
+                            placeholder="DD/MM/AAAA"
+                            className={`patient-form__input${errors.birth_date ? ' patient-form__input--error' : ''}`}
+                            aria-invalid={!!errors.birth_date}
+                            aria-describedby={errors.birth_date ? 'birth-date-error' : undefined}
+                        />
+                        {errors.birth_date && (
+                            <span id="birth-date-error" className="patient-form__error" role="alert">
+                                {errors.birth_date}
+                            </span>
+                        )}
                     </div>
                     <div>
-                        <label htmlFor="patient-age" className="patient-form__label">Idade</label>
-                        <input id="patient-age" required type="number" name="age" value={formData.age} onChange={handleChange} placeholder="Anos" className="patient-form__input" />
+                        <label htmlFor="patient-age" className="patient-form__label">
+                            Idade <span className="patient-form__required" aria-hidden="true">*</span>
+                            <Tooltip content="Calculada automaticamente da data de nascimento. Pode ser editada." label="idade" />
+                        </label>
+                        <input
+                            id="patient-age"
+                            type="number"
+                            name="age"
+                            value={formData.age}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            placeholder="Anos"
+                            className={`patient-form__input${errors.age ? ' patient-form__input--error' : ''}`}
+                            aria-invalid={!!errors.age}
+                            aria-describedby={errors.age ? 'patient-age-error' : undefined}
+                        />
+                        {errors.age && (
+                            <span id="patient-age-error" className="patient-form__error" role="alert">
+                                {errors.age}
+                            </span>
+                        )}
                     </div>
                     <div>
                         <label htmlFor="patient-sex" className="patient-form__label">Sexo</label>
@@ -188,6 +316,37 @@ const PatientForm = ({ onSubmit, loading }) => {
                             <option value="M">Masculino</option>
                             <option value="F">Feminino</option>
                         </select>
+                    </div>
+                </div>
+
+                <div className="patient-form__grid-2">
+                    <div>
+                        <label htmlFor="patient-cpf" className="patient-form__label">
+                            CPF
+                            <Tooltip content="Cadastro de Pessoa Fisica — 11 digitos" label="CPF" />
+                        </label>
+                        <IMaskInput
+                            id="patient-cpf"
+                            name="cpf"
+                            mask="000.000.000-00"
+                            unmask={true}
+                            value={formData.cpf || ''}
+                            onAccept={(unmaskedValue) => setFormData(prev => ({ ...prev, cpf: unmaskedValue }))}
+                            onBlur={handleBlur}
+                            placeholder="000.000.000-00"
+                            className={`patient-form__input${errors.cpf ? ' patient-form__input--error' : ''}`}
+                            aria-invalid={!!errors.cpf}
+                            aria-describedby={errors.cpf ? 'cpf-error' : undefined}
+                        />
+                        {errors.cpf && (
+                            <span id="cpf-error" className="patient-form__error" role="alert">
+                                {errors.cpf}
+                            </span>
+                        )}
+                    </div>
+                    <div>
+                        <label htmlFor="patient-patient_code" className="patient-form__label">Cód. Paciente</label>
+                        <input id="patient-patient_code" name="patient_code" value={formData.patient_code} onChange={handleChange} placeholder="00000" className="patient-form__input" />
                     </div>
                 </div>
 
@@ -888,6 +1047,12 @@ const ProtocolTriage = () => {
     }
 
     return (
+        <>
+        {/* Status bar — visible during active triage */}
+        <StatusBar
+            sessionId={sessionId}
+            protocolName={suggestedProtocol ? suggestedProtocol.text : ''}
+        />
 
         <div className="triage-layout">
 
@@ -1236,6 +1401,7 @@ const ProtocolTriage = () => {
                 />
             )}
         </div>
+        </>
     );
 };
 

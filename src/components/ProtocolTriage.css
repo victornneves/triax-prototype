@@ -894,3 +894,42 @@
     z-index: 199;
   }
 }
+
+/* --- Form validation states --- */
+.patient-form__input--error {
+  border-color: var(--color-feedback-error-text);
+  border-width: 2px;
+}
+
+.patient-form__error {
+  display: block;
+  margin-top: var(--spacing-xs);
+  font-size: var(--font-size-xs);
+  color: var(--color-feedback-error-text);
+}
+
+.patient-form__required {
+  color: var(--color-feedback-error-text);
+  margin-left: var(--spacing-xs);
+}
+
+/* --- Sensor label with tooltip --- */
+.triage-sensors__label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.triage-sensors__label-text {
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.triage-sensors__hint {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
