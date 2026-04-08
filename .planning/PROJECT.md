@@ -56,17 +56,17 @@ Clinicians reach a triage priority decision faster and more consistently because
 - [ ] Design system adoption with reusable component library
 - [x] Softer color palette with clinical MTS colors preserved — Validated in Phase 5: Design Token Foundation
 - [ ] Dark mode support
-- [ ] Responsive grid layout with collapsible sensor panel
+- [x] Responsive grid layout with collapsible sensor panel — Validated in Phase 7: Component Migration & Accessibility
 - [ ] Triage progress indicator (stepper/progress bar)
 - [x] Unified button system (primary, secondary, danger variants) — Validated in Phase 6: UI Primitives + Toast
 - [ ] Keyboard shortcuts for triage flow (number keys for quick replies, Esc to cancel)
 - [x] Toast notification system replacing alert() calls — Validated in Phase 6: UI Primitives + Toast
 - [ ] Improved voice recording UX (waveform, timer, transcription preview)
-- [ ] WCAG-compliant color contrast across all components
-- [ ] Semantic HTML and ARIA labels for screen reader support
-- [ ] Focus indicators for keyboard navigation
-- [ ] Smart form defaults and auto-calculation (e.g., age from birth date)
-- [ ] Contextual help tooltips for all form fields
+- [x] WCAG-compliant color contrast across all components — Validated in Phase 7: Component Migration & Accessibility
+- [x] Semantic HTML and ARIA labels for screen reader support — Validated in Phase 7: Component Migration & Accessibility
+- [x] Focus indicators for keyboard navigation — Validated in Phase 7: Component Migration & Accessibility
+- [x] Smart form defaults and auto-calculation (e.g., age from birth date) — Validated in Phase 7: Component Migration & Accessibility
+- [x] Contextual help tooltips for all form fields — Validated in Phase 7: Component Migration & Accessibility
 - [ ] Session summary timeline during triage
 
 ### Out of Scope
@@ -81,7 +81,7 @@ Clinicians reach a triage priority decision faster and more consistently because
 
 ## Context
 
-- **Current state:** v2.0.0 in progress — Phase 6 (UI Primitives + Toast) complete. Button primitive with 3 variants + toast notification system live. All alert() calls replaced. Design token system with semantic toast tokens. ~3,800 LOC across JS/JSX/CSS.
+- **Current state:** v2.0.0 in progress — Phase 7 (Component Migration & Accessibility) complete. All components migrated from inline styles to token-backed CSS. ARIA attributes, focus traps, keyboard nav added. Tooltip + StatusBar primitives created. Form validation with input masking live. 2 accepted clinical inline style exceptions (pain slider accentColor, GCS select dynamic border).
 - **Deployment:** AWS Amplify auto-deploys on every commit to `main`. Working on `v2-ui-overhaul` branch; merging to `main` at milestone completion.
 - **Backend:** External REST API at AWS API Gateway (sa-east-1). Frontend owns no backend code.
 - **Language:** App targets Brazilian Portuguese-speaking clinical staff (São Paulo region).
