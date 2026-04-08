@@ -1,0 +1,54 @@
+/* Tooltip.css — Token-backed shared tooltip */
+
+.tooltip-trigger {
+  background: none;
+  border: none;
+  padding: 0 var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  cursor: help;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+.tooltip-trigger:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.tooltip-portal {
+  position: fixed;
+  transform: translate(-50%, -100%);
+  background-color: var(--color-text-primary);
+  color: var(--color-surface);
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  max-width: 240px;
+  z-index: 9999;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+  pointer-events: none;
+  line-height: 1.4;
+}
+
+.tooltip-portal--below {
+  transform: translate(-50%, 0);
+}
+
+.tooltip-arrow {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: var(--color-text-primary) transparent transparent transparent;
+}
+
+.tooltip-portal--below .tooltip-arrow {
+  top: auto;
+  bottom: 100%;
+  border-color: transparent transparent var(--color-text-primary) transparent;
+}
