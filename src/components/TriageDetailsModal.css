@@ -1,0 +1,506 @@
+/* TriageDetailsModal.css — Token-backed classes for TriageDetailsModal component */
+
+/* ===========================================================================
+ * OVERLAY & CONTAINER
+ * =========================================================================== */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(3px);
+}
+
+.modal-content {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  width: 95%;
+  max-width: 900px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+/* ===========================================================================
+ * HEADER (tabs row + actions)
+ * =========================================================================== */
+
+.modal-header {
+  padding: 0 var(--spacing-lg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+  background-color: var(--color-surface);
+}
+
+/* ===========================================================================
+ * TAB NAVIGATION
+ * =========================================================================== */
+
+.modal-tab-list {
+  display: flex;
+  gap: var(--spacing-xl);
+}
+
+.modal-tab {
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  padding: 1.2rem 0;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+  margin-bottom: -1px;
+}
+
+.modal-tab:hover {
+  color: var(--color-text-primary);
+}
+
+.modal-tab--active {
+  border-bottom-color: var(--color-primary);
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+/* ===========================================================================
+ * HEADER ACTIONS
+ * =========================================================================== */
+
+.modal-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+/* PDF Download button */
+.modal-pdf-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: var(--color-surface);
+  color: var(--mts-red);
+  border: 1px solid var(--mts-red);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  transition: all var(--transition-fast);
+  box-shadow: 0 2px 4px rgba(220, 53, 69, 0.1);
+}
+
+.modal-pdf-btn:hover:not(:disabled) {
+  background-color: var(--mts-red);
+  color: white;
+}
+
+.modal-pdf-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Close button */
+.modal-close-btn {
+  background: transparent;
+  border: none;
+  font-size: 2rem;
+  line-height: 1rem;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  padding: var(--spacing-md) 0;
+  transition: color var(--transition-fast);
+}
+
+.modal-close-btn:hover {
+  color: var(--color-text-primary);
+}
+
+/* ===========================================================================
+ * SCROLLABLE BODY
+ * =========================================================================== */
+
+.modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-xl);
+  background-color: var(--color-surface);
+}
+
+/* ===========================================================================
+ * LOADING & ERROR STATES
+ * =========================================================================== */
+
+.modal-state-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.modal-state-inner {
+  text-align: center;
+}
+
+.modal-state-icon {
+  font-size: 2rem;
+  margin-bottom: var(--spacing-md);
+}
+
+.modal-state-loading {
+  color: var(--color-text-secondary);
+}
+
+.modal-state-error {
+  color: var(--mts-red);
+}
+
+/* ===========================================================================
+ * CONTENT ANIMATION
+ * =========================================================================== */
+
+.modal-tab-content {
+  animation: modal-fade-in 0.2s ease;
+}
+
+@keyframes modal-fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ===========================================================================
+ * PATIENT INFO CARD
+ * =========================================================================== */
+
+.modal-patient-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding: 1.2rem;
+  background-color: var(--color-surface-subtle);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  margin-bottom: var(--spacing-xl);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+}
+
+.modal-patient-row {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.modal-patient-col-lg {
+  flex: 1 1 250px;
+}
+
+.modal-patient-col-md {
+  flex: 1 1 150px;
+}
+
+.modal-patient-col-sm {
+  flex: 1 1 120px;
+}
+
+.modal-patient-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--spacing-md);
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.modal-info-label {
+  display: block;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+}
+
+.modal-info-label--xs {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+}
+
+.modal-info-value--name {
+  font-weight: 700;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-lg);
+}
+
+.modal-info-value--bold {
+  font-weight: 600;
+}
+
+/* ===========================================================================
+ * CLASSIFICATION & RESULT BOX
+ * =========================================================================== */
+
+.modal-result-section {
+  margin-bottom: 2.5rem;
+}
+
+/* Priority box: bg-color and border-left are set via inline JS (MTS colors —
+   immutable clinical constraint). Only structural/layout properties here. */
+.modal-result-box {
+  padding: var(--spacing-lg) var(--spacing-xl);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+  flex-wrap: wrap;
+}
+
+.modal-result-priority-col {
+  flex: 0 0 auto;
+}
+
+.modal-result-priority-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.2rem;
+}
+
+/* Priority name text color is set via inline JS (MTS clinical colors — immutable).
+   Only structural properties here. */
+.modal-result-priority-name {
+  font-size: 1.8rem;
+  font-weight: 900;
+  line-height: 1.1;
+}
+
+.modal-result-divider {
+  height: 50px;
+  width: 1px;
+  background-color: rgba(0, 0, 0, 0.1);
+  display: block;
+  flex-shrink: 0;
+}
+
+.modal-result-detail-col {
+  flex: 1 1 300px;
+}
+
+.modal-result-detail-row {
+  margin-bottom: 0.4rem;
+}
+
+.modal-result-detail-row:last-child {
+  margin-bottom: 0;
+}
+
+.modal-result-meta-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+}
+
+.modal-result-flowchart-value {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.modal-result-discriminator-value {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+}
+
+/* ===========================================================================
+ * CLINICAL DATA CARDS GRID
+ * =========================================================================== */
+
+.modal-clinical-grid {
+  margin-bottom: 2.5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-lg);
+}
+
+.modal-clinical-card {
+  background-color: var(--color-surface);
+  padding: 1.2rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+.modal-card-heading {
+  margin: 0 0 0.8rem 0;
+  text-transform: uppercase;
+  font-size: var(--font-size-xs);
+}
+
+.modal-card-heading--primary {
+  color: var(--color-primary);
+}
+
+.modal-card-heading--success {
+  color: var(--color-feedback-ok-text);
+}
+
+.modal-card-heading--danger {
+  color: var(--mts-red);
+}
+
+.modal-card-heading--muted {
+  color: var(--color-text-secondary);
+}
+
+.modal-card-text {
+  margin: 0;
+  font-size: var(--font-size-md);
+  color: var(--color-text-primary);
+  line-height: 1.5;
+}
+
+.modal-card-text--bold {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.modal-card-text--success {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-feedback-ok-text);
+}
+
+.modal-card-text--muted {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+}
+
+/* ===========================================================================
+ * VITAL SIGNS GRID
+ * =========================================================================== */
+
+.modal-vitals-grid {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-md);
+  padding: 1.2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--spacing-lg);
+  border: 1px solid var(--color-border);
+}
+
+.modal-vital-label {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 0.2rem;
+}
+
+.modal-vital-value {
+  font-weight: 700;
+  color: var(--color-text-primary);
+  font-size: 1.2rem;
+}
+
+.modal-vital-unit {
+  font-size: var(--font-size-sm);
+  font-weight: 400;
+  color: var(--color-text-secondary);
+}
+
+/* ===========================================================================
+ * IA REASONING TAB
+ * =========================================================================== */
+
+.modal-reasoning-box {
+  background-color: var(--color-surface-muted);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  line-height: 1.8;
+  color: var(--color-text-primary);
+  text-align: justify;
+  font-size: var(--font-size-lg);
+  font-style: italic;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ===========================================================================
+ * AUDIT / STATS TAB
+ * =========================================================================== */
+
+.modal-stats-grid {
+  padding: var(--spacing-xl);
+  background-color: var(--color-surface-subtle);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--spacing-xl);
+  color: var(--color-text-primary);
+}
+
+.modal-stat-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+
+.modal-stat-value {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.modal-stat-value--highlight {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+
+.modal-session-id-block {
+  grid-column: 1 / -1;
+  padding-top: var(--spacing-lg);
+  margin-top: var(--spacing-md);
+  border-top: 1px dashed var(--color-border);
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+}
+
+.modal-session-id-label {
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.modal-session-id-value {
+  margin-top: var(--spacing-sm);
+  font-family: monospace;
+  background-color: var(--color-surface);
+  padding: 0.8rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+}
