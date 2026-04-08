@@ -71,9 +71,9 @@ Sourced from `tokens.css` primitive layer. All type is in pt-BR. No new font sca
 | Heading | `--font-size-xl` (1.25rem) | 20px | 600 (semibold) | 1.2 | Page titles, modal headings, section headings |
 | Caption | `--font-size-xs` (0.75rem) | 12px | 400 (regular) | 1.4 | Inline validation error messages, compact vitals strip, tooltip meta |
 
-**Weight constraint:** Exactly 2 weights used — 400 (regular) and 600 (semibold). No 500, no 700.
+**Weight constraint:** Exactly 2 weights — 400 (regular) and 600 (semibold). No 500, no 700.
 
-**MTS badge text exception:** MTS priority badge labels use weight 700 (bold) on colored backgrounds — this is a clinical readability requirement, not a design choice. Source: v1.1.0 App.css immutability constraint.
+Note: MTS priority badge labels use weight 700 (pre-existing, immutable from v1.1.0 App.css) — not in scope for Phase 7 modification.
 
 ---
 
@@ -119,6 +119,21 @@ All values sourced from `src/styles/tokens.css`. No new color tokens are added i
 |-------|--------|-------|
 | Online | Green dot (#12px circle) | `--color-feedback-ok-text` (#166534) as background, or inline `background-color: var(--color-feedback-ok-text)` |
 | Offline | Red dot + "Sem conexão" text | `--color-feedback-error-text` (#991b1b) |
+
+---
+
+## Primary Visual Anchors
+
+The dominant focal element per primary screen, declared for layout hierarchy reference.
+
+| Screen | Primary focal point |
+|--------|-------------------|
+| ProtocolTriage | The chat/protocol column — the sequential question-and-answer interaction where the clinician drives the triage decision tree. All other panels (sensor sidebar, status bar) are secondary to this column. |
+| PatientForm (inside ProtocolTriage) | The patient name field at the top of the form — the first required input that anchors registration before the triage session begins. |
+| HistoryPage | The sessions table — the list of completed triages is the sole content of the page; no competing elements. |
+| TriageDetailsModal | The modal heading (protocol name + priority badge) — the clinical outcome summary at the top of the dialog that clinicians read first. |
+| Profile | The personal info card at the top — user identity confirmation before the history table below. |
+| AdminUsers | The users table — sole content element; the heading row anchors scan direction. |
 
 ---
 
@@ -174,6 +189,7 @@ Applied globally in `src/index.css`. Replaces browser default.
 ### Tooltip behavior (FORM-03, D-29 to D-31)
 
 - Trigger: `ⓘ` Unicode character as `<button type="button">` inline after label text.
+- Trigger attributes: `aria-label="Informações sobre {campo}"` on the button element itself; `aria-describedby="{tooltip-id}"` pointing to the tooltip element.
 - Trigger size: `--font-size-sm`, `--color-text-muted`, `cursor: help`.
 - Show on: hover OR `:focus-visible` on trigger button.
 - Hide on: mouse leave AND blur.
@@ -246,7 +262,7 @@ All copy is pt-BR. Source: CONTEXT.md `<specifics>`, REQUIREMENTS.md, and Claude
 | Tooltip — frequência cardíaca | `Batimentos por minuto (bpm)` |
 | Tooltip — temperatura | `Temperatura corporal em graus Celsius (°C)` |
 | Required field asterisk aria-label | `obrigatório` (on the asterisk `<span aria-label="obrigatório">*</span>`) |
-| Modal close button label | `Fechar` (aria-label on close button) |
+| Modal close button label | `Fechar janela` (aria-label on close button) |
 | Empty state — history (no sessions) | Heading: `Nenhuma triagem realizada` / Body: `As triagens realizadas aparecem aqui após a conclusão.` |
 | Empty state — admin users (no users) | Heading: `Nenhum usuário encontrado` / Body: `Os usuários da plataforma aparecem aqui.` |
 | Table caption — HistoryPage sessions list | `Lista de triagens realizadas` |
@@ -270,7 +286,7 @@ Applies to all components migrated in Phase 7 (A11Y-02). Source: CONTEXT.md D-13
 | Tables | No caption, no scope | `<caption>` element + `scope="col"` on all `<th>` header cells |
 | Sensor panel | Unsemantic div | `<aside aria-label="Painel de sinais vitais">` |
 | Status bar | — (new component) | `<div role="status" aria-live="polite">` |
-| Tooltip | — (new component) | `role="tooltip"`, trigger uses `aria-describedby="{tooltip-id}"` |
+| Tooltip | — (new component) | `role="tooltip"`, trigger uses `aria-label="Informações sobre {campo}"` and `aria-describedby="{tooltip-id}"` |
 
 ---
 
