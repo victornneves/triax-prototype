@@ -1,0 +1,144 @@
+/* Profile.css — Token-backed classes for Profile page */
+/* Phase 7 — Plan 02 migration. Zero raw hex values. All colors via var(--). */
+
+.profile-page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: var(--spacing-xl);
+}
+
+.profile-card {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+}
+
+.profile-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+  border-bottom: 1px solid var(--color-surface-subtle);
+  padding-bottom: 0.8rem;
+}
+
+.profile-card__title {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-xl);
+}
+
+.profile-card__refresh-btn {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  cursor: pointer;
+  font-weight: 500;
+  font-size: var(--font-size-md);
+  padding: 0;
+  transition: color var(--transition-fast);
+}
+
+.profile-card__refresh-btn:hover {
+  color: var(--color-primary-hover);
+}
+
+/* Loading and empty states — contrast fix: #adb5bd (2.07:1 FAIL) -> text-secondary (7.63:1 PASS) per D-20 */
+.profile-loading {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--color-text-secondary);
+}
+
+.profile-empty {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--color-text-secondary);
+}
+
+.profile-table-wrap {
+  overflow-x: auto;
+}
+
+.profile-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.profile-table thead tr {
+  border-bottom: 2px solid var(--color-border);
+}
+
+.profile-table th {
+  padding: var(--spacing-md);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.profile-table tbody tr {
+  border-bottom: 1px solid var(--color-surface-subtle);
+}
+
+.profile-table td {
+  padding: var(--spacing-md);
+}
+
+.profile-table__date {
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+.profile-table__patient-name {
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+/* Contrast fix: #868e96 (3.32:1 FAIL) -> text-secondary (7.63:1 PASS) per D-20 */
+.profile-table__patient-meta {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.profile-table__protocol {
+  color: var(--color-text-primary);
+}
+
+/* Priority badge — compact table variant (overrides App.css .priority-badge sizing) */
+.profile-table__priority-badge {
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+  display: inline-block;
+  color: white;
+}
+
+/* Fallback badge when priority is unknown */
+.profile-table__priority-badge--unknown {
+  background-color: var(--color-surface-muted);
+  color: var(--color-text-secondary);
+}
+
+/* View button — contrast fix: #0d6efd -> var(--color-primary) (teal-500) */
+.profile-table__view-btn {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  color: var(--color-primary);
+  font-weight: 500;
+  font-size: var(--font-size-sm);
+  transition: all var(--transition-fast);
+}
+
+.profile-table__view-btn:hover {
+  background-color: var(--color-primary);
+  color: var(--color-primary-text);
+  border-color: var(--color-primary);
+}
