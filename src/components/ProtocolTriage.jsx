@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { getAuthHeaders } from '../utils/auth';
 import { useTranscribe } from '../useTranscribe'; // Import hook
+import { useToast } from './ui/ToastProvider';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -275,6 +276,7 @@ const PatientForm = ({ onSubmit, loading }) => {
 };
 
 const ProtocolTriage = () => {
+    const toast = useToast();
     // Chat & Session State
     const [messages, setMessages] = useState([
         { role: 'system', text: 'Sistema de Triagem Iniciado. Descreva a queixa principal do paciente.' }
@@ -398,7 +400,7 @@ const ProtocolTriage = () => {
             setIsPatientInfoSubmitted(true);
         } catch (e) {
             console.error("Error submitting patient info", e);
-            alert("Erro ao iniciar sessão. Tente novamente.");
+            toast.error("Erro ao iniciar sessão. Tente novamente.");
         } finally {
             setLoading(false);
         }
@@ -843,7 +845,7 @@ const ProtocolTriage = () => {
             setTimeout(() => URL.revokeObjectURL(url), 60000);
         } catch (error) {
             console.error("Falha ao gerar PDF:", error);
-            alert("Erro ao gerar PDF. Tente novamente.");
+            toast.error("Erro ao gerar PDF. Tente novamente.");
         } finally {
             setPdfLoading(false);
         }

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { getAuthHeaders } from '../utils/auth';
+import { useToast } from './ui/ToastProvider';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 const TriageDetailsModal = ({ sessionKey, onClose }) => {
+    const toast = useToast();
     const [details, setDetails] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -126,7 +128,7 @@ const TriageDetailsModal = ({ sessionKey, onClose }) => {
             setTimeout(() => URL.revokeObjectURL(url), 60000);
         } catch (error) {
             console.error("Falha ao gerar PDF:", error);
-            alert("Erro ao gerar PDF. Tente novamente.");
+            toast.error("Erro ao gerar PDF. Tente novamente.");
         } finally {
             setPdfLoading(false);
         }

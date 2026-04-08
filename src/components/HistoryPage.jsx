@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { getAuthHeaders } from '../utils/auth';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from './ui/ToastProvider';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 const HistoryPage = () => {
+    const toast = useToast();
     const [sessions, setSessions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedSession, setSelectedSession] = useState(null);
@@ -32,7 +34,7 @@ const HistoryPage = () => {
             setTimeout(() => URL.revokeObjectURL(url), 60000);
         } catch (error) {
             console.error("Falha ao gerar PDF:", error);
-            alert("Erro ao gerar PDF. Tente novamente.");
+            toast.error("Erro ao gerar PDF. Tente novamente.");
         } finally {
             setPdfLoading(false);
         }
@@ -78,7 +80,7 @@ const HistoryPage = () => {
             setSelectedSession(json);
         } catch (error) {
             console.error("Error fetching session details:", error);
-            alert("Erro ao carregar detalhes da sessão.");
+            toast.error("Erro ao carregar detalhes da sessão.");
         } finally {
             setDetailLoading(false);
         }
