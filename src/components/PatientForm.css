@@ -1,0 +1,228 @@
+/* ----------------------------------------------------------------
+ * PATIENT FORM — registration form (Phase 9 redesign)
+ * Co-located with PatientForm.jsx
+ * All values use semantic tokens from tokens.css
+ * ---------------------------------------------------------------- */
+
+.patient-form-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;        /* CHANGED from center — allows scroll for sticky submit */
+  height: 100%;
+  overflow-y: auto;               /* ADDED — scroll container for sticky submit (D-09, pitfall 2) */
+}
+
+.patient-form {
+  background-color: var(--color-surface);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  width: 100%;
+  max-width: 600px;
+  border: 1px solid var(--color-border-strong);
+  margin: var(--spacing-xl) 0;    /* ADDED — vertical breathing room within scroll */
+}
+
+.patient-form__title {
+  margin-top: 0;
+  margin-bottom: var(--spacing-xl);
+  color: var(--color-text-primary);
+  text-align: center;
+  font-size: var(--font-size-2xl);
+  font-weight: 600;               /* UI-SPEC: 2 weights only — 400 + 600 */
+}
+
+.patient-form__field {
+  margin-bottom: var(--spacing-lg);
+}
+
+.patient-form__label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+}
+
+/* --- Primary input styling (D-17, D-18 — refined) --- */
+.patient-form__input {
+  width: 100%;
+  padding: 10px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);          /* D-18: lighter at rest (was --color-border-strong) */
+  box-sizing: border-box;
+  background-color: var(--color-surface-muted);   /* D-18: subtle gray bg (was --color-surface) */
+  color: var(--color-text-primary);
+  font-size: var(--font-size-md);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
+}
+
+.patient-form__input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.15);
+  background-color: var(--color-surface);         /* D-18: lighten on focus for clarity */
+}
+
+/* --- Clinical fields grid: Birth Date + Age + Sex --- */
+.patient-form__grid-clinical {
+  display: grid;
+  grid-template-columns: 1.5fr 0.8fr 1fr;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+/* --- Submit button --- */
+.patient-form__submit {
+  width: 100%;
+  padding: 14px;
+  background-color: var(--color-primary);
+  color: var(--color-primary-text);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-lg);
+  font-weight: 600;               /* UI-SPEC: 600 not 700 */
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  box-shadow: var(--shadow-md);
+}
+
+.patient-form__submit:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.patient-form__submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* --- Validation error states (migrated from ProtocolTriage.css) --- */
+.patient-form__input--error {
+  border-color: var(--color-feedback-error-text);
+  border-width: 2px;
+}
+
+.patient-form__error {
+  display: block;
+  margin-top: var(--spacing-xs);
+  font-size: var(--font-size-xs);
+  color: var(--color-feedback-error-text);
+}
+
+.patient-form__required {
+  color: var(--color-feedback-error-text);
+  margin-left: var(--spacing-xs);
+}
+
+/* --- CPF lookup spinner (D-03) — reuses @keyframes btn-spin from Button.css --- */
+.patient-form__cpf-wrapper {
+  position: relative;
+}
+
+.patient-form__cpf-spinner {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1em;
+  height: 1em;
+  border: 2px solid var(--color-border-strong);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: btn-spin 0.6s linear infinite;
+}
+
+/* btn-spin keyframes — same as Button.css; redeclared here so PatientForm
+   does not depend on Button.css import order. Safe duplicate. */
+@keyframes btn-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* --- Age display (D-10, D-11) --- */
+.patient-form__age-display-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.patient-form__age-display {
+  margin: 0;
+  padding: 10px;
+  font-size: var(--font-size-md);
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  background-color: var(--color-surface-subtle);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  min-height: calc(var(--font-size-md) + 20px + 2px);  /* match input height */
+  display: flex;
+  align-items: center;
+}
+
+/* --- Metadata section (D-13, D-14, D-15, D-16) --- */
+.patient-form__metadata {
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--spacing-md);
+  margin-top: var(--spacing-md);
+}
+
+.patient-form__section-label {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-text-secondary);   /* UI-SPEC contrast note: use --color-text-secondary not --color-text-muted for 4.5:1 AA */
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 var(--spacing-sm);
+}
+
+.patient-form__metadata-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-sm);
+}
+
+.patient-form__meta-label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+}
+
+/* D-19: Metadata inputs — more muted variant */
+.patient-form__meta-input {
+  width: 100%;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface-muted);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  box-sizing: border-box;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.patient-form__meta-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(20, 184, 166, 0.12);
+}
+
+/* --- Sticky submit wrapper (D-09) --- */
+.patient-form__submit-wrapper {
+  position: sticky;
+  bottom: 0;
+  background-color: var(--color-surface);
+  padding-top: var(--spacing-md);
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.06);
+  z-index: 1;
+}
+
+/* --- Responsive: metadata grid on narrow screens --- */
+@media (max-width: 480px) {
+  .patient-form__grid-clinical {
+    grid-template-columns: 1fr 1fr;
+  }
+  .patient-form__metadata-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
