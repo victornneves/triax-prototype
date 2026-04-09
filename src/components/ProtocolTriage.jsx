@@ -603,7 +603,7 @@ const ProtocolTriage = () => {
                     return SENSOR_CONFIG[key]?.full_label || SENSOR_CONFIG[key]?.label || s;
                 });
                 addMessage('system', `Preciso dos seguintes sinais vitais para continuar: ${translatedSensors.join(', ')}. Por favor, preencha o painel lateral, ou digite os valores.`);
-                setMissingSensors(data.missing_sensors);
+                setMissingSensors(data.missing_sensors.map(s => s === 'gcs_scale' ? 'gcs' : s));
             }
             if (data.node) {
                 setCurrentNode(data.node);
@@ -866,7 +866,7 @@ const ProtocolTriage = () => {
                 </div>
 
                 {/* Quick Replies */}
-                {currentNode?.yesNo && missingSensors.length === 0 && !loading && (
+                {currentNode?.yesNo && !loading && (
                     <div className="chat-quick-replies">
                         <button
                             onClick={() => handleSendMessage('Sim')}
