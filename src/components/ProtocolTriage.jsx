@@ -419,10 +419,94 @@ const ProtocolTriage = () => {
         start: startRecording,
         stop: stopRecording,
         reset: resetRecording,
-        error: transcribeError
+        error: transcribeError,
+        audioDataCallbackRef
     } = useTranscribe();
 
     const [textBeforeRecording, setTextBeforeRecording] = useState("");
+
+    // -- RECORDING PANEL REFS & STATE --
+    const canvasRef = useRef(null);
+    const rafRef = useRef(null);
+    const latestAudioRef = useRef(new Float32Array(0));
+    const [elapsedSeconds, setElapsedSeconds] = useState(0);
+
+    // Wire audio data callback for waveform visualization
+    useEffect(() => {
+        audioDataCallbackRef.current = (data) => {
+            latestAudioRef.current = data;
+        };
+        return () => { audioDataCallbackRef.current = null; };
+    }, [audioDataCallbackRef]);
+
+    // Waveform canvas draw loop
+    useEffect(() => {
+        if (!isRecording) {
+            if (rafRef.current) cancelAnimationFrame(rafRef.current);
+            // Draw flat line when not recording
+            const canvas = canvasRef.current;
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                const W = canvas.width;
+                const H = canvas.height;
+                ctx.clearRect(0, 0, W, H);
+                ctx.strokeStyle = getComputedStyle(canvas).getPropertyValue('--color-primary').trim() || '#14b8a6';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(0, H / 2);
+                ctx.lineTo(W, H / 2);
+                ctx.stroke();
+            }
+            return;
+        }
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        // Resolve --color-primary from computed style (canvas ctx cannot use CSS vars — Pitfall 4)
+        const primaryColor = getComputedStyle(canvas).getPropertyValue('--color-primary').trim() || '#14b8a6';
+
+        const draw = () => {
+            const data = latestAudioRef.current;
+            const W = canvas.width;
+            const H = canvas.height;
+            ctx.clearRect(0, 0, W, H);
+            ctx.strokeStyle = primaryColor;
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            if (data.length === 0) {
+                ctx.moveTo(0, H / 2);
+                ctx.lineTo(W, H / 2);
+            } else {
+                const sliceWidth = W / data.length;
+                let x = 0;
+                for (let i = 0; i < data.length; i++) {
+                    const v = data[i] * 0.5 + 0.5;
+                    const y = v * H;
+                    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+                    x += sliceWidth;
+                }
+            }
+            ctx.stroke();
+            rafRef.current = requestAnimationFrame(draw);
+        };
+        rafRef.current = requestAnimationFrame(draw);
+        return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+    }, [isRecording]);
+
+    // Elapsed timer
+    useEffect(() => {
+        if (!isRecording) {
+            setElapsedSeconds(0);
+            return;
+        }
+        const interval = setInterval(() => {
+            setElapsedSeconds(prev => prev + 1);
+        }, 1000);
+        return () => clearInterval(interval);
+    }, [isRecording]);
+
+    const formatTime = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 
     // Update input text with transcription
     useEffect(() => {
@@ -1196,50 +1280,67 @@ const ProtocolTriage = () => {
                     </div>
                 )}
 
-                <div className="chat-input-bar">
-                    <input
-                        type="text"
-                        value={inputText}
-                        onChange={(e) => setInputText(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                        placeholder="Digite a queixa do paciente..."
-                        disabled={loading}
-                        className="chat-text-input"
-                    />
-
-                    {/* Microphone Button */}
-                    <button
-                        onClick={handleToggleRecording}
-                        disabled={loading}
-                        className={`chat-mic-btn${isRecording ? ' chat-mic-btn--recording' : ''}${activeShortcut === 'record' ? ' shortcut-active' : ''}`}
-                        title={isRecording ? "Parar Gravação (Esc)" : "Gravar Áudio (R)"}
-                    >
-                        {isRecording ? (
-                            // Stop Icon (Square) + shortcut hint
-                            <>
-                                <div className="chat-mic-stop-icon" />
-                                <span className="shortcut-hint">(Esc)</span>
-                            </>
-                        ) : (
-                            // Mic Icon (SVG) + shortcut hint
-                            <>
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M12 14C13.66 14 15 12.66 15 11V5C15 3.34 13.66 2 12 2C10.34 2 9 3.34 9 5V11C9 12.66 10.34 14 12 14Z" />
-                                    <path d="M19 10C19 13.87 15.87 17 12 17C8.13 17 5 13.87 5 10V9H3V10C3 14.53 6.39 18.26 10.74 18.89L10.99 18.93V21.99H13.01V18.92C17.48 18.37 21 14.54 21 10V9H19V10Z" />
-                                </svg>
-                                <span className="shortcut-hint">(R)</span>
-                            </>
-                        )}
-                    </button>
-
-                    <button
-                        onClick={() => handleSendMessage()}
-                        disabled={loading}
-                        className="chat-send-btn"
-                    >
-                        Enviar
-                    </button>
-                </div>
+                {isRecording ? (
+                    <div className="recording-panel">
+                        <div className="recording-panel__transcript">
+                            {finalTranscript && (
+                                <span className="recording-panel__final">{finalTranscript}</span>
+                            )}
+                            {partialTranscript && (
+                                <span className="recording-panel__partial">{partialTranscript}</span>
+                            )}
+                            {!finalTranscript && !partialTranscript && (
+                                <span className="recording-panel__placeholder">Aguardando transcricao...</span>
+                            )}
+                        </div>
+                        <div className="recording-panel__controls">
+                            <canvas
+                                ref={canvasRef}
+                                className="recording-panel__waveform"
+                                width={280}
+                                height={120}
+                            />
+                            <span className="recording-panel__timer">{formatTime(elapsedSeconds)}</span>
+                            <button
+                                onClick={stopRecording}
+                                className="btn btn--danger btn--sm recording-panel__stop-btn"
+                            >
+                                Parar <span className="shortcut-hint">(Esc)</span>
+                            </button>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="chat-input-bar">
+                        <input
+                            type="text"
+                            value={inputText}
+                            onChange={(e) => setInputText(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                            placeholder="Digite a queixa do paciente..."
+                            disabled={loading}
+                            className="chat-text-input"
+                        />
+                        <button
+                            onClick={handleToggleRecording}
+                            disabled={loading}
+                            className={`chat-mic-btn${activeShortcut === 'record' ? ' shortcut-active' : ''}`}
+                            title="Gravar Audio (R)"
+                        >
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 14C13.66 14 15 12.66 15 11V5C15 3.34 13.66 2 12 2C10.34 2 9 3.34 9 5V11C9 12.66 10.34 14 12 14Z" />
+                                <path d="M19 10C19 13.87 15.87 17 12 17C8.13 17 5 13.87 5 10V9H3V10C3 14.53 6.39 18.26 10.74 18.89L10.99 18.93V21.99H13.01V18.92C17.48 18.37 21 14.54 21 10V9H19V10Z" />
+                            </svg>
+                            Gravar <span className="shortcut-hint">(R)</span>
+                        </button>
+                        <button
+                            onClick={() => handleSendMessage()}
+                            disabled={loading}
+                            className="chat-send-btn"
+                        >
+                            Enviar
+                        </button>
+                    </div>
+                )}
             </section>
 
             {/* Right: Sensors & Info — desktop sidebar */}

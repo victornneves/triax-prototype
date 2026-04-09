@@ -20,6 +20,7 @@ export function useTranscribe() {
 
     const clientRef = useRef(null);
     const runningRef = useRef(false);
+    const audioDataCallbackRef = useRef(null);
 
     const audioContextRef = useRef(null);
     const processorRef = useRef(null);
@@ -82,6 +83,10 @@ export function useTranscribe() {
                 const copy = new Float32Array(float32.length);
                 copy.set(float32);
                 queue.push(copy);
+                // Fire callback for waveform visualization (Phase 8 — D-21)
+                if (audioDataCallbackRef.current) {
+                    audioDataCallbackRef.current(float32);
+                }
             };
 
             source.connect(processor);
@@ -196,6 +201,7 @@ export function useTranscribe() {
         start,
         stop,
         reset,
+        audioDataCallbackRef,
     };
 }
 
