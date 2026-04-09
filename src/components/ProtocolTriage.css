@@ -933,3 +933,26 @@
   font-size: var(--font-size-xs);
   color: var(--color-text-secondary);
 }
+
+/* ===================================================================
+ * Keyboard shortcut styles — Phase 8 (INTR-02)
+ * =================================================================== */
+
+/* Shortcut hint text inside buttons: "(Y)", "(N)", "(R)", "(Esc)" */
+.shortcut-hint {
+  font-size: var(--font-size-sm);
+  font-weight: 400;
+  color: var(--color-text-muted);
+  margin-left: var(--spacing-xs);
+}
+
+/* Pulse animation when keyboard shortcut fires (D-13) */
+@keyframes shortcut-pulse {
+  0%   { box-shadow: none; }
+  40%  { box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 30%, transparent); }
+  100% { box-shadow: none; }
+}
+
+.shortcut-active {
+  animation: shortcut-pulse 150ms ease-out forwards;
+}
