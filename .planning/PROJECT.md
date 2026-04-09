@@ -65,8 +65,9 @@ Clinicians reach a triage priority decision faster and more consistently because
 - [x] WCAG-compliant color contrast across all components — Validated in Phase 7: Component Migration & Accessibility
 - [x] Semantic HTML and ARIA labels for screen reader support — Validated in Phase 7: Component Migration & Accessibility
 - [x] Focus indicators for keyboard navigation — Validated in Phase 7: Component Migration & Accessibility
-- [x] Smart form defaults and auto-calculation (e.g., age from birth date) — Validated in Phase 7: Component Migration & Accessibility
+- [x] Smart form defaults and auto-calculation (e.g., age from birth date) — Validated in Phase 9: Patient Form Redesign
 - [x] Contextual help tooltips for all form fields — Validated in Phase 7: Component Migration & Accessibility
+- [x] Patient form redesign with CPF-first flow, input masks, and metadata cards — Validated in Phase 9: Patient Form Redesign
 - [ ] Session summary timeline during triage
 
 ### Out of Scope
@@ -81,7 +82,7 @@ Clinicians reach a triage priority decision faster and more consistently because
 
 ## Context
 
-- **Current state:** v2.0.0 in progress — Phase 7 (Component Migration & Accessibility) complete. All components migrated from inline styles to token-backed CSS. ARIA attributes, focus traps, keyboard nav added. Tooltip + StatusBar primitives created. Form validation with input masking live. 2 accepted clinical inline style exceptions (pain slider accentColor, GCS select dynamic border).
+- **Current state:** v2.0.0 in progress — Phase 9 (Patient Form Redesign) complete. PatientForm extracted to standalone component with CPF-first progressive flow, lookup stub, computed age from birth date, metadata cards, Material-style inputs with design tokens, input masks, and sticky submit. All 9 phases of v2.0.0 milestone executed.
 - **Deployment:** AWS Amplify auto-deploys on every commit to `main`. Working on `v2-ui-overhaul` branch; merging to `main` at milestone completion.
 - **Backend:** External REST API at AWS API Gateway (sa-east-1). Frontend owns no backend code.
 - **Language:** App targets Brazilian Portuguese-speaking clinical staff (São Paulo region).
@@ -126,4 +127,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-08 after Phase 6 completion*
+*Last updated: 2026-04-09 after Phase 9 completion*
