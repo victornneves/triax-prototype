@@ -27,7 +27,7 @@ Full details: `.planning/milestones/v1.1.0-ROADMAP.md`
 - [x] **Phase 6: UI Primitives + Toast System** -- Reusable component library and toast notifications replacing alert() (completed 2026-04-08)
 - [x] **Phase 7: Component Migration + Accessibility** -- Inline style elimination, semantic HTML, ARIA, WCAG 2.1 AA, form improvements, responsive layout (completed 2026-04-08)
 - [x] **Phase 8: New Interactions** -- Dark mode toggle, keyboard shortcuts, and voice recording UX (completed 2026-04-09)
-- [ ] **Phase 9: Patient Form Redesign** -- CPF-first flow, API auto-fill, Material-style inputs, metadata cards, input masks, sticky submit
+- [x] **Phase 9: Patient Form Redesign** -- CPF-first flow, API auto-fill, Material-style inputs, metadata cards, input masks, sticky submit (completed 2026-04-09)
 
 ## Phase Details
 
@@ -108,10 +108,10 @@ Plans:
   6. Inline validation errors change the field's border color — no detached red text
   7. Tab order follows the logical flow: CPF → Name → Birth Date → Sex → Submit
   8. The submit button is sticky at the bottom of the viewport when the form overflows
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 Plans:
 - [x] 09-01-PLAN.md -- Extract PatientForm.jsx + PatientForm.css: CPF-first layout, lookup stub, computed age, metadata section, refined styling
-- [ ] 09-02-PLAN.md -- Wire PatientForm into ProtocolTriage, remove old inline code + CSS, guard transcription age
+- [x] 09-02-PLAN.md -- Wire PatientForm into ProtocolTriage, remove old inline code + CSS, guard transcription age
 
 ## Progress
 
@@ -125,4 +125,4 @@ Plans:
 | 6. UI Primitives + Toast System | v2.0.0 | 3/3 | Complete   | 2026-04-08 |
 | 7. Component Migration + Accessibility | v2.0.0 | 7/7 | Complete   | 2026-04-08 |
 | 8. New Interactions | v2.0.0 | 3/3 | Complete   | 2026-04-09 |
-| 9. Patient Form Redesign | v2.0.0 | 1/2 | In Progress|  |
+| 9. Patient Form Redesign | v2.0.0 | 2/2 | Complete   | 2026-04-09 |
