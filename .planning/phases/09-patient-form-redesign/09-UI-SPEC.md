@@ -66,16 +66,14 @@ Token values from `src/styles/tokens.css` `:root` block (lines 77-83).
 
 | Role | CSS Token | Computed Size | Weight | Line Height | Usage |
 |------|-----------|--------------|--------|-------------|-------|
-| Form title | `--font-size-2xl` | ~24px | 700 | 1.2 | `.patient-form__title` heading |
+| Form title | `--font-size-2xl` | ~24px | 600 | 1.2 | `.patient-form__title` heading |
 | Body / input | `--font-size-md` | 16px (1rem) | 400 | 1.5 | Primary field inputs, field values |
 | Label | `--font-size-sm` | ~14px (0.85rem) | 600 | 1.4 | `.patient-form__label` above inputs |
 | Metadata / small | `--font-size-xs` | ~12px (0.75rem) | 600 | 1.3 | Section label "DADOS ADMINISTRATIVOS", meta inputs |
 
-**Three weights (400 body, 600 labels, 700 submit — existing convention):**
+**Two weights only:**
 - Regular: 400 — input values, computed age display, placeholder text
-- Semibold: 600 — field labels, section group label
-- Bold: 700 — submit button only (`.patient-form__submit`), carrying forward the existing
-  convention. Not used on any other element in this phase.
+- Semibold: 600 — form title, field labels, section group label, submit button (`.patient-form__submit`)
 
 Source: tokens.css lines 77-83 (confirmed). No new font-size tokens introduced in Phase 9.
 
@@ -175,7 +173,7 @@ Unchanged (reuse as-is):
 
 - `.patient-form__submit-wrapper`: `position: sticky; bottom: 0; background-color: var(--color-surface); padding-top: var(--spacing-md); box-shadow: 0 -2px 8px rgba(0,0,0,0.06); z-index: 1`
 - The scroll container (`.patient-form-wrapper`) must have `overflow-y: auto` and `max-height: 100dvh` for sticky to activate. If current `align-items: center` on flex blocks scroll, add inner scroll wrapper.
-- Submit button remains `.patient-form__submit` (full-width, teal, `--font-size-lg`, weight 700) — or replaced by `<Button variant="primary" loading={loading}>` from shared Button component to get spinner for free
+- Submit button remains `.patient-form__submit` (full-width, teal, `--font-size-lg`, weight 600) — or replaced by `<Button variant="primary" loading={loading}>` from shared Button component to get spinner for free
 - Disabled state: `opacity: 0.7; cursor: not-allowed` (existing pattern, keep)
 
 ### Tab Order (D-08)
