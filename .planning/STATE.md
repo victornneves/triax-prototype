@@ -106,6 +106,10 @@ Plan: Not started
 - [Phase 08-new-interactions]: Canvas HTML 280x120 with CSS 140x60 for 2x DPI sharpness on HiDPI screens
 - [Phase 08-new-interactions]: Recording panel replaces entire chat-input-bar (not overlay) per D-15 design decision
 
+### Roadmap Evolution
+
+- Phase 9 added: Patient Form Redesign — CPF-first flow, API auto-fill, Material-style inputs, metadata cards, input masks, sticky submit
+
 ### Pending Todos
 
 None yet.

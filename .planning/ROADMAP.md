@@ -3,7 +3,7 @@
 ## Milestones
 
 - **v1.1.0 Alignment & Cleanup** -- Phases 1-4 (shipped 2026-04-07)
-- **v2.0.0 UI/UX Overhaul** -- Phases 5-8 (in progress)
+- **v2.0.0 UI/UX Overhaul** -- Phases 5-9 (in progress)
 
 ## Phases
 
@@ -27,6 +27,7 @@ Full details: `.planning/milestones/v1.1.0-ROADMAP.md`
 - [x] **Phase 6: UI Primitives + Toast System** -- Reusable component library and toast notifications replacing alert() (completed 2026-04-08)
 - [x] **Phase 7: Component Migration + Accessibility** -- Inline style elimination, semantic HTML, ARIA, WCAG 2.1 AA, form improvements, responsive layout (completed 2026-04-08)
 - [x] **Phase 8: New Interactions** -- Dark mode toggle, keyboard shortcuts, and voice recording UX (completed 2026-04-09)
+- [ ] **Phase 9: Patient Form Redesign** -- CPF-first flow, API auto-fill, Material-style inputs, metadata cards, input masks
 
 ## Phase Details
 
@@ -106,3 +107,22 @@ Plans:
 | 6. UI Primitives + Toast System | v2.0.0 | 3/3 | Complete   | 2026-04-08 |
 | 7. Component Migration + Accessibility | v2.0.0 | 7/7 | Complete   | 2026-04-08 |
 | 8. New Interactions | v2.0.0 | 3/3 | Complete   | 2026-04-09 |
+| 9. Patient Form Redesign | v2.0.0 | 0/0 | Not Started | — |
+
+### Phase 9: Patient Form Redesign
+**Goal**: Redesign PatientForm for clarity and efficiency — CPF-first progressive flow with API lookup and auto-fill, computed age from birth date only (remove redundant age field), read-only metadata cards for system IDs (SAME, Visit ID, Patient Code), Material-style inputs with subtle borders and inline error states, input masks for CPF and date fields, logical tab order, and sticky submit button.
+**Depends on**: Phase 8
+**Requirements**: FORM-05
+**Success Criteria** (what must be TRUE):
+  1. Entering a valid CPF triggers an API lookup; if the patient exists, Name, Sex, and Birth Date auto-fill without manual entry
+  2. Age is computed from Birth Date and displayed as a read-only label — no separate age input field exists
+  3. System IDs (SAME, Patient Code, Visit ID, Ticket) render as non-editable metadata cards, not form inputs
+  4. All text inputs use Material-style styling (subtle borders, gray background, focus highlight) consistent with the design token system
+  5. CPF and date fields auto-format with masks as the clinician types (e.g., 000.000.000-00)
+  6. Inline validation errors change the field's border color — no detached red text
+  7. Tab order follows the logical flow: CPF → Name → Birth Date → Sex → Submit
+  8. The submit button is sticky at the bottom of the viewport when the form overflows
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 9 to break down)
