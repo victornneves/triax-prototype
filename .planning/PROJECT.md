@@ -83,10 +83,10 @@ v2.0.0 transformed the functional prototype into a polished, clinician-centric t
 
 <!-- v2.1.0 UX Polish scope -->
 
-- [ ] Yes/no quick-reply buttons visible during triage questions
-- [ ] All requested vital signs correctly highlighted on sensor dock
-- [ ] Shift+Enter creates new line in chat input (Enter submits)
-- [ ] Yes/no buttons shown even when vital signs are pending
+- [x] Yes/no quick-reply buttons visible during triage questions — Phase 11
+- [x] All requested vital signs correctly highlighted on sensor dock — Phase 11
+- [x] Shift+Enter creates new line in chat input (Enter submits) — Phase 11
+- [x] Yes/no buttons shown even when vital signs are pending — Phase 11
 - [ ] Visual indicators for abnormal/critical vital sign values
 - [ ] Session history shows priority badge, patient name, duration
 - [ ] Keyboard shortcut discoverability (help legend/tooltip)
@@ -159,4 +159,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-09 after Phase 10 (sensor-panel-refactor) complete*
+*Last updated: 2026-04-09 after Phase 11 (triage-interaction-fixes) complete*
