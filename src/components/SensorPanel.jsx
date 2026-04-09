@@ -225,4 +225,5 @@ const SensorPanel = ({ sensorInputs, missingSensors, onSensorChange, onSubmit, l
     );
 };
 
+export { SENSOR_CONFIG };
 export default SensorPanel;
