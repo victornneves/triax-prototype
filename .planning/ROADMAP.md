@@ -37,7 +37,7 @@ Full details: `.planning/milestones/v2.0.0-ROADMAP.md`
 
 **Milestone Goal:** Fix triage interaction bugs and polish the clinical UX for pilot readiness
 
-- [ ] **Phase 10: Sensor Panel Refactor** - Extract shared sensor panel component used by both desktop and mobile views
+- [x] **Phase 10: Sensor Panel Refactor** - Extract shared sensor panel component used by both desktop and mobile views (completed 2026-04-09)
 - [ ] **Phase 11: Triage Interaction Fixes** - Fix yes/no button logic, vital sign highlighting, and Shift+Enter input behavior
 - [ ] **Phase 12: Vital Signs UX** - Add abnormal/critical value indicators and mobile-friendly BP input layout
 - [ ] **Phase 13: Session History Enrichment** - Add priority badge, patient name preview, and duration to history list
@@ -55,7 +55,7 @@ Full details: `.planning/milestones/v2.0.0-ROADMAP.md`
   3. Desktop and mobile sensor panel behavior (expand/collapse, field display) is unchanged after refactor
 **Plans**: 1 plan
 Plans:
-- [ ] 10-01-PLAN.md — Extract SensorPanel component and wire into ProtocolTriage
+- [x] 10-01-PLAN.md — Extract SensorPanel component and wire into ProtocolTriage
 
 ### Phase 11: Triage Interaction Fixes
 **Goal**: Clinicians can answer yes/no questions and see correct vital sign highlights during triage, and can type multiline messages
@@ -110,7 +110,7 @@ Plans:
 | 7. Component Migration + Accessibility | v2.0.0 | 7/7 | Complete | 2026-04-08 |
 | 8. New Interactions | v2.0.0 | 3/3 | Complete | 2026-04-09 |
 | 9. Patient Form Redesign | v2.0.0 | 2/2 | Complete | 2026-04-09 |
-| 10. Sensor Panel Refactor | v2.1.0 | 0/1 | Planned | - |
+| 10. Sensor Panel Refactor | v2.1.0 | 1/1 | Complete   | 2026-04-09 |
 | 11. Triage Interaction Fixes | v2.1.0 | 0/TBD | Not started | - |
 | 12. Vital Signs UX | v2.1.0 | 0/TBD | Not started | - |
 | 13. Session History Enrichment | v2.1.0 | 0/TBD | Not started | - |

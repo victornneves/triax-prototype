@@ -30,7 +30,7 @@ Requirements for UX Polish release. Each maps to roadmap phases.
 
 ### Refactoring
 
-- [ ] **REFAC-01**: Sensor panel rendering extracted into shared component used by both desktop and mobile views
+- [x] **REFAC-01**: Sensor panel rendering extracted into shared component used by both desktop and mobile views
 
 ## Future Requirements
 
@@ -56,7 +56,7 @@ Requirements for UX Polish release. Each maps to roadmap phases.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| REFAC-01 | Phase 10 | Pending |
+| REFAC-01 | Phase 10 | Complete |
 | TRIAGE-01 | Phase 11 | Pending |
 | TRIAGE-02 | Phase 11 | Pending |
 | TRIAGE-03 | Phase 11 | Pending |
