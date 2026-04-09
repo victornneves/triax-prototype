@@ -1,3 +1,10 @@
+/* Dark mode crossfade transition (Phase 8 — D-03) */
+[data-app-theme] {
+  transition: background-color 200ms ease,
+              color 200ms ease,
+              border-color 200ms ease;
+}
+
 #root {
   width: 100vw;
   height: 100vh;

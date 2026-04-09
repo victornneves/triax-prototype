@@ -11,6 +11,7 @@ import Profile from './pages/Profile';
 import AdminUsers from './pages/AdminUsers';
 import RequireAdmin from './components/RequireAdmin';
 import { UserProvider, useUser } from './contexts/UserContext';
+import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import { ToastProvider } from './components/ui/ToastProvider';
 import './App.css';
 
@@ -18,6 +19,7 @@ Amplify.configure(awsConfig);
 
 function AppContent({ signOut }) {
     const { error } = useUser();
+    const { theme } = useTheme();
 
     if (error) {
         return (
@@ -39,7 +41,7 @@ function AppContent({ signOut }) {
 
     return (
         <BrowserRouter>
-            <div className="app-container" data-app-theme="light">
+            <div className="app-container" data-app-theme={theme}>
                 <Header signOut={signOut} />
 
                 <main className="app-main">
@@ -59,11 +61,13 @@ function App() {
     return (
         <Authenticator>
             {({ signOut, user }) => (
-                <ToastProvider>
-                    <UserProvider>
-                        <AppContent signOut={signOut} />
-                    </UserProvider>
-                </ToastProvider>
+                <ThemeProvider>
+                    <ToastProvider>
+                        <UserProvider>
+                            <AppContent signOut={signOut} />
+                        </UserProvider>
+                    </ToastProvider>
+                </ThemeProvider>
             )}
         </Authenticator>
     );
