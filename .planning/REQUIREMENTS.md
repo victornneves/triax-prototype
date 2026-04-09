@@ -56,22 +56,22 @@ Requirements for UX Polish release. Each maps to roadmap phases.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| TRIAGE-01 | — | Pending |
-| TRIAGE-02 | — | Pending |
-| TRIAGE-03 | — | Pending |
-| TRIAGE-04 | — | Pending |
-| VITALS-01 | — | Pending |
-| VITALS-02 | — | Pending |
-| HIST-01 | — | Pending |
-| HIST-02 | — | Pending |
-| DISC-01 | — | Pending |
-| REFAC-01 | — | Pending |
+| REFAC-01 | Phase 10 | Pending |
+| TRIAGE-01 | Phase 11 | Pending |
+| TRIAGE-02 | Phase 11 | Pending |
+| TRIAGE-03 | Phase 11 | Pending |
+| TRIAGE-04 | Phase 11 | Pending |
+| VITALS-01 | Phase 12 | Pending |
+| VITALS-02 | Phase 12 | Pending |
+| HIST-01 | Phase 13 | Pending |
+| HIST-02 | Phase 13 | Pending |
+| DISC-01 | Phase 14 | Pending |
 
 **Coverage:**
 - v2.1.0 requirements: 10 total
-- Mapped to phases: 0
-- Unmapped: 10
+- Mapped to phases: 10
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-04-09*
-*Last updated: 2026-04-09 after initial definition*
+*Last updated: 2026-04-09 after roadmap creation*
