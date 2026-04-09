@@ -1,10 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useUser } from '../contexts/UserContext';
+import { useTheme } from '../contexts/ThemeContext';
 import './Header.css';
 
 const Header = ({ signOut }) => {
     const { userProfile, loading } = useUser();
+    const { theme, toggleTheme } = useTheme();
+    const isDark = theme === 'dark';
 
     return (
         <header className="app-header">
@@ -28,6 +31,14 @@ const Header = ({ signOut }) => {
             </div>
 
             <div className="header-right">
+                <button
+                    onClick={toggleTheme}
+                    className="header-theme-toggle"
+                    aria-label={isDark ? 'Ativar modo claro' : 'Ativar modo escuro'}
+                    title={isDark ? 'Modo claro' : 'Modo escuro'}
+                >
+                    {isDark ? '\u2600' : '\uD83C\uDF19'}
+                </button>
                 {loading ? (
                     <span className="header-loading-text">Carregando perfil...</span>
                 ) : userProfile ? (
