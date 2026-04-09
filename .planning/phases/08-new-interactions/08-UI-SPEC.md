@@ -62,17 +62,19 @@ Declared values from `tokens.css` `:root` `--font-size-*` scale (source: tokens.
 | Role | CSS Variable | px Equivalent | Weight | Line Height | Usage |
 |------|-------------|---------------|--------|-------------|-------|
 | Body | `--font-size-md` | 16px (1rem) | 400 (regular) | 1.5 | Chat messages, transcript preview, form text |
-| Label / Caption | `--font-size-sm` | ~13.6px (0.85rem) | 600 (semibold) | 1.4 | Shortcut hints "(Y)" "(N)" "(R)", nav links, button labels, timer |
+| Label / Caption | `--font-size-sm` | ~13.6px (0.85rem) | 400 (regular) | 1.4 | Shortcut hints "(Y)" "(N)" "(R)", timer, nav links, button labels |
 | Heading | `--font-size-xl` | 20px (1.25rem) | 600 (semibold) | 1.2 | Section headings, modal titles |
 | Brand / Display | `--font-size-2xl` | 24px (1.5rem) | 600 (semibold) | 1.2 | Header brand "Triax" |
 
 **Phase 8 specifics:**
 
-- Shortcut key hints (`(Y)`, `(N)`, `(R)`) displayed at `--font-size-xs` (12px / 0.75rem), weight 400 (regular), color `--color-text-muted`. This differentiates the hint from the button label.
+- Shortcut key hints (`(Y)`, `(N)`, `(R)`) use `--font-size-sm` (~13.6px / 0.85rem), weight 400 (regular), color `--color-text-muted`. Visual differentiation from the button label is achieved via muted color and regular weight — not a separate smaller size.
 - Elapsed timer: `--font-size-sm` (0.85rem), weight 600 (semibold), monospace rendering via `font-variant-numeric: tabular-nums` to prevent digit-width jitter as seconds advance.
 - Live transcript preview text: `--font-size-md` (1rem), weight 400, line-height 1.5 — matches body text to look like normal input content.
 
 **Weights in use:** 400 (regular) and 600 (semibold) only — no other weights declared or allowed.
+
+**Active size count: 4** — sm, md, xl, 2xl. No fifth size. `--font-size-xs` is not used in Phase 8.
 
 ---
 
@@ -144,7 +146,7 @@ New components and modifications required for Phase 8:
 
 ### Modified: Yes/No Buttons (in `ProtocolTriage.jsx`)
 **Change:** Label text becomes "Sim (Y)" and "Não (N)" — shortcut hint rendered as `<span class="shortcut-hint">(Y)</span>` inside button, not inline with main label text
-**Shortcut hint span:** `--font-size-xs`, color `--color-text-muted`, `margin-left: var(--spacing-xs)`
+**Shortcut hint span:** `--font-size-sm`, color `--color-text-muted`, weight 400, `margin-left: var(--spacing-xs)`. Muted color and regular weight (vs. button label's semibold) provide visual differentiation without introducing a fifth font size.
 **Pulse class:** `.shortcut-active` — added via JS for 150ms, then removed. CSS: `animation: shortcut-pulse 150ms ease-out forwards`
 ```css
 @keyframes shortcut-pulse {
@@ -279,6 +281,8 @@ These notes translate design decisions into concrete implementation constraints:
 6. **Atomic migration rule:** Each modified file gets a complete pass — no mixed inline styles and class-based styles in the same file. (source: STATE.md accumulated decisions)
 
 7. **MTS colors during dark mode:** `--mts-*` tokens do not change. In `[data-app-theme="dark"]` there are no overrides for MTS tokens — by design. Clinical priority colors are mode-invariant. (source: tokens.css lines 145-181, STATE.md decisions)
+
+8. **`.shortcut-hint` class typography:** Always `--font-size-sm`, weight 400, color `--color-text-muted`. Do not introduce `--font-size-xs` or any fifth font size. The type scale is exactly 4 sizes: sm, md, xl, 2xl.
 
 ---
 
