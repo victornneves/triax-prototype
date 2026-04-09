@@ -99,6 +99,14 @@ None — no external service configuration required.
 - Phase 14 (Discoverability) unblocked: Y/N keyboard shortcuts are now confirmed working end-to-end (buttons visible, shortcuts suppressed in textarea focus via existing `tag === 'TEXTAREA'` guard)
 - Phase 12 (Vital Signs UX / abnormal indicators) unblocked: GCS highlighting now works correctly, no missingSensors key mismatch
 
+## Self-Check: PASSED
+
+- src/components/ProtocolTriage.jsx — FOUND
+- src/components/ProtocolTriage.css — FOUND
+- .planning/phases/11-triage-interaction-fixes/11-01-SUMMARY.md — FOUND
+- Commit fcd7083 — FOUND
+- Commit 7d99482 — FOUND
+
 ---
 *Phase: 11-triage-interaction-fixes*
 *Completed: 2026-04-09*
