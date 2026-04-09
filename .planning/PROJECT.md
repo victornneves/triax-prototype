@@ -91,7 +91,7 @@ v2.0.0 transformed the functional prototype into a polished, clinician-centric t
 - [ ] Session history shows priority badge, patient name, duration
 - [ ] Keyboard shortcut discoverability (help legend/tooltip)
 - [ ] Mobile-friendly blood pressure input layout
-- [ ] Shared sensor panel component (desktop/mobile unified)
+- [x] Shared sensor panel component (desktop/mobile unified) — Phase 10
 - [ ] Triage progress indicator (stepper/progress bar) — deferred from v2.0.0 (depends on /traverse API exposing step data)
 - [ ] Session summary timeline during triage — deferred from v2.0.0
 
@@ -159,4 +159,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-09 after v2.1.0 milestone start*
+*Last updated: 2026-04-09 after Phase 10 (sensor-panel-refactor) complete*
