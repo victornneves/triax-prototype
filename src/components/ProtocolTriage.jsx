@@ -218,6 +218,7 @@ const ProtocolTriage = () => {
 
     const messagesEndRef = useRef(null);
     const protocolRef = useRef(null);
+    const textareaRef = useRef(null);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -392,6 +393,27 @@ const ProtocolTriage = () => {
             addMessage('system', "Informação insuficiente. Por favor, detalhe melhor a queixa.");
         }
     };
+
+    const handleTextareaInput = () => {
+        const el = textareaRef.current;
+        if (!el) return;
+        el.style.height = 'auto';
+        el.style.height = el.scrollHeight + 'px';
+    };
+
+    const handleTextareaKeyDown = (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSendMessage();
+        }
+        // Shift+Enter: browser default inserts newline — no action needed
+    };
+
+    useEffect(() => {
+        if (!inputText && textareaRef.current) {
+            textareaRef.current.style.height = 'auto';
+        }
+    }, [inputText]);
 
     const submitSensorData = async (headers, sensors) => {
         // Build the payload matching SensorDataRequest schema
@@ -916,14 +938,16 @@ const ProtocolTriage = () => {
                     </div>
                 ) : (
                     <div className="chat-input-bar">
-                        <input
-                            type="text"
+                        <textarea
+                            ref={textareaRef}
                             value={inputText}
                             onChange={(e) => setInputText(e.target.value)}
-                            onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                            onInput={handleTextareaInput}
+                            onKeyDown={handleTextareaKeyDown}
                             placeholder="Digite a queixa do paciente..."
                             disabled={loading}
                             className="chat-text-input"
+                            rows={1}
                         />
                         <button
                             onClick={handleToggleRecording}
