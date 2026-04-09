@@ -409,6 +409,7 @@ const ProtocolTriage = () => {
     const [pendingProtocol, setPendingProtocol] = useState(null);
     const [pdfLoading, setPdfLoading] = useState(false);
     const [pendingQuestion, setPendingQuestion] = useState(null); // { question, nodeId }
+    const [activeShortcut, setActiveShortcut] = useState(null); // 'sim' | 'nao' | 'record' — drives 150ms pulse class
 
     // -- AUDIO TRANSCRIPTION --
     const {
@@ -442,6 +443,54 @@ const ProtocolTriage = () => {
             startRecording();
         }
     };
+
+    const triggerShortcutFeedback = (key) => {
+        setActiveShortcut(key);
+        setTimeout(() => setActiveShortcut(null), 150);
+    };
+
+    // Keyboard shortcuts: Y → Sim, N → Nao, R → toggle recording, Esc → stop recording
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            // Esc cancels active recording — always fires, even in form fields (D-09)
+            if (e.key === 'Escape' && isRecording) {
+                e.preventDefault();
+                stopRecording();
+                return;
+            }
+
+            // Suppress other shortcuts when focus is in form fields (D-08)
+            const tag = document.activeElement?.tagName;
+            if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+
+            // Y/N shortcuts — only when yes/no question is pending (D-11)
+            if (currentNode?.yesNo && !loading) {
+                if (e.key === 'y' || e.key === 'Y') {
+                    e.preventDefault();
+                    triggerShortcutFeedback('sim');
+                    handleSendMessage('Sim');
+                    return;
+                }
+                if (e.key === 'n' || e.key === 'N') {
+                    e.preventDefault();
+                    triggerShortcutFeedback('nao');
+                    handleSendMessage('Não');
+                    return;
+                }
+            }
+
+            // R toggles recording (D-10)
+            if ((e.key === 'r' || e.key === 'R') && !loading) {
+                e.preventDefault();
+                triggerShortcutFeedback('record');
+                handleToggleRecording();
+                return;
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, [currentNode, loading, isRecording]);
 
     useEffect(() => {
         getAuthHeaders().then(headers => {
@@ -1133,16 +1182,16 @@ const ProtocolTriage = () => {
                         <button
                             onClick={() => handleSendMessage('Sim')}
                             disabled={loading}
-                            className="chat-quick-reply-btn"
+                            className={`chat-quick-reply-btn${activeShortcut === 'sim' ? ' shortcut-active' : ''}`}
                         >
-                            Sim
+                            Sim <span className="shortcut-hint">(Y)</span>
                         </button>
                         <button
                             onClick={() => handleSendMessage('Não')}
                             disabled={loading}
-                            className="chat-quick-reply-btn"
+                            className={`chat-quick-reply-btn${activeShortcut === 'nao' ? ' shortcut-active' : ''}`}
                         >
-                            Não
+                            Não <span className="shortcut-hint">(N)</span>
                         </button>
                     </div>
                 )}
@@ -1162,18 +1211,24 @@ const ProtocolTriage = () => {
                     <button
                         onClick={handleToggleRecording}
                         disabled={loading}
-                        className={`chat-mic-btn${isRecording ? ' chat-mic-btn--recording' : ''}`}
-                        title={isRecording ? "Parar Gravação" : "Gravar Áudio"}
+                        className={`chat-mic-btn${isRecording ? ' chat-mic-btn--recording' : ''}${activeShortcut === 'record' ? ' shortcut-active' : ''}`}
+                        title={isRecording ? "Parar Gravação (Esc)" : "Gravar Áudio (R)"}
                     >
                         {isRecording ? (
-                            // Stop Icon (Square)
-                            <div className="chat-mic-stop-icon" />
+                            // Stop Icon (Square) + shortcut hint
+                            <>
+                                <div className="chat-mic-stop-icon" />
+                                <span className="shortcut-hint">(Esc)</span>
+                            </>
                         ) : (
-                            // Mic Icon (SVG)
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 14C13.66 14 15 12.66 15 11V5C15 3.34 13.66 2 12 2C10.34 2 9 3.34 9 5V11C9 12.66 10.34 14 12 14Z" />
-                                <path d="M19 10C19 13.87 15.87 17 12 17C8.13 17 5 13.87 5 10V9H3V10C3 14.53 6.39 18.26 10.74 18.89L10.99 18.93V21.99H13.01V18.92C17.48 18.37 21 14.54 21 10V9H19V10Z" />
-                            </svg>
+                            // Mic Icon (SVG) + shortcut hint
+                            <>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 14C13.66 14 15 12.66 15 11V5C15 3.34 13.66 2 12 2C10.34 2 9 3.34 9 5V11C9 12.66 10.34 14 12 14Z" />
+                                    <path d="M19 10C19 13.87 15.87 17 12 17C8.13 17 5 13.87 5 10V9H3V10C3 14.53 6.39 18.26 10.74 18.89L10.99 18.93V21.99H13.01V18.92C17.48 18.37 21 14.54 21 10V9H19V10Z" />
+                                </svg>
+                                <span className="shortcut-hint">(R)</span>
+                            </>
                         )}
                     </button>
 
