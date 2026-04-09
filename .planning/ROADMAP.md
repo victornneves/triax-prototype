@@ -53,7 +53,9 @@ Full details: `.planning/milestones/v2.0.0-ROADMAP.md`
   1. Sensor panel renders identically in both desktop sidebar and mobile slide-up contexts from a single component
   2. No duplicated sensor panel rendering logic remains in ProtocolTriage.jsx
   3. Desktop and mobile sensor panel behavior (expand/collapse, field display) is unchanged after refactor
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 10-01-PLAN.md — Extract SensorPanel component and wire into ProtocolTriage
 
 ### Phase 11: Triage Interaction Fixes
 **Goal**: Clinicians can answer yes/no questions and see correct vital sign highlights during triage, and can type multiline messages
@@ -108,7 +110,7 @@ Full details: `.planning/milestones/v2.0.0-ROADMAP.md`
 | 7. Component Migration + Accessibility | v2.0.0 | 7/7 | Complete | 2026-04-08 |
 | 8. New Interactions | v2.0.0 | 3/3 | Complete | 2026-04-09 |
 | 9. Patient Form Redesign | v2.0.0 | 2/2 | Complete | 2026-04-09 |
-| 10. Sensor Panel Refactor | v2.1.0 | 0/TBD | Not started | - |
+| 10. Sensor Panel Refactor | v2.1.0 | 0/1 | Planned | - |
 | 11. Triage Interaction Fixes | v2.1.0 | 0/TBD | Not started | - |
 | 12. Vital Signs UX | v2.1.0 | 0/TBD | Not started | - |
 | 13. Session History Enrichment | v2.1.0 | 0/TBD | Not started | - |
