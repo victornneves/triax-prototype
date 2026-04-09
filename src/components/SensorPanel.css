@@ -1,0 +1,195 @@
+/* ================================================================
+ * SensorPanel — co-located styles
+ * Extracted from ProtocolTriage.css (Phase 10 — REFAC-01)
+ * ================================================================ */
+
+/* Sensors card */
+.triage-sensors {
+  padding: 1.25rem;
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.triage-sensors__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--spacing-md);
+}
+
+.triage-sensors__title {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-lg);
+}
+
+.triage-sensors__fill-btn {
+  font-size: var(--font-size-xs);
+  padding: 4px 12px;
+  cursor: pointer;
+  background-color: var(--color-surface-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  color: var(--color-text-secondary);
+}
+
+.triage-sensors__fill-btn:hover {
+  background-color: var(--color-surface-muted);
+}
+
+.triage-sensors__list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+.triage-sensors__item {
+  display: grid;
+  grid-template-columns: 90px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-subtle);
+  border: 1px solid var(--color-border);
+  transition: all 0.3s;
+}
+
+.triage-sensors__item--missing {
+  background-color: var(--color-feedback-error-bg);
+  border-color: var(--color-feedback-error-text);
+}
+
+.triage-sensors__input {
+  width: 100%;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border-strong);
+  color: var(--color-text-primary);
+  background-color: var(--color-surface);
+  font-size: var(--font-size-md);
+  box-sizing: border-box;
+}
+
+.triage-sensors__input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.triage-sensors__bp-group {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.triage-sensors__bp-input {
+  width: 60px;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border-strong);
+  color: var(--color-text-primary);
+  background-color: var(--color-surface);
+  text-align: center;
+  font-size: var(--font-size-md);
+  box-sizing: border-box;
+}
+
+.triage-sensors__bp-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.triage-sensors__bp-separator {
+  color: var(--color-text-secondary);
+  font-weight: bold;
+}
+
+.triage-sensors__submit-btn {
+  margin-top: auto;
+  width: 100%;
+  padding: 12px;
+  background-color: var(--color-primary);
+  color: var(--color-primary-text);
+  border: none;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: var(--font-size-md);
+  box-shadow: var(--shadow-sm);
+  transition: background-color var(--transition-fast);
+  margin-top: var(--spacing-md);
+}
+
+.triage-sensors__submit-btn:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.triage-sensors__submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* GCS select — dynamic border color is set inline (clinical state indicator) */
+.triage-sensors__gcs-select {
+  width: 100%;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  border-left-width: 5px;
+  outline: none;
+  background-color: var(--color-surface);
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+/* Pain scale (range input) */
+.triage-sensors__pain-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+}
+
+.triage-sensors__pain-range {
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.triage-sensors__pain-value {
+  font-weight: bold;
+  width: 20px;
+  text-align: right;
+  font-size: var(--font-size-sm);
+}
+
+/* --- Sensor label with tooltip --- */
+.triage-sensors__label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.triage-sensors__label-text {
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.triage-sensors__hint {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
