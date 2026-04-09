@@ -27,7 +27,7 @@ Full details: `.planning/milestones/v1.1.0-ROADMAP.md`
 - [x] **Phase 6: UI Primitives + Toast System** -- Reusable component library and toast notifications replacing alert() (completed 2026-04-08)
 - [x] **Phase 7: Component Migration + Accessibility** -- Inline style elimination, semantic HTML, ARIA, WCAG 2.1 AA, form improvements, responsive layout (completed 2026-04-08)
 - [x] **Phase 8: New Interactions** -- Dark mode toggle, keyboard shortcuts, and voice recording UX (completed 2026-04-09)
-- [ ] **Phase 9: Patient Form Redesign** -- CPF-first flow, API auto-fill, Material-style inputs, metadata cards, input masks
+- [ ] **Phase 9: Patient Form Redesign** -- CPF-first flow, API auto-fill, Material-style inputs, metadata cards, input masks, sticky submit
 
 ## Phase Details
 
@@ -95,20 +95,6 @@ Plans:
 - [x] 08-02-PLAN.md -- Keyboard shortcuts: Y/N/R/Esc keydown listener, input-focus suppression, shortcut hints, pulse animation
 - [x] 08-03-PLAN.md -- Recording UI: useTranscribe audio callback, waveform canvas, elapsed timer, transcript preview panel
 
-## Progress
-
-| Phase | Milestone | Plans Complete | Status | Completed |
-|-------|-----------|----------------|--------|-----------|
-| 1. API Alignment | v1.1.0 | 4/4 | Complete | 2026-03-30 |
-| 2. Auth & Security | v1.1.0 | 2/2 | Complete | 2026-03-30 |
-| 3. Tech Debt | v1.1.0 | 2/2 | Complete | 2026-04-07 |
-| 4. Fragility | v1.1.0 | 2/2 | Complete | 2026-04-07 |
-| 5. Design Token Foundation | v2.0.0 | 2/2 | Complete   | 2026-04-07 |
-| 6. UI Primitives + Toast System | v2.0.0 | 3/3 | Complete   | 2026-04-08 |
-| 7. Component Migration + Accessibility | v2.0.0 | 7/7 | Complete   | 2026-04-08 |
-| 8. New Interactions | v2.0.0 | 3/3 | Complete   | 2026-04-09 |
-| 9. Patient Form Redesign | v2.0.0 | 0/0 | Not Started | — |
-
 ### Phase 9: Patient Form Redesign
 **Goal**: Redesign PatientForm for clarity and efficiency — CPF-first progressive flow with API lookup and auto-fill, computed age from birth date only (remove redundant age field), read-only metadata cards for system IDs (SAME, Visit ID, Patient Code), Material-style inputs with subtle borders and inline error states, input masks for CPF and date fields, logical tab order, and sticky submit button.
 **Depends on**: Phase 8
@@ -122,7 +108,21 @@ Plans:
   6. Inline validation errors change the field's border color — no detached red text
   7. Tab order follows the logical flow: CPF → Name → Birth Date → Sex → Submit
   8. The submit button is sticky at the bottom of the viewport when the form overflows
-**Plans:** 0 plans
-
+**Plans:** 2 plans
 Plans:
-- [ ] TBD (run /gsd:plan-phase 9 to break down)
+- [ ] 09-01-PLAN.md -- Extract PatientForm.jsx + PatientForm.css: CPF-first layout, lookup stub, computed age, metadata section, refined styling
+- [ ] 09-02-PLAN.md -- Wire PatientForm into ProtocolTriage, remove old inline code + CSS, guard transcription age
+
+## Progress
+
+| Phase | Milestone | Plans Complete | Status | Completed |
+|-------|-----------|----------------|--------|-----------|
+| 1. API Alignment | v1.1.0 | 4/4 | Complete | 2026-03-30 |
+| 2. Auth & Security | v1.1.0 | 2/2 | Complete | 2026-03-30 |
+| 3. Tech Debt | v1.1.0 | 2/2 | Complete | 2026-04-07 |
+| 4. Fragility | v1.1.0 | 2/2 | Complete | 2026-04-07 |
+| 5. Design Token Foundation | v2.0.0 | 2/2 | Complete   | 2026-04-07 |
+| 6. UI Primitives + Toast System | v2.0.0 | 3/3 | Complete   | 2026-04-08 |
+| 7. Component Migration + Accessibility | v2.0.0 | 7/7 | Complete   | 2026-04-08 |
+| 8. New Interactions | v2.0.0 | 3/3 | Complete   | 2026-04-09 |
+| 9. Patient Form Redesign | v2.0.0 | 0/2 | In Progress | — |
