@@ -71,10 +71,11 @@ Token values from `src/styles/tokens.css` `:root` block (lines 77-83).
 | Label | `--font-size-sm` | ~14px (0.85rem) | 600 | 1.4 | `.patient-form__label` above inputs |
 | Metadata / small | `--font-size-xs` | ~12px (0.75rem) | 600 | 1.3 | Section label "DADOS ADMINISTRATIVOS", meta inputs |
 
-**Two weights only:**
+**Three weights (400 body, 600 labels, 700 submit — existing convention):**
 - Regular: 400 — input values, computed age display, placeholder text
-- Semibold: 600 — field labels, section group label, submit button (700 for submit only,
-  continuing existing `.patient-form__submit` convention)
+- Semibold: 600 — field labels, section group label
+- Bold: 700 — submit button only (`.patient-form__submit`), carrying forward the existing
+  convention. Not used on any other element in this phase.
 
 Source: tokens.css lines 77-83 (confirmed). No new font-size tokens introduced in Phase 9.
 
@@ -111,6 +112,8 @@ the age display label. Those use gray tokens only.
 
 **MTS clinical colors:** Not used in PatientForm. The form predates triage session — no
 priority color should appear here. If PatientForm is extracted, confirm zero `--mts-*` usage.
+
+**Primary visual anchor:** CPF input (top of form, first tab stop, draws clinician attention on render).
 
 ---
 
