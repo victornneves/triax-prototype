@@ -108,9 +108,9 @@ Plans:
   6. Inline validation errors change the field's border color — no detached red text
   7. Tab order follows the logical flow: CPF → Name → Birth Date → Sex → Submit
   8. The submit button is sticky at the bottom of the viewport when the form overflows
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 Plans:
-- [ ] 09-01-PLAN.md -- Extract PatientForm.jsx + PatientForm.css: CPF-first layout, lookup stub, computed age, metadata section, refined styling
+- [x] 09-01-PLAN.md -- Extract PatientForm.jsx + PatientForm.css: CPF-first layout, lookup stub, computed age, metadata section, refined styling
 - [ ] 09-02-PLAN.md -- Wire PatientForm into ProtocolTriage, remove old inline code + CSS, guard transcription age
 
 ## Progress
@@ -125,4 +125,4 @@ Plans:
 | 6. UI Primitives + Toast System | v2.0.0 | 3/3 | Complete   | 2026-04-08 |
 | 7. Component Migration + Accessibility | v2.0.0 | 7/7 | Complete   | 2026-04-08 |
 | 8. New Interactions | v2.0.0 | 3/3 | Complete   | 2026-04-09 |
-| 9. Patient Form Redesign | v2.0.0 | 0/2 | In Progress | — |
+| 9. Patient Form Redesign | v2.0.0 | 1/2 | In Progress|  |

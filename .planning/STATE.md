@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v2.0.0
 milestone_name: UI/UX Overhaul
 status: unknown
-stopped_at: Completed 08-new-interactions-03-PLAN.md
-last_updated: "2026-04-09T12:46:16.980Z"
+stopped_at: Completed 09-patient-form-redesign/09-01-PLAN.md
+last_updated: "2026-04-09T19:31:03.287Z"
 progress:
-  total_phases: 4
+  total_phases: 5
   completed_phases: 4
-  total_plans: 15
-  completed_plans: 15
+  total_plans: 17
+  completed_plans: 16
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-08)
 
 **Core value:** Clinicians reach a triage priority decision faster and more consistently because the AI traverses the protocol decision tree for them.
-**Current focus:** Phase 08 — new-interactions
+**Current focus:** Phase 09 — patient-form-redesign
 
 ## Current Position
 
-Phase: 08
-Plan: Not started
+Phase: 09 (patient-form-redesign) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -56,6 +56,7 @@ Plan: Not started
 | Phase 08-new-interactions P02 | 8min | 2 tasks | 2 files |
 | Phase 08-new-interactions P01 | 2min | 2 tasks | 6 files |
 | Phase 08-new-interactions P03 | 8min | 2 tasks | 3 files |
+| Phase 09-patient-form-redesign P01 | 2min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -105,6 +106,9 @@ Plan: Not started
 - [Phase 08-new-interactions]: Canvas getComputedStyle resolves --color-primary at draw start since canvas 2D ctx cannot use CSS variables
 - [Phase 08-new-interactions]: Canvas HTML 280x120 with CSS 140x60 for 2x DPI sharpness on HiDPI screens
 - [Phase 08-new-interactions]: Recording panel replaces entire chat-input-bar (not overlay) per D-15 design decision
+- [Phase 09-patient-form-redesign]: Age removed from formData state — computed via calcAgeFromDDMMYYYY at render and injected into onSubmit payload
+- [Phase 09-patient-form-redesign]: lookupPatientByCPF stub returns null — interface contract established for future backend wiring
+- [Phase 09-patient-form-redesign]: PatientForm.css is self-contained: @keyframes btn-spin redeclared locally so file does not depend on Button.css import order
 
 ### Roadmap Evolution
 
@@ -122,6 +126,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-09T12:41:43.623Z
-Stopped at: Completed 08-new-interactions-03-PLAN.md
+Last session: 2026-04-09T19:31:03.286Z
+Stopped at: Completed 09-patient-form-redesign/09-01-PLAN.md
 Resume file: None
