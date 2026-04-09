@@ -38,7 +38,7 @@ Full details: `.planning/milestones/v2.0.0-ROADMAP.md`
 **Milestone Goal:** Fix triage interaction bugs and polish the clinical UX for pilot readiness
 
 - [x] **Phase 10: Sensor Panel Refactor** - Extract shared sensor panel component used by both desktop and mobile views (completed 2026-04-09)
-- [ ] **Phase 11: Triage Interaction Fixes** - Fix yes/no button logic, vital sign highlighting, and Shift+Enter input behavior
+- [x] **Phase 11: Triage Interaction Fixes** - Fix yes/no button logic, vital sign highlighting, and Shift+Enter input behavior (completed 2026-04-09)
 - [ ] **Phase 12: Vital Signs UX** - Add abnormal/critical value indicators and mobile-friendly BP input layout
 - [ ] **Phase 13: Session History Enrichment** - Add priority badge, patient name preview, and duration to history list
 - [ ] **Phase 14: Discoverability** - Surface keyboard shortcut legend so clinicians can find Y/N/R/Esc bindings
@@ -68,7 +68,7 @@ Plans:
   4. Pressing Shift+Enter in the chat input inserts a new line; pressing Enter alone submits the message
 **Plans**: 1 plan
 Plans:
-- [ ] 11-01-PLAN.md — Fix yes/no button visibility, GCS highlight mismatch, and multiline chat input
+- [x] 11-01-PLAN.md — Fix yes/no button visibility, GCS highlight mismatch, and multiline chat input
 
 ### Phase 12: Vital Signs UX
 **Goal**: Clinicians can immediately spot abnormal vital sign readings and enter blood pressure comfortably on mobile
@@ -113,7 +113,7 @@ Plans:
 | 8. New Interactions | v2.0.0 | 3/3 | Complete | 2026-04-09 |
 | 9. Patient Form Redesign | v2.0.0 | 2/2 | Complete | 2026-04-09 |
 | 10. Sensor Panel Refactor | v2.1.0 | 1/1 | Complete    | 2026-04-09 |
-| 11. Triage Interaction Fixes | v2.1.0 | 0/1 | Not started | - |
+| 11. Triage Interaction Fixes | v2.1.0 | 1/1 | Complete   | 2026-04-09 |
 | 12. Vital Signs UX | v2.1.0 | 0/TBD | Not started | - |
 | 13. Session History Enrichment | v2.1.0 | 0/TBD | Not started | - |
 | 14. Discoverability | v2.1.0 | 0/TBD | Not started | - |

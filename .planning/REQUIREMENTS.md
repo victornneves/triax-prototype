@@ -9,10 +9,10 @@ Requirements for UX Polish release. Each maps to roadmap phases.
 
 ### Triage Interaction
 
-- [ ] **TRIAGE-01**: Yes/No quick-reply buttons appear when agent asks a yes/no question (fix `missingSensors` blocking condition)
-- [ ] **TRIAGE-02**: Yes/No buttons remain visible and functional even when vital signs are still pending
-- [ ] **TRIAGE-03**: All requested vital signs are correctly highlighted on the sensor dock (fix `gcs_scale`→`gcs` key mismatch)
-- [ ] **TRIAGE-04**: Shift+Enter creates a new line in chat input; Enter alone submits the message
+- [x] **TRIAGE-01**: Yes/No quick-reply buttons appear when agent asks a yes/no question (fix `missingSensors` blocking condition)
+- [x] **TRIAGE-02**: Yes/No buttons remain visible and functional even when vital signs are still pending
+- [x] **TRIAGE-03**: All requested vital signs are correctly highlighted on the sensor dock (fix `gcs_scale`→`gcs` key mismatch)
+- [x] **TRIAGE-04**: Shift+Enter creates a new line in chat input; Enter alone submits the message
 
 ### Vital Signs UX
 
@@ -57,10 +57,10 @@ Requirements for UX Polish release. Each maps to roadmap phases.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | REFAC-01 | Phase 10 | Complete |
-| TRIAGE-01 | Phase 11 | Pending |
-| TRIAGE-02 | Phase 11 | Pending |
-| TRIAGE-03 | Phase 11 | Pending |
-| TRIAGE-04 | Phase 11 | Pending |
+| TRIAGE-01 | Phase 11 | Complete |
+| TRIAGE-02 | Phase 11 | Complete |
+| TRIAGE-03 | Phase 11 | Complete |
+| TRIAGE-04 | Phase 11 | Complete |
 | VITALS-01 | Phase 12 | Pending |
 | VITALS-02 | Phase 12 | Pending |
 | HIST-01 | Phase 13 | Pending |
