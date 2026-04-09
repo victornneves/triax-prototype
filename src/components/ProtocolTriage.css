@@ -33,111 +33,6 @@
 }
 
 /* ----------------------------------------------------------------
- * PATIENT FORM — registration form (PatientForm sub-component)
- * ---------------------------------------------------------------- */
-.patient-form-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-}
-
-.patient-form {
-  background-color: var(--color-surface);
-  padding: var(--spacing-xl);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-md);
-  width: 100%;
-  max-width: 600px;
-  border: 1px solid var(--color-border-strong);
-}
-
-.patient-form__title {
-  margin-top: 0;
-  margin-bottom: var(--spacing-xl);
-  color: var(--color-text-primary);
-  text-align: center;
-  font-size: var(--font-size-2xl);
-  font-weight: 700;
-}
-
-.patient-form__grid-2 {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-lg);
-}
-
-.patient-form__grid-3 {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-lg);
-}
-
-.patient-form__grid-half {
-  display: grid;
-  grid-template-columns: 1fr 1.5fr;
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-lg);
-}
-
-.patient-form__grid-equal {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-xl);
-}
-
-.patient-form__label {
-  display: block;
-  margin-bottom: 0.4rem;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  font-size: var(--font-size-sm);
-}
-
-.patient-form__input {
-  width: 100%;
-  padding: 10px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border-strong);
-  box-sizing: border-box;
-  background-color: var(--color-surface);
-  color: var(--color-text-primary);
-  font-size: var(--font-size-md);
-}
-
-.patient-form__input:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.15);
-}
-
-.patient-form__submit {
-  width: 100%;
-  padding: 14px;
-  background-color: var(--color-primary);
-  color: var(--color-primary-text);
-  border: none;
-  border-radius: var(--radius-md);
-  font-size: var(--font-size-lg);
-  font-weight: 700;
-  cursor: pointer;
-  transition: background-color var(--transition-fast);
-  box-shadow: var(--shadow-md);
-}
-
-.patient-form__submit:hover {
-  background-color: var(--color-primary-hover);
-}
-
-.patient-form__submit:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-/* ----------------------------------------------------------------
  * CHAT COLUMN — messages, input bar, quick replies
  * ---------------------------------------------------------------- */
 .chat-messages {
@@ -893,24 +788,6 @@
     background-color: rgba(0, 0, 0, 0.4);
     z-index: 199;
   }
-}
-
-/* --- Form validation states --- */
-.patient-form__input--error {
-  border-color: var(--color-feedback-error-text);
-  border-width: 2px;
-}
-
-.patient-form__error {
-  display: block;
-  margin-top: var(--spacing-xs);
-  font-size: var(--font-size-xs);
-  color: var(--color-feedback-error-text);
-}
-
-.patient-form__required {
-  color: var(--color-feedback-error-text);
-  margin-left: var(--spacing-xs);
 }
 
 /* --- Sensor label with tooltip --- */
