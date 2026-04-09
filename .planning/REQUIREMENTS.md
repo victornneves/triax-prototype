@@ -22,7 +22,7 @@ Requirements for UI/UX Overhaul. Each maps to roadmap phases.
 ### Interactions
 
 - [x] **INTR-01**: All error feedback uses accessible toast notifications (role="alert", 8s minimum dismiss) instead of alert()
-- [ ] **INTR-02**: Clinician can use keyboard shortcuts in triage flow (modifier+key for yes/no, Esc to cancel recording)
+- [x] **INTR-02**: Clinician can use keyboard shortcuts in triage flow (modifier+key for yes/no, Esc to cancel recording)
 - [ ] **INTR-03**: Voice recording shows waveform animation, elapsed timer, and live transcript preview before sending
 - [x] **INTR-04**: UI transitions use subtle animations (<300ms) for chat bubbles, page transitions, and feedback states
 
@@ -79,7 +79,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | LAYT-01 | Phase 7 | Complete |
 | LAYT-02 | Phase 7 | Complete |
 | INTR-01 | Phase 6 | Complete |
-| INTR-02 | Phase 8 | Pending |
+| INTR-02 | Phase 8 | Complete |
 | INTR-03 | Phase 8 | Pending |
 | INTR-04 | Phase 6 | Complete |
 | A11Y-01 | Phase 7 | Complete |

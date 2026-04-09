@@ -90,8 +90,8 @@ Plans:
   4. Keyboard shortcuts do not fire when focus is inside a text input or other form field
 **Plans:** 3 plans
 Plans:
-- [ ] 08-01-PLAN.md -- Dark mode toggle: ThemeContext, FOUC OS-preference fallback, Header toggle button, crossfade transition
-- [ ] 08-02-PLAN.md -- Keyboard shortcuts: Y/N/R/Esc keydown listener, input-focus suppression, shortcut hints, pulse animation
+- [x] 08-01-PLAN.md -- Dark mode toggle: ThemeContext, FOUC OS-preference fallback, Header toggle button, crossfade transition
+- [x] 08-02-PLAN.md -- Keyboard shortcuts: Y/N/R/Esc keydown listener, input-focus suppression, shortcut hints, pulse animation
 - [ ] 08-03-PLAN.md -- Recording UI: useTranscribe audio callback, waveform canvas, elapsed timer, transcript preview panel
 
 ## Progress

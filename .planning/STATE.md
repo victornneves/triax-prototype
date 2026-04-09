@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v2.0.0
 milestone_name: UI/UX Overhaul
 status: unknown
-stopped_at: Completed 07-07-PLAN.md
-last_updated: "2026-04-08T22:18:54.395Z"
+stopped_at: Completed 08-02-PLAN.md
+last_updated: "2026-04-09T12:33:29.121Z"
 progress:
   total_phases: 4
   completed_phases: 3
-  total_plans: 12
-  completed_plans: 12
+  total_plans: 15
+  completed_plans: 14
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-08)
 
 **Core value:** Clinicians reach a triage priority decision faster and more consistently because the AI traverses the protocol decision tree for them.
-**Current focus:** Phase 07 — component-migration-accessibility
+**Current focus:** Phase 08 — new-interactions
 
 ## Current Position
 
-Phase: 8
-Plan: Not started
+Phase: 08 (new-interactions) — EXECUTING
+Plan: 2 of 3
 
 ## Performance Metrics
 
@@ -53,6 +53,7 @@ Plan: Not started
 | Phase 07-component-migration-accessibility P05 | 8min | 2 tasks | 2 files |
 | Phase 07-component-migration-accessibility P06 | 2min | 2 tasks | 2 files |
 | Phase 07-component-migration-accessibility P07 | 6min | 2 tasks | 2 files |
+| Phase 08-new-interactions P02 | 8min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -92,6 +93,9 @@ Plan: Not started
 - [Phase 07-component-migration-accessibility]: Priority badge converted from inline style to .priority-{color} CSS classes from App.css — same approach used in HistoryPage and Profile
 - [Phase 07-component-migration-accessibility]: BP inputs use type=number + maxLength/min/max constraints (not IMask) to satisfy FORM-04 without adding IMask to sensor inputs
 - [Phase 07-component-migration-accessibility]: GCS select dynamic border and pain slider accentColor formally accepted as clinical exceptions in VERIFICATION.md — runtime state indicators cannot be static CSS classes
+- [Phase 08-new-interactions]: Esc check placed BEFORE INPUT/TEXTAREA/SELECT guard so recording cancels on Esc even when typing in text input (D-09)
+- [Phase 08-new-interactions]: activeShortcut state + 150ms setTimeout drives pulse rather than CSS :active — keyboard path triggers it programmatically
+- [Phase 08-new-interactions]: color-mix() produces 30% opacity teal ring in shortcut-pulse keyframe without a new token
 
 ### Pending Todos
 
@@ -105,6 +109,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-08T22:12:37.318Z
-Stopped at: Completed 07-07-PLAN.md
+Last session: 2026-04-09T12:33:29.119Z
+Stopped at: Completed 08-02-PLAN.md
 Resume file: None
