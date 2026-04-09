@@ -130,9 +130,9 @@
 .header-signout-btn {
   padding: 0.5rem var(--spacing-md);
   background-color: transparent;
-  color: var(--mts-red);
-  border: 1px solid var(--mts-red);
-  border-radius: 6px;
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+  border-radius: 20px;
   cursor: pointer;
   font-size: var(--font-size-sm);
   font-weight: 600;
@@ -140,7 +140,7 @@
 }
 
 .header-signout-btn:hover {
-  background-color: var(--mts-red);
+  background-color: var(--color-danger-hover);
   color: white;
 }
 

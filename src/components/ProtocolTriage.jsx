@@ -4,7 +4,6 @@ import { getAuthHeaders } from '../utils/auth';
 import { useTranscribe } from '../useTranscribe'; // Import hook
 import { useToast } from './ui/ToastProvider';
 import { Tooltip } from './ui/Tooltip';
-import { StatusBar } from './ui/StatusBar';
 import PatientForm from './PatientForm';
 import './ProtocolTriage.css';
 
@@ -792,20 +791,6 @@ const ProtocolTriage = () => {
             });
     };
 
-    const handleFillNormals = () => {
-        setSensorInputs({
-            blood_glucose: '100',
-            bp_systolic: '120',
-            bp_diastolic: '80',
-            gcs: '15',
-            heart_rate: '80',
-            oxygen_saturation: '98',
-            pain_scale: '0',
-            respiratory_rate: '15',
-            temperature: '37'
-        });
-    };
-
     // ----- Reset Handlers -----
 
     const handleRestartTriage = () => {
@@ -938,13 +923,7 @@ const ProtocolTriage = () => {
 
     return (
         <>
-        {/* Status bar — visible during active triage */}
-        <StatusBar
-            sessionId={sessionId}
-            protocolName={suggestedProtocol ? suggestedProtocol.text : ''}
-        />
-
-        <div className="triage-layout">
+            <div className="triage-layout">
 
             {/* Left: Chat Interface */}
             <section className="triage-chat-column" aria-label="Conversa de triagem">
@@ -1089,7 +1068,7 @@ const ProtocolTriage = () => {
                                 <path d="M12 14C13.66 14 15 12.66 15 11V5C15 3.34 13.66 2 12 2C10.34 2 9 3.34 9 5V11C9 12.66 10.34 14 12 14Z" />
                                 <path d="M19 10C19 13.87 15.87 17 12 17C8.13 17 5 13.87 5 10V9H3V10C3 14.53 6.39 18.26 10.74 18.89L10.99 18.93V21.99H13.01V18.92C17.48 18.37 21 14.54 21 10V9H19V10Z" />
                             </svg>
-                            Gravar <span className="shortcut-hint">(R)</span>
+                            <span className="shortcut-hint">(R)</span>
                         </button>
                         <button
                             onClick={() => handleSendMessage()}
@@ -1127,16 +1106,7 @@ const ProtocolTriage = () => {
 
                 {/* Sensors */}
                 <div className="triage-sensors">
-                    <div className="triage-sensors__header">
-                        <h4 className="triage-sensors__title">Sinais Vitais</h4>
-                        <button
-                            onClick={handleFillNormals}
-                            className="triage-sensors__fill-btn"
-                            title="Preencher valores normais (Debug)"
-                        >
-                            Preencher Normais
-                        </button>
-                    </div>
+                    <h4 className="triage-sensors__title">Sinais Vitais</h4>
 
                     <div className="triage-sensors__list">
                         {Object.keys(SENSOR_CONFIG).map(key => {
@@ -1250,16 +1220,7 @@ const ProtocolTriage = () => {
 
                 {/* Sensors */}
                 <div className="triage-sensors">
-                    <div className="triage-sensors__header">
-                        <h4 className="triage-sensors__title">Sinais Vitais</h4>
-                        <button
-                            onClick={handleFillNormals}
-                            className="triage-sensors__fill-btn"
-                            title="Preencher valores normais (Debug)"
-                        >
-                            Preencher Normais
-                        </button>
-                    </div>
+                    <h4 className="triage-sensors__title">Sinais Vitais</h4>
 
                     <div className="triage-sensors__list">
                         {Object.keys(SENSOR_CONFIG).map(key => {
