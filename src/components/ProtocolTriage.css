@@ -956,3 +956,74 @@
 .shortcut-active {
   animation: shortcut-pulse 150ms ease-out forwards;
 }
+
+/* ===================================================================
+ * Recording panel — Phase 8 (INTR-03)
+ * Replaces chat-input-bar when isRecording === true.
+ * Layout: transcript (flex:1, primary) | controls (fixed 140px, secondary)
+ * =================================================================== */
+
+.recording-panel {
+  display: flex;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background-color: var(--color-surface-subtle);
+  border-top: 1px solid var(--color-border);
+  min-height: 80px;
+}
+
+.recording-panel__transcript {
+  flex: 1;
+  padding: var(--spacing-md);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow-y: auto;
+  max-height: 120px;
+  font-size: var(--font-size-md);
+  line-height: 1.5;
+  color: var(--color-text-primary);
+}
+
+.recording-panel__final {
+  color: var(--color-text-primary);
+  font-weight: 400;
+}
+
+.recording-panel__partial {
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.recording-panel__placeholder {
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.recording-panel__controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+  width: 140px;
+  flex-shrink: 0;
+}
+
+.recording-panel__waveform {
+  width: 140px;
+  height: 60px;
+  border-radius: var(--radius-sm);
+  background: transparent;
+}
+
+.recording-panel__timer {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+.recording-panel__stop-btn {
+  width: 100%;
+}
