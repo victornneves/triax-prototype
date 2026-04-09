@@ -1,15 +1,15 @@
 ---
 gsd_state_version: 1.0
-milestone: v2.0.0
-milestone_name: UI/UX Overhaul
-status: milestone_complete
-stopped_at: v2.0.0 milestone archived
+milestone: v2.1.0
+milestone_name: UX Polish
+status: defining_requirements
+stopped_at: null
 last_updated: "2026-04-09"
 progress:
-  total_phases: 5
-  completed_phases: 5
-  total_plans: 17
-  completed_plans: 17
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
 ---
 
 # Project State
@@ -19,30 +19,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-09)
 
 **Core value:** Clinicians reach a triage priority decision faster and more consistently because the AI traverses the protocol decision tree for them.
-**Current focus:** Planning next milestone
+**Current focus:** Defining requirements for v2.1.0 UX Polish
 
 ## Current Position
 
-Milestone: v2.0.0 UI/UX Overhaul — SHIPPED 2026-04-09
-Next: Run `/gsd:new-milestone` to start next version
-
-## Performance Metrics
-
-**Velocity:**
-
-- Total plans completed: 17 (v2.0.0)
-- Timeline: 3 days (2026-04-07 → 2026-04-09)
-- Total commits: 83
-
-**By Phase:**
-
-| Phase | Plans | Duration | Files |
-|-------|-------|----------|-------|
-| 05-design-token-foundation | 2 | 10min | 7 |
-| 06-ui-primitives-toast | 3 | 7min | 11 |
-| 07-component-migration-accessibility | 7 | 43min | 26 |
-| 08-new-interactions | 3 | 18min | 11 |
-| 09-patient-form-redesign | 2 | 5min | 4 |
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-04-09 — Milestone v2.1.0 started
 
 ## Accumulated Context
 

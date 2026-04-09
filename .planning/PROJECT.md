@@ -8,10 +8,25 @@ React SPA for clinical emergency triage using the Manchester Triage System (MTS)
 
 Clinicians reach a triage priority decision faster and more consistently because the AI traverses the protocol decision tree for them.
 
+## Current Milestone: v2.1.0 UX Polish
+
+**Goal:** Fix triage interaction bugs and polish the clinical UX for pilot readiness
+
+**Target features:**
+- Fix yes/no quick-reply buttons not appearing during triage questions
+- Fix vital sign highlighting mismatch (Glasgow/GCS not highlighted when requested)
+- Support Shift+Enter for multiline input in chat text box
+- Allow answering yes/no questions while vital signs are still pending
+- Add visual indicators for abnormal/critical vital sign values
+- Enrich session history with priority badge, patient name, and duration
+- Improve keyboard shortcut discoverability
+- Improve mobile blood pressure input layout
+- Extract shared sensor panel component to reduce duplication
+
 ## Current State
 
 **Shipped:** v2.0.0 UI/UX Overhaul (2026-04-09)
-**Branch:** `v2-ui-overhaul` — ready to merge to `main`
+**Branch:** `main`
 **Codebase:** 6,433 LOC (JSX/JS/CSS), 97 files changed in v2.0.0
 
 v2.0.0 transformed the functional prototype into a polished, clinician-centric triage tool:
@@ -66,8 +81,17 @@ v2.0.0 transformed the functional prototype into a polished, clinician-centric t
 
 ### Active
 
-<!-- Next milestone scope — TBD -->
+<!-- v2.1.0 UX Polish scope -->
 
+- [ ] Yes/no quick-reply buttons visible during triage questions
+- [ ] All requested vital signs correctly highlighted on sensor dock
+- [ ] Shift+Enter creates new line in chat input (Enter submits)
+- [ ] Yes/no buttons shown even when vital signs are pending
+- [ ] Visual indicators for abnormal/critical vital sign values
+- [ ] Session history shows priority badge, patient name, duration
+- [ ] Keyboard shortcut discoverability (help legend/tooltip)
+- [ ] Mobile-friendly blood pressure input layout
+- [ ] Shared sensor panel component (desktop/mobile unified)
 - [ ] Triage progress indicator (stepper/progress bar) — deferred from v2.0.0 (depends on /traverse API exposing step data)
 - [ ] Session summary timeline during triage — deferred from v2.0.0
 
@@ -135,4 +159,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-09 after v2.0.0 milestone completion*
+*Last updated: 2026-04-09 after v2.1.0 milestone start*
