@@ -66,7 +66,9 @@ Plans:
   2. Yes/No buttons remain visible and clickable while vital sign inputs are still pending
   3. When the agent requests Glasgow Coma Scale, the GCS field on the sensor dock is highlighted (not missing due to `gcs_scale` key mismatch)
   4. Pressing Shift+Enter in the chat input inserts a new line; pressing Enter alone submits the message
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 11-01-PLAN.md — Fix yes/no button visibility, GCS highlight mismatch, and multiline chat input
 
 ### Phase 12: Vital Signs UX
 **Goal**: Clinicians can immediately spot abnormal vital sign readings and enter blood pressure comfortably on mobile
@@ -111,7 +113,7 @@ Plans:
 | 8. New Interactions | v2.0.0 | 3/3 | Complete | 2026-04-09 |
 | 9. Patient Form Redesign | v2.0.0 | 2/2 | Complete | 2026-04-09 |
 | 10. Sensor Panel Refactor | v2.1.0 | 1/1 | Complete    | 2026-04-09 |
-| 11. Triage Interaction Fixes | v2.1.0 | 0/TBD | Not started | - |
+| 11. Triage Interaction Fixes | v2.1.0 | 0/1 | Not started | - |
 | 12. Vital Signs UX | v2.1.0 | 0/TBD | Not started | - |
 | 13. Session History Enrichment | v2.1.0 | 0/TBD | Not started | - |
 | 14. Discoverability | v2.1.0 | 0/TBD | Not started | - |
