@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v2.0.0
 milestone_name: UI/UX Overhaul
 status: unknown
-stopped_at: Completed 08-new-interactions-01-PLAN.md
-last_updated: "2026-04-09T12:33:57.477Z"
+stopped_at: Completed 08-new-interactions-03-PLAN.md
+last_updated: "2026-04-09T12:41:43.624Z"
 progress:
   total_phases: 4
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 15
-  completed_plans: 14
+  completed_plans: 15
 ---
 
 # Project State
@@ -55,6 +55,7 @@ Plan: 3 of 3
 | Phase 07-component-migration-accessibility P07 | 6min | 2 tasks | 2 files |
 | Phase 08-new-interactions P02 | 8min | 2 tasks | 2 files |
 | Phase 08-new-interactions P01 | 2min | 2 tasks | 6 files |
+| Phase 08-new-interactions P03 | 8min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -100,6 +101,10 @@ Plan: 3 of 3
 - [Phase 08-new-interactions]: ThemeProvider wraps outermost inside Authenticator (wraps ToastProvider and UserProvider) so theme is available to all children
 - [Phase 08-new-interactions]: FOUC script clears via removeAttribute on mount — .app-container [data-app-theme={theme}] is sole authority post-hydration
 - [Phase 08-new-interactions]: Unicode emoji icons (U+2600 sun, U+1F319 moon) for dark mode toggle — no icon library dependency added
+- [Phase 08-new-interactions]: latestAudioRef holds audio frame (not React state) to avoid re-renders from high-frequency onaudioprocess callbacks
+- [Phase 08-new-interactions]: Canvas getComputedStyle resolves --color-primary at draw start since canvas 2D ctx cannot use CSS variables
+- [Phase 08-new-interactions]: Canvas HTML 280x120 with CSS 140x60 for 2x DPI sharpness on HiDPI screens
+- [Phase 08-new-interactions]: Recording panel replaces entire chat-input-bar (not overlay) per D-15 design decision
 
 ### Pending Todos
 
@@ -113,6 +118,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-09T12:33:57.474Z
-Stopped at: Completed 08-new-interactions-01-PLAN.md
+Last session: 2026-04-09T12:41:43.623Z
+Stopped at: Completed 08-new-interactions-03-PLAN.md
 Resume file: None

@@ -26,7 +26,7 @@ Full details: `.planning/milestones/v1.1.0-ROADMAP.md`
 - [x] **Phase 5: Design Token Foundation** -- CSS custom property system, provider stack, and Amplify coexistence (completed 2026-04-07)
 - [x] **Phase 6: UI Primitives + Toast System** -- Reusable component library and toast notifications replacing alert() (completed 2026-04-08)
 - [x] **Phase 7: Component Migration + Accessibility** -- Inline style elimination, semantic HTML, ARIA, WCAG 2.1 AA, form improvements, responsive layout (completed 2026-04-08)
-- [ ] **Phase 8: New Interactions** -- Dark mode toggle, keyboard shortcuts, and voice recording UX
+- [x] **Phase 8: New Interactions** -- Dark mode toggle, keyboard shortcuts, and voice recording UX (completed 2026-04-09)
 
 ## Phase Details
 
@@ -88,11 +88,11 @@ Plans:
   2. During an active triage session, keyboard shortcuts advance yes/no responses without the clinician touching the mouse; pressing Esc cancels an active voice recording
   3. While recording, the clinician sees a waveform animation, a running elapsed-time counter, and a live transcript preview before the recording is submitted
   4. Keyboard shortcuts do not fire when focus is inside a text input or other form field
-**Plans:** 2/3 plans executed
+**Plans:** 3/3 plans complete
 Plans:
 - [x] 08-01-PLAN.md -- Dark mode toggle: ThemeContext, FOUC OS-preference fallback, Header toggle button, crossfade transition
 - [x] 08-02-PLAN.md -- Keyboard shortcuts: Y/N/R/Esc keydown listener, input-focus suppression, shortcut hints, pulse animation
-- [ ] 08-03-PLAN.md -- Recording UI: useTranscribe audio callback, waveform canvas, elapsed timer, transcript preview panel
+- [x] 08-03-PLAN.md -- Recording UI: useTranscribe audio callback, waveform canvas, elapsed timer, transcript preview panel
 
 ## Progress
 
@@ -105,4 +105,4 @@ Plans:
 | 5. Design Token Foundation | v2.0.0 | 2/2 | Complete   | 2026-04-07 |
 | 6. UI Primitives + Toast System | v2.0.0 | 3/3 | Complete   | 2026-04-08 |
 | 7. Component Migration + Accessibility | v2.0.0 | 7/7 | Complete   | 2026-04-08 |
-| 8. New Interactions | v2.0.0 | 2/3 | In Progress|  |
+| 8. New Interactions | v2.0.0 | 3/3 | Complete   | 2026-04-09 |
