@@ -55,13 +55,13 @@ Clinicians reach a triage priority decision faster and more consistently because
 
 - [ ] Design system adoption with reusable component library
 - [x] Softer color palette with clinical MTS colors preserved — Validated in Phase 5: Design Token Foundation
-- [ ] Dark mode support
+- [x] Dark mode support — Validated in Phase 8: New Interactions
 - [x] Responsive grid layout with collapsible sensor panel — Validated in Phase 7: Component Migration & Accessibility
 - [ ] Triage progress indicator (stepper/progress bar)
 - [x] Unified button system (primary, secondary, danger variants) — Validated in Phase 6: UI Primitives + Toast
-- [ ] Keyboard shortcuts for triage flow (number keys for quick replies, Esc to cancel)
+- [x] Keyboard shortcuts for triage flow (Y/N/R/Esc for quick replies) — Validated in Phase 8: New Interactions
 - [x] Toast notification system replacing alert() calls — Validated in Phase 6: UI Primitives + Toast
-- [ ] Improved voice recording UX (waveform, timer, transcription preview)
+- [x] Improved voice recording UX (waveform, timer, transcription preview) — Validated in Phase 8: New Interactions
 - [x] WCAG-compliant color contrast across all components — Validated in Phase 7: Component Migration & Accessibility
 - [x] Semantic HTML and ARIA labels for screen reader support — Validated in Phase 7: Component Migration & Accessibility
 - [x] Focus indicators for keyboard navigation — Validated in Phase 7: Component Migration & Accessibility
