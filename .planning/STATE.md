@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v2.0.0
 milestone_name: UI/UX Overhaul
 status: unknown
-stopped_at: Completed 08-02-PLAN.md
-last_updated: "2026-04-09T12:33:29.121Z"
+stopped_at: Completed 08-new-interactions-01-PLAN.md
+last_updated: "2026-04-09T12:33:57.477Z"
 progress:
   total_phases: 4
   completed_phases: 3
@@ -24,7 +24,7 @@ See: .planning/PROJECT.md (updated 2026-04-08)
 ## Current Position
 
 Phase: 08 (new-interactions) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 
 ## Performance Metrics
 
@@ -54,6 +54,7 @@ Plan: 2 of 3
 | Phase 07-component-migration-accessibility P06 | 2min | 2 tasks | 2 files |
 | Phase 07-component-migration-accessibility P07 | 6min | 2 tasks | 2 files |
 | Phase 08-new-interactions P02 | 8min | 2 tasks | 2 files |
+| Phase 08-new-interactions P01 | 2min | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -96,6 +97,9 @@ Plan: 2 of 3
 - [Phase 08-new-interactions]: Esc check placed BEFORE INPUT/TEXTAREA/SELECT guard so recording cancels on Esc even when typing in text input (D-09)
 - [Phase 08-new-interactions]: activeShortcut state + 150ms setTimeout drives pulse rather than CSS :active — keyboard path triggers it programmatically
 - [Phase 08-new-interactions]: color-mix() produces 30% opacity teal ring in shortcut-pulse keyframe without a new token
+- [Phase 08-new-interactions]: ThemeProvider wraps outermost inside Authenticator (wraps ToastProvider and UserProvider) so theme is available to all children
+- [Phase 08-new-interactions]: FOUC script clears via removeAttribute on mount — .app-container [data-app-theme={theme}] is sole authority post-hydration
+- [Phase 08-new-interactions]: Unicode emoji icons (U+2600 sun, U+1F319 moon) for dark mode toggle — no icon library dependency added
 
 ### Pending Todos
 
@@ -109,6 +113,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-09T12:33:29.119Z
-Stopped at: Completed 08-02-PLAN.md
+Last session: 2026-04-09T12:33:57.474Z
+Stopped at: Completed 08-new-interactions-01-PLAN.md
 Resume file: None

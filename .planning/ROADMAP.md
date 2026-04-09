@@ -88,7 +88,7 @@ Plans:
   2. During an active triage session, keyboard shortcuts advance yes/no responses without the clinician touching the mouse; pressing Esc cancels an active voice recording
   3. While recording, the clinician sees a waveform animation, a running elapsed-time counter, and a live transcript preview before the recording is submitted
   4. Keyboard shortcuts do not fire when focus is inside a text input or other form field
-**Plans:** 3 plans
+**Plans:** 2/3 plans executed
 Plans:
 - [x] 08-01-PLAN.md -- Dark mode toggle: ThemeContext, FOUC OS-preference fallback, Header toggle button, crossfade transition
 - [x] 08-02-PLAN.md -- Keyboard shortcuts: Y/N/R/Esc keydown listener, input-focus suppression, shortcut hints, pulse animation
@@ -105,4 +105,4 @@ Plans:
 | 5. Design Token Foundation | v2.0.0 | 2/2 | Complete   | 2026-04-07 |
 | 6. UI Primitives + Toast System | v2.0.0 | 3/3 | Complete   | 2026-04-08 |
 | 7. Component Migration + Accessibility | v2.0.0 | 7/7 | Complete   | 2026-04-08 |
-| 8. New Interactions | v2.0.0 | 0/3 | In progress | - |
+| 8. New Interactions | v2.0.0 | 2/3 | In Progress|  |
