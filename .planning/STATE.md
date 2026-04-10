@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v2.1.0
 milestone_name: UX Polish
 status: unknown
-stopped_at: Completed 11-01-PLAN.md
-last_updated: "2026-04-09T22:01:07.572Z"
+stopped_at: Completed 12-01-PLAN.md
+last_updated: "2026-04-10T20:30:40.219Z"
 progress:
   total_phases: 5
-  completed_phases: 2
-  total_plans: 2
-  completed_plans: 2
+  completed_phases: 3
+  total_plans: 3
+  completed_plans: 3
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-09)
 
 **Core value:** Clinicians reach a triage priority decision faster and more consistently because the AI traverses the protocol decision tree for them.
-**Current focus:** Phase 11 — triage-interaction-fixes
+**Current focus:** Phase 12 — vital-signs-ux
 
 ## Current Position
 
-Phase: 12
-Plan: Not started
+Phase: 12 (vital-signs-ux) — EXECUTING
+Plan: 1 of 1
 
 ## Performance Metrics
 
@@ -43,6 +43,7 @@ Plan: Not started
 *Updated after each plan completion*
 | Phase 10-sensor-panel-refactor P01 | 4 | 2 tasks | 4 files |
 | Phase 11-triage-interaction-fixes P01 | 2min | 2 tasks | 2 files |
+| Phase 12-vital-signs-ux P01 | 12min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -55,6 +56,9 @@ Archived to `.planning/milestones/v2.0.0-ROADMAP.md`. Key decisions also in PROJ
 - [Phase 11-triage-interaction-fixes]: Removed missingSensors.length === 0 guard from quick-reply render — sensors pending and yes/no question are independent concerns
 - [Phase 11-triage-interaction-fixes]: Normalize gcs_scale to gcs at setMissingSensors call site to keep all downstream consumers using SENSOR_CONFIG keys
 - [Phase 11-triage-interaction-fixes]: border-radius changed from radius-pill to radius-md on textarea — pill shape looks odd when textarea expands to multiple lines
+- [Phase 12-vital-signs-ux]: warning uses --color-feedback-warn-* tokens; critical uses --color-feedback-error-* tokens — distinct visual severity without touching MTS clinical colors
+- [Phase 12-vital-signs-ux]: blood_pressure composite: worst-case status (critical > warning > null) evaluated from bp_systolic/bp_diastolic sub-fields
+- [Phase 12-vital-signs-ux]: Mobile BP separator hidden via display:none at max-width 767px; SIS/DIA labels always visible on both breakpoints
 
 ### Pending Todos
 
@@ -67,6 +71,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-04-09T21:57:47.646Z
-Stopped at: Completed 11-01-PLAN.md
+Last session: 2026-04-10T20:30:40.217Z
+Stopped at: Completed 12-01-PLAN.md
 Resume file: None

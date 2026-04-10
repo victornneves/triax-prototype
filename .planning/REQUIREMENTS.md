@@ -16,8 +16,8 @@ Requirements for UX Polish release. Each maps to roadmap phases.
 
 ### Vital Signs UX
 
-- [ ] **VITALS-01**: Sensor panel displays visual indicators for abnormal/critical vital sign values (e.g., temp >40C, SpO2 <90%)
-- [ ] **VITALS-02**: Blood pressure input uses mobile-friendly stacked layout with explicit SIS/DIA labels
+- [x] **VITALS-01**: Sensor panel displays visual indicators for abnormal/critical vital sign values (e.g., temp >40C, SpO2 <90%)
+- [x] **VITALS-02**: Blood pressure input uses mobile-friendly stacked layout with explicit SIS/DIA labels
 
 ### Session History
 
@@ -61,8 +61,8 @@ Requirements for UX Polish release. Each maps to roadmap phases.
 | TRIAGE-02 | Phase 11 | Complete |
 | TRIAGE-03 | Phase 11 | Complete |
 | TRIAGE-04 | Phase 11 | Complete |
-| VITALS-01 | Phase 12 | Pending |
-| VITALS-02 | Phase 12 | Pending |
+| VITALS-01 | Phase 12 | Complete |
+| VITALS-02 | Phase 12 | Complete |
 | HIST-01 | Phase 13 | Pending |
 | HIST-02 | Phase 13 | Pending |
 | DISC-01 | Phase 14 | Pending |
