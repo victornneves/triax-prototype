@@ -40,7 +40,7 @@ Full details: `.planning/milestones/v2.0.0-ROADMAP.md`
 - [x] **Phase 10: Sensor Panel Refactor** - Extract shared sensor panel component used by both desktop and mobile views (completed 2026-04-09)
 - [x] **Phase 11: Triage Interaction Fixes** - Fix yes/no button logic, vital sign highlighting, and Shift+Enter input behavior (completed 2026-04-09)
 - [x] **Phase 12: Vital Signs UX** - Add abnormal/critical value indicators and mobile-friendly BP input layout (completed 2026-04-10)
-- [ ] **Phase 13: Session History Enrichment** - Add priority badge, patient name preview, and duration to history list
+- [x] **Phase 13: Session History Enrichment** - Add priority badge, patient name preview, and duration to history list (completed 2026-04-10)
 - [ ] **Phase 14: Discoverability** - Surface keyboard shortcut legend so clinicians can find Y/N/R/Esc bindings
 
 ## Phase Details
@@ -92,7 +92,7 @@ Plans:
   3. Each history list row shows the session duration (time from start to end)
 **Plans**: 1 plan
 Plans:
-- [ ] 13-01-PLAN.md — Extract shared priority utility, enrich history table with badge/name/duration, migrate to session-id API
+- [x] 13-01-PLAN.md — Extract shared priority utility, enrich history table with badge/name/duration, migrate to session-id API
 
 ### Phase 14: Discoverability
 **Goal**: Keyboard shortcuts are discoverable without needing external documentation
@@ -119,5 +119,5 @@ Plans:
 | 10. Sensor Panel Refactor | v2.1.0 | 1/1 | Complete    | 2026-04-09 |
 | 11. Triage Interaction Fixes | v2.1.0 | 1/1 | Complete    | 2026-04-09 |
 | 12. Vital Signs UX | v2.1.0 | 1/1 | Complete    | 2026-04-10 |
-| 13. Session History Enrichment | v2.1.0 | 0/1 | Planning | - |
+| 13. Session History Enrichment | v2.1.0 | 1/1 | Complete   | 2026-04-10 |
 | 14. Discoverability | v2.1.0 | 0/TBD | Not started | - |
