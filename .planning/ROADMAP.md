@@ -101,7 +101,9 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. A help legend or tooltip is visible during active triage that lists Y, N, R, and Esc bindings with their actions
   2. The legend is accessible via keyboard (no mouse required to reveal it)
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 14-01-PLAN.md — Create ShortcutLegend component and wire into triage chat input bar
 
 ## Progress
 
@@ -120,4 +122,4 @@ Plans:
 | 11. Triage Interaction Fixes | v2.1.0 | 1/1 | Complete    | 2026-04-09 |
 | 12. Vital Signs UX | v2.1.0 | 1/1 | Complete    | 2026-04-10 |
 | 13. Session History Enrichment | v2.1.0 | 1/1 | Complete    | 2026-04-10 |
-| 14. Discoverability | v2.1.0 | 0/TBD | Not started | - |
+| 14. Discoverability | v2.1.0 | 0/1 | Not started | - |
