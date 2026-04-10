@@ -34,8 +34,8 @@ Declared values align with the existing token scale in `src/styles/tokens.css`. 
 
 | Token | Value | CSS Variable | Usage |
 |-------|-------|-------------|-------|
-| xs | 4px | `var(--spacing-xs)` (0.25rem) | Icon gaps, badge internal padding |
-| sm | 8px | `var(--spacing-sm)` (0.5rem) | Table cell padding, badge pill padding |
+| xs | 4px | `var(--spacing-xs)` (0.25rem) | Icon gaps, badge internal vertical padding |
+| sm | 8px | `var(--spacing-sm)` (0.5rem) | Table cell padding, badge pill horizontal padding |
 | md | 16px | `var(--spacing-md)` (1rem) | Column padding, card padding |
 | lg | 24px | `var(--spacing-lg)` (1.5rem) | Section padding |
 | xl | 32px | `var(--spacing-xl)` (2rem) | Layout gaps, page padding |
@@ -44,7 +44,7 @@ Declared values align with the existing token scale in `src/styles/tokens.css`. 
 Source: `src/styles/tokens.css` lines 69-76 (pre-existing token scale, not changed in this phase).
 
 Exceptions:
-- Priority pill badge uses `padding: 2px 8px` (2px vertical is a deliberate sub-4px exception for compact table row density — consistent with the existing `profile-table__priority-badge` pattern at 4px/8px in Profile.css line 112).
+- Priority pill badge uses `padding: var(--spacing-xs) var(--spacing-sm)` (4px 8px). Compact table row density is achieved through `font-size-xs` (12px) rather than vertical padding reduction — the `xs` token (4px) is the minimum permitted vertical padding per the spacing scale. This matches the existing `profile-table__priority-badge` pattern at `Profile.css` line 112.
 - Table header cells use `padding: var(--spacing-sm) var(--spacing-md)` — existing pattern from `HistoryPage.css` line 81, unchanged.
 
 ---
@@ -53,16 +53,16 @@ Exceptions:
 
 All sizes use the existing token scale in `src/styles/tokens.css`.
 
-| Role | Size | CSS Variable | Weight | Line Height | Usage |
-|------|------|-------------|--------|-------------|-------|
-| Table header | 12px (0.75rem) | `var(--font-size-xs)` | 600 (semibold) | 1.4 | Column headers (Data/Hora, Paciente, Prioridade, Duração) |
-| Table cell | 14px (0.85rem) | `var(--font-size-sm)` | 400 (regular) | 1.5 | Date, patient name, duration cell text |
-| Priority pill label | 12px (0.75rem) | `var(--font-size-xs)` | 600 (semibold) | 1.0 | Badge label inside pill (Vermelho, Laranja, etc.) |
-| Detail heading | 18px (1.125rem) | `var(--font-size-lg)` | 800 (extrabold) | 1.2 | Patient name in detail card — pre-existing, unchanged |
+| Role | Size | CSS Variable | Weight | Line Height | Usage | Scope |
+|------|------|-------------|--------|-------------|-------|-------|
+| Table header | 12px (0.75rem) | `var(--font-size-xs)` | 600 (semibold) | 1.4 | Column headers (Data/Hora, Paciente, Prioridade, Duração) | new — this phase |
+| Table cell | 14px (0.85rem) | `var(--font-size-sm)` | 400 (regular) | 1.5 | Date, patient name, duration cell text | new — this phase |
+| Priority pill label | 12px (0.75rem) | `var(--font-size-xs)` | 600 (semibold) | 1.0 | Badge label inside pill (Vermelho, Laranja, etc.) | new — this phase |
+| Detail heading | 18px (1.125rem) | `var(--font-size-lg)` | 800 (extrabold) | 1.2 | Patient name in detail card | pre-existing — no change |
 
 Source: `src/styles/tokens.css` lines 77-83; `HistoryPage.css` lines 83-85, 107; Profile.css line 114.
 
-Only 2 weights used in the new list columns: **regular (400)** for cell data, **semibold (600)** for headers and badge labels.
+Only 2 weights are introduced by this phase: **regular (400)** for cell data, **semibold (600)** for headers and badge labels. The extrabold (800) weight exists in the codebase prior to this phase and is not modified.
 
 ---
 
@@ -78,6 +78,10 @@ All colors via `var(--*)` tokens only. No raw hex values permitted in new CSS.
 | Destructive | `var(--mts-red)` / `var(--color-danger)` | #dc3545 | None in this phase — list is read-only |
 
 Source: `src/styles/tokens.css` lines 48-67 (MTS tokens), lines 105-143 (semantic layer).
+
+### Focal Point
+
+Primary visual anchor for the history list screen: the priority pill badge — the only use of color in the list row, drawing the clinician's eye to triage priority first. All other list row elements use neutral text tokens to preserve the pill's visual prominence.
 
 ### Accent Reserved For
 
@@ -117,13 +121,15 @@ A compact colored pill badge for inline use inside table rows. Stacks on top of 
 
 ```
 display: inline-block
-padding: 2px 8px
-border-radius: var(--radius-sm)       /* 0.5rem */
-font-size: var(--font-size-xs)         /* 0.75rem */
+padding: var(--spacing-xs) var(--spacing-sm)   /* 4px 8px */
+border-radius: var(--radius-sm)                /* 0.5rem */
+font-size: var(--font-size-xs)                 /* 0.75rem */
 font-weight: 600
 text-transform: uppercase
 letter-spacing: 0.04em
 ```
+
+Compact density is achieved through `font-size-xs` (12px), not through sub-4px vertical padding. The `xs` token (4px) is the minimum permitted vertical padding.
 
 Special case: `.history-page__priority-pill.priority-yellow` must explicitly declare `color: var(--mts-yellow-text)` to prevent the white `color` from `.priority-badge` winning via specificity.
 
