@@ -19,7 +19,7 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-10)
 
 **Core value:** Clinicians reach a triage priority decision faster and more consistently because the AI traverses the protocol decision tree for them.
-**Current focus:** Phase 13 — session-history-enrichment
+**Current focus:** Phase 14 — discoverability
 
 ## Current Position
 
@@ -44,6 +44,7 @@ Plan: Not started
 | Phase 10-sensor-panel-refactor P01 | 4 | 2 tasks | 4 files |
 | Phase 11-triage-interaction-fixes P01 | 2min | 2 tasks | 2 files |
 | Phase 12-vital-signs-ux P01 | 12min | 2 tasks | 4 files |
+| Phase 13-session-history-enrichment P01 | 5min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -59,6 +60,8 @@ Archived to `.planning/milestones/v2.0.0-ROADMAP.md`. Key decisions also in PROJ
 - [Phase 12-vital-signs-ux]: warning uses --color-feedback-warn-* tokens; critical uses --color-feedback-error-* tokens — distinct visual severity without touching MTS clinical colors
 - [Phase 12-vital-signs-ux]: blood_pressure composite: worst-case status (critical > warning > null) evaluated from bp_systolic/bp_diastolic sub-fields
 - [Phase 12-vital-signs-ux]: Mobile BP separator hidden via display:none at max-width 767px; SIS/DIA labels always visible on both breakpoints
+- [Phase 13-session-history-enrichment]: Extracted resolvePriority to shared src/utils/priority.js with optional chaining — Profile.jsx and HistoryPage.jsx both import from it
+- [Phase 13-session-history-enrichment]: Compact priority pill uses CSS class stacking on global .priority-badge with explicit yellow text override for WCAG
 
 ### Pending Todos
 
@@ -72,6 +75,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-04-10T20:55:28.545Z
-Stopped at: Phase 13 UI-SPEC approved
-Resume file: .planning/phases/13-session-history-enrichment/13-UI-SPEC.md
+Last session: 2026-04-10
+Stopped at: Phase 13 complete, ready to plan Phase 14
+Resume file: None
