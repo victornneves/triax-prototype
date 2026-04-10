@@ -78,7 +78,9 @@ Plans:
   1. Vital sign fields displaying abnormal values (e.g., SpO2 <90%, temperature >40°C) show a visible warning indicator
   2. Vital sign fields displaying critical values show a distinct critical indicator distinguishable from abnormal
   3. Blood pressure input shows SIS and DIA as stacked labeled fields on narrow viewports, not side-by-side
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 12-01-PLAN.md — Add vital sign indicators and mobile-friendly BP layout
 
 ### Phase 13: Session History Enrichment
 **Goal**: The history list gives clinicians enough at-a-glance context to identify and navigate to any past session
@@ -114,6 +116,6 @@ Plans:
 | 9. Patient Form Redesign | v2.0.0 | 2/2 | Complete | 2026-04-09 |
 | 10. Sensor Panel Refactor | v2.1.0 | 1/1 | Complete    | 2026-04-09 |
 | 11. Triage Interaction Fixes | v2.1.0 | 1/1 | Complete    | 2026-04-09 |
-| 12. Vital Signs UX | v2.1.0 | 0/TBD | Not started | - |
+| 12. Vital Signs UX | v2.1.0 | 0/1 | Not started | - |
 | 13. Session History Enrichment | v2.1.0 | 0/TBD | Not started | - |
 | 14. Discoverability | v2.1.0 | 0/TBD | Not started | - |
