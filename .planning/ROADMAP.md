@@ -122,4 +122,4 @@ Plans:
 | 11. Triage Interaction Fixes | v2.1.0 | 1/1 | Complete    | 2026-04-09 |
 | 12. Vital Signs UX | v2.1.0 | 1/1 | Complete    | 2026-04-10 |
 | 13. Session History Enrichment | v2.1.0 | 1/1 | Complete    | 2026-04-10 |
-| 14. Discoverability | v2.1.0 | 1/1 | Complete   | 2026-04-10 |
+| 14. Discoverability | v2.1.0 | 1/1 | Complete    | 2026-04-10 |
