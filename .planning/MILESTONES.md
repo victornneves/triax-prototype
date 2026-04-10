@@ -1,5 +1,19 @@
 # Milestones
 
+## v2.1.0 UX Polish (Shipped: 2026-04-10)
+
+**Phases completed:** 5 phases, 5 plans, 10 tasks
+
+**Key accomplishments:**
+
+- Extracted ~170 lines of duplicated sensor panel rendering into a standalone SensorPanel component with co-located CSS, wiring getFieldStatus for Phase 12 forward-compatibility
+- Removed missingSensors guard from yes/no buttons, normalized gcs_scale key, and replaced chat input with auto-resizing textarea supporting Shift+Enter multiline
+- Clinical abnormal/critical value indicators on sensor panel items via CSS attribute selectors, plus responsive BP input with stacked mobile layout and visible SIS/DIA labels
+- Enriched history table with MTS priority color badges, patient names, and formatted duration; migrated from S3-legacy to session-id-based API calls
+- Keyboard shortcut legend with ? trigger in chat input bar — hover/focus reveals Y/N/R/Esc/Shift+Enter bindings with PT-BR labels
+
+---
+
 ## v2.0.0 UI/UX Overhaul (Shipped: 2026-04-09)
 
 **Phases completed:** 5 phases, 17 plans, 34 tasks

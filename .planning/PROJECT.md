@@ -2,41 +2,28 @@
 
 ## What This Is
 
-React SPA for clinical emergency triage using the Manchester Triage System (MTS). Clinicians log in, register a patient, capture the chief complaint (voice or text), and the app guides them through an AI-driven protocol decision tree — assigning a priority color (red → blue). The app features a cohesive design system with dark mode, responsive layout, WCAG 2.1 AA accessibility, and keyboard-driven triage flow. Hosted on AWS Amplify, currently in demos/pilot phase with stakeholders.
+React SPA for clinical emergency triage using the Manchester Triage System (MTS). Clinicians log in, register a patient, capture the chief complaint (voice or text), and the app guides them through an AI-driven protocol decision tree — assigning a priority color (red → blue). The app features a cohesive design system with dark mode, responsive layout, WCAG 2.1 AA accessibility, keyboard-driven triage flow, clinical vital sign indicators, enriched session history, and discoverable shortcuts. Hosted on AWS Amplify, currently in demos/pilot phase with stakeholders.
 
 ## Core Value
 
 Clinicians reach a triage priority decision faster and more consistently because the AI traverses the protocol decision tree for them.
 
-## Current Milestone: v2.1.0 UX Polish
-
-**Goal:** Fix triage interaction bugs and polish the clinical UX for pilot readiness
-
-**Target features:**
-- Fix yes/no quick-reply buttons not appearing during triage questions
-- Fix vital sign highlighting mismatch (Glasgow/GCS not highlighted when requested)
-- Support Shift+Enter for multiline input in chat text box
-- Allow answering yes/no questions while vital signs are still pending
-- Add visual indicators for abnormal/critical vital sign values
-- Enrich session history with priority badge, patient name, and duration
-- Improve keyboard shortcut discoverability
-- Improve mobile blood pressure input layout
-- Extract shared sensor panel component to reduce duplication
-
 ## Current State
 
-**Shipped:** v2.0.0 UI/UX Overhaul (2026-04-09)
+**Shipped:** v2.1.0 UX Polish (2026-04-10)
 **Branch:** `main`
-**Codebase:** 6,433 LOC (JSX/JS/CSS), 97 files changed in v2.0.0
+**Codebase:** 6,710 LOC (JSX/JS/CSS), 14 phases shipped across 3 milestones
 
-v2.0.0 transformed the functional prototype into a polished, clinician-centric triage tool:
-- CSS custom property design token system with `--mts-*` clinical color namespace
-- Shared UI component library (Button, Toast, Tooltip, StatusBar) in `src/components/ui/`
-- All components migrated from inline styles to token-backed CSS
-- WCAG 2.1 AA contrast, semantic HTML, ARIA labels, focus indicators
-- Dark mode with localStorage persistence, keyboard shortcuts (Y/N/R/Esc)
-- Oscilloscope waveform recording UI with live transcript preview
-- CPF-first patient form with input masks, computed age, metadata cards
+v2.1.0 polished the clinical UX for pilot readiness:
+- Shared SensorPanel component replacing duplicated desktop/mobile implementations
+- Yes/no quick-reply buttons work independently of pending vital signs
+- GCS key normalization for correct vital sign highlighting
+- Multiline chat input (Shift+Enter) with auto-resizing textarea
+- Abnormal/critical vital sign indicators (warning/error severity)
+- Mobile-friendly blood pressure input with stacked SIS/DIA layout
+- Session history enriched with MTS priority badges, patient names, and duration
+- Keyboard shortcut legend (? trigger) with Y/N/R/Esc/Shift+Enter bindings
+- Migrated history API from S3-legacy to session-id-based calls
 
 ## Requirements
 
@@ -78,20 +65,18 @@ v2.0.0 transformed the functional prototype into a polished, clinician-centric t
 - ✓ Contextual help tooltips for all form fields — v2.0.0
 - ✓ Input masking for CPF, date, and blood pressure fields — v2.0.0
 - ✓ CPF-first patient form with lookup stub, metadata cards, sticky submit — v2.0.0
+- ✓ Shared sensor panel component (desktop/mobile unified) — v2.1.0
+- ✓ Yes/no quick-reply buttons visible during triage questions — v2.1.0
+- ✓ All requested vital signs correctly highlighted on sensor dock — v2.1.0
+- ✓ Shift+Enter creates new line in chat input (Enter submits) — v2.1.0
+- ✓ Yes/no buttons shown even when vital signs are pending — v2.1.0
+- ✓ Visual indicators for abnormal/critical vital sign values — v2.1.0
+- ✓ Mobile-friendly blood pressure input layout — v2.1.0
+- ✓ Session history shows priority badge, patient name, duration — v2.1.0
+- ✓ Keyboard shortcut discoverability (help legend/tooltip) — v2.1.0
 
 ### Active
 
-<!-- v2.1.0 UX Polish scope -->
-
-- [x] Yes/no quick-reply buttons visible during triage questions — Phase 11
-- [x] All requested vital signs correctly highlighted on sensor dock — Phase 11
-- [x] Shift+Enter creates new line in chat input (Enter submits) — Phase 11
-- [x] Yes/no buttons shown even when vital signs are pending — Phase 11
-- [x] Visual indicators for abnormal/critical vital sign values — Phase 12
-- [x] Session history shows priority badge, patient name, duration — Phase 13
-- [x] Keyboard shortcut discoverability (help legend/tooltip) — Phase 14
-- [x] Mobile-friendly blood pressure input layout — Phase 12
-- [x] Shared sensor panel component (desktop/mobile unified) — Phase 10
 - [ ] Triage progress indicator (stepper/progress bar) — deferred from v2.0.0 (depends on /traverse API exposing step data)
 - [ ] Session summary timeline during triage — deferred from v2.0.0
 
@@ -108,12 +93,13 @@ v2.0.0 transformed the functional prototype into a polished, clinician-centric t
 
 ## Context
 
-- **Deployment:** AWS Amplify auto-deploys on every commit to `main`. v2.0.0 work on `v2-ui-overhaul` branch; pending merge to `main`.
+- **Deployment:** AWS Amplify auto-deploys on every commit to `main`.
 - **Backend:** External REST API at AWS API Gateway (sa-east-1). Frontend owns no backend code.
-- **Language:** App targets Brazilian Portuguese-speaking clinical staff (São Paulo region).
+- **Language:** App targets Brazilian Portuguese-speaking clinical staff (Sao Paulo region).
 - **Auth:** Cognito User Pool + Identity Pool. JWT id token sent as Bearer on every authenticated request. Shared `getAuthHeaders` utility in `src/utils/auth.js`.
 - **State management:** Component-local `useState`, `UserContext` for profile, `ThemeContext` for dark mode.
 - **Design system:** CSS custom properties in `src/styles/tokens.css`. FOUC prevention via blocking script in `index.html`. Amplify Authenticator coexists via `[data-app-theme]` scoping.
+- **Component library:** Shared UI primitives in `src/components/ui/` (Button, Toast, Tooltip, StatusBar, SensorPanel). Shared utilities in `src/utils/` (auth, priority).
 
 ## Constraints
 
@@ -140,6 +126,13 @@ v2.0.0 transformed the functional prototype into a polished, clinician-centric t
 | MTS priority colors as immutable tokens | Clinical standard — wrong color is a patient safety issue | ✓ Good — `--mts-*` namespace protected throughout |
 | PatientForm extraction from ProtocolTriage | ProtocolTriage was 1570+ lines; clean 2-prop interface | ✓ Good — reduced ProtocolTriage by ~370 lines |
 | CPF lookup as stub (returns null) | Backend endpoint doesn't exist yet; establishes interface contract | ✓ Good — frontend ready for backend when it ships |
+| SENSOR_CONFIG as named export from SensorPanel | ProtocolTriage needs label lookup for missing_sensors chat messages | ✓ Good — single source of truth for sensor metadata |
+| getFieldStatus as optional SensorPanel prop | Forward-compatibility for Phase 12 without touching ProtocolTriage | ✓ Good — clean phase boundary |
+| Decouple yes/no buttons from missingSensors | Sensors pending and yes/no questions are independent concerns | ✓ Good — clinicians can answer while entering vitals |
+| Normalize gcs_scale to gcs at setMissingSensors | Keep all downstream consumers using SENSOR_CONFIG keys | ✓ Good — single normalization point |
+| Warning/critical indicators via CSS attribute selectors | data-status attributes on sensor items, styled without JS | ✓ Good — zero runtime cost, clean separation |
+| Shared resolvePriority in src/utils/priority.js | Profile.jsx and HistoryPage.jsx both need MTS color resolution | ✓ Good — eliminated duplication |
+| Session-id-based history API migration | S3-legacy endpoints were fragile; session-id is the canonical key | ✓ Good — consistent with backend model |
 
 ## Evolution
 
@@ -159,4 +152,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-10 after Phase 14 (discoverability) complete*
+*Last updated: 2026-04-10 after v2.1.0 milestone*

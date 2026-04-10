@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v2.1.0
 milestone_name: UX Polish
-status: unknown
-stopped_at: Phase 13 complete, ready to plan Phase 14
-last_updated: "2026-04-10T21:37:09.218Z"
+status: complete
+stopped_at: Milestone v2.1.0 complete
+last_updated: "2026-04-10T22:00:00.000Z"
 progress:
   total_phases: 5
   completed_phases: 5
@@ -19,49 +19,35 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-10)
 
 **Core value:** Clinicians reach a triage priority decision faster and more consistently because the AI traverses the protocol decision tree for them.
-**Current focus:** Phase 14 — discoverability
+**Current focus:** Planning next milestone
 
 ## Current Position
 
-Phase: 14
-Plan: Not started
+Milestone v2.1.0 shipped. No active phase.
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 0 (this milestone)
-- Average duration: —
-- Total execution time: —
+- Total plans completed: 5 (this milestone)
+- Average duration: ~5 min/plan
+- Total execution time: ~2 days (2026-04-09 → 2026-04-10)
 
 **By Phase:**
 
-| Phase | Plans | Total | Avg/Plan |
-|-------|-------|-------|----------|
-| — | — | — | — |
-
-*Updated after each plan completion*
-| Phase 10-sensor-panel-refactor P01 | 4 | 2 tasks | 4 files |
+| Phase | Duration | Tasks | Files |
+|-------|----------|-------|-------|
+| Phase 10-sensor-panel-refactor P01 | 4min | 2 tasks | 4 files |
 | Phase 11-triage-interaction-fixes P01 | 2min | 2 tasks | 2 files |
 | Phase 12-vital-signs-ux P01 | 12min | 2 tasks | 4 files |
 | Phase 13-session-history-enrichment P01 | 5min | 2 tasks | 4 files |
+| Phase 14-discoverability P01 | ~3min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
 ### Decisions
 
-Archived to `.planning/milestones/v2.0.0-ROADMAP.md`. Key decisions also in PROJECT.md Key Decisions table.
-
-- [Phase 10-sensor-panel-refactor]: Export SENSOR_CONFIG as named export from SensorPanel so ProtocolTriage can use it for missing_sensors label lookup in chat messages
-- [Phase 10-sensor-panel-refactor]: getFieldStatus is optional prop on SensorPanel for Phase 12 forward-compatibility — no ProtocolTriage changes needed when Phase 12 adds abnormal indicators
-- [Phase 11-triage-interaction-fixes]: Removed missingSensors.length === 0 guard from quick-reply render — sensors pending and yes/no question are independent concerns
-- [Phase 11-triage-interaction-fixes]: Normalize gcs_scale to gcs at setMissingSensors call site to keep all downstream consumers using SENSOR_CONFIG keys
-- [Phase 11-triage-interaction-fixes]: border-radius changed from radius-pill to radius-md on textarea — pill shape looks odd when textarea expands to multiple lines
-- [Phase 12-vital-signs-ux]: warning uses --color-feedback-warn-* tokens; critical uses --color-feedback-error-* tokens — distinct visual severity without touching MTS clinical colors
-- [Phase 12-vital-signs-ux]: blood_pressure composite: worst-case status (critical > warning > null) evaluated from bp_systolic/bp_diastolic sub-fields
-- [Phase 12-vital-signs-ux]: Mobile BP separator hidden via display:none at max-width 767px; SIS/DIA labels always visible on both breakpoints
-- [Phase 13-session-history-enrichment]: Extracted resolvePriority to shared src/utils/priority.js with optional chaining — Profile.jsx and HistoryPage.jsx both import from it
-- [Phase 13-session-history-enrichment]: Compact priority pill uses CSS class stacking on global .priority-badge with explicit yellow text override for WCAG
+Archived to `.planning/milestones/v2.1.0-ROADMAP.md`. Key decisions also in PROJECT.md Key Decisions table.
 
 ### Pending Todos
 
@@ -69,12 +55,10 @@ None.
 
 ### Blockers/Concerns
 
-- ✓ Phase 12 (Vital Signs UX) depends on Phase 10 (Sensor Panel Refactor) — RESOLVED
-- Phase 14 (Discoverability) depends on Phase 11 (Triage Interaction Fixes) — shortcut legend is only useful after Y/N shortcuts are confirmed working
-- ⚠️ Phase 12 HUMAN-UAT has 3 pending visual verification items (indicator colors, dark mode contrast, mobile BP layout)
+- ⚠️ Phase 12 HUMAN-UAT has 3 pending visual verification items (indicator colors, dark mode contrast, mobile BP layout) — carried forward as known gap
 
 ## Session Continuity
 
 Last session: 2026-04-10
-Stopped at: Phase 13 complete, ready to plan Phase 14
+Stopped at: Milestone v2.1.0 complete
 Resume file: None

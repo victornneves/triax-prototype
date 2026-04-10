@@ -91,20 +91,67 @@ Living document — updated after each milestone.
 
 ---
 
+## Milestone: v2.1.0 — UX Polish
+
+**Shipped:** 2026-04-10
+**Phases:** 5 | **Plans:** 5 | **Tasks:** 10
+
+### What Was Built
+- Shared SensorPanel component extracted from duplicated desktop/mobile implementations (~170 LOC consolidated)
+- Triage interaction fixes: yes/no buttons decoupled from sensor state, GCS key normalized, multiline chat input
+- Clinical vital sign indicators using CSS attribute selectors (warning/critical severity levels)
+- Session history enriched with MTS priority badges, patient names, and duration; migrated to session-id API
+- Keyboard shortcut legend with ? trigger, revealing Y/N/R/Esc/Shift+Enter bindings in PT-BR
+
+### What Worked
+- **Forward-compatible design** — SensorPanel's optional `getFieldStatus` prop (Phase 10) meant Phase 12 required zero changes to ProtocolTriage
+- **Surgical phases** — Each phase was 1 plan / 2 tasks, making execution fast and focused (~5-12 min each)
+- **Shared utility extraction** — `resolvePriority` in `src/utils/priority.js` used immediately by both Profile.jsx and HistoryPage.jsx
+- **CSS attribute selector approach** — `data-status` attributes for vital sign indicators: zero JS runtime cost, clean separation
+
+### What Was Inefficient
+- **REQUIREMENTS.md bookkeeping lag** — HIST-01, HIST-02, DISC-01 never checked off in REQUIREMENTS.md despite phases completing; caught at milestone completion
+- **No milestone audit** — Proceeding without `/gsd:audit-milestone` again (same gap as v2.0.0)
+- **Phase 12 UAT gap** — 3 visual verification items (indicator colors, dark mode contrast, mobile BP layout) remained pending as human-only items
+
+### Patterns Established
+- `data-status="warning|critical"` attribute pattern for clinical value indicators
+- Warning uses `--color-feedback-warn-*` tokens; critical uses `--color-feedback-error-*` — distinct from MTS clinical colors
+- Composite vital sign status (blood_pressure) resolved from worst-case of sub-fields
+- `gcs_scale` → `gcs` normalization at setMissingSensors call site — single normalization point
+- Shared priority resolution utility in `src/utils/priority.js` with optional chaining
+
+### Key Lessons
+1. Forward-compatible props pay off within the same milestone — Phase 10→12 boundary was frictionless
+2. Bookkeeping tasks (checking off requirements) should happen at phase completion, not deferred to milestone
+3. Small phases (1 plan, 2 tasks) execute extremely fast — good granularity for UX polish work
+4. CSS attribute selectors are ideal for runtime state indicators — no JS, no class list management
+
+### Cost Observations
+- Model mix: ~30% opus (planning, orchestration), ~70% sonnet (research, execution, verification)
+- 28 commits across 2 days
+- Notable: Smallest milestone yet (5 plans vs 10 and 17) but high user-visible impact per plan
+
+---
+
 ## Cross-Milestone Trends
 
-| Metric | v1.1.0 | v2.0.0 |
-|--------|--------|--------|
-| Phases | 4 | 5 |
-| Plans | 10 | 17 |
-| Avg plans/phase | 2.5 | 3.4 |
-| Research used | 1/4 phases | 5/5 phases |
-| Verification pass rate | 4/4 first-pass | 4/5 first-pass (Phase 9 human_needed) |
-| Timeline | ~10 days | 3 days |
-| Commits | ~35 | 83 |
+| Metric | v1.1.0 | v2.0.0 | v2.1.0 |
+|--------|--------|--------|--------|
+| Phases | 4 | 5 | 5 |
+| Plans | 10 | 17 | 5 |
+| Tasks | 11 | 34 | 10 |
+| Avg plans/phase | 2.5 | 3.4 | 1.0 |
+| Research used | 1/4 phases | 5/5 phases | 3/5 phases |
+| Verification pass rate | 4/4 first-pass | 4/5 first-pass | 5/5 first-pass |
+| Timeline | ~10 days | 3 days | 2 days |
+| Commits | ~35 | 83 | 28 |
+| LOC delta | — | +17,221 | +302 |
 
 ### Top Lessons (Verified Across Milestones)
 
-1. Research before planning catches issues early — v1.1.0 (dead code discovery) and v2.0.0 (react-input-mask deprecation) both benefited
-2. Dev branch per milestone protects demo stability — validated across both milestones with zero broken deploys
-3. Parallel executor agents work well when plans touch disjoint file sets — confirmed in both v1.1.0 Phase 4 and v2.0.0 Phase 7
+1. Research before planning catches issues early — v1.1.0 (dead code discovery), v2.0.0 (react-input-mask deprecation), v2.1.0 (API migration path)
+2. Dev branch per milestone protects demo stability — validated across all three milestones with zero broken deploys
+3. Parallel executor agents work well when plans touch disjoint file sets — confirmed in v1.1.0 Phase 4 and v2.0.0 Phase 7
+4. Requirements bookkeeping must happen at phase completion — gap found in v2.0.0 (FORM-05) and v2.1.0 (HIST-01, HIST-02, DISC-01)
+5. Forward-compatible interfaces reduce cross-phase friction — v2.1.0 Phase 10→12 boundary was frictionless due to optional props
