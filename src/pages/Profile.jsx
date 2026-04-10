@@ -1,41 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
 import { getAuthHeaders } from '../utils/auth';
+import { resolvePriority } from '../utils/priority';
 import TriageDetailsModal from '../components/TriageDetailsModal';
 import './Profile.css';
 
 const API_URL = import.meta.env.VITE_API_URL;
-
-const PRIORITY_MAP = {
-    red:    { className: 'priority-badge priority-red',    label: 'Vermelho' },
-    orange: { className: 'priority-badge priority-orange', label: 'Laranja'  },
-    yellow: { className: 'priority-badge priority-yellow', label: 'Amarelo'  },
-    green:  { className: 'priority-badge priority-green',  label: 'Verde'    },
-    blue:   { className: 'priority-badge priority-blue',   label: 'Azul'     },
-};
-
-function resolvePriority(triageResult) {
-    const p = (
-        triageResult.prioridade ||
-        triageResult.cor ||
-        triageResult.priority ||
-        ''
-    ).toLowerCase();
-
-    if (p.includes('red') || p.includes('vermelho'))    return { ...PRIORITY_MAP.red,    label: PRIORITY_MAP.red.label };
-    if (p.includes('orange') || p.includes('laranja'))  return { ...PRIORITY_MAP.orange, label: PRIORITY_MAP.orange.label };
-    if (p.includes('yellow') || p.includes('amarelo'))  return { ...PRIORITY_MAP.yellow, label: PRIORITY_MAP.yellow.label };
-    if (p.includes('green') || p.includes('verde'))     return { ...PRIORITY_MAP.green,  label: PRIORITY_MAP.green.label };
-    if (p.includes('blue') || p.includes('azul'))       return { ...PRIORITY_MAP.blue,   label: PRIORITY_MAP.blue.label };
-
-    // Direct key match (english key)
-    if (PRIORITY_MAP[p]) return PRIORITY_MAP[p];
-
-    return {
-        className: 'profile-table__priority-badge profile-table__priority-badge--unknown',
-        label: triageResult.prioridade || p || 'N/A',
-    };
-}
 
 const Profile = () => {
 
