@@ -88,7 +88,7 @@ v2.0.0 transformed the functional prototype into a polished, clinician-centric t
 - [x] Shift+Enter creates new line in chat input (Enter submits) — Phase 11
 - [x] Yes/no buttons shown even when vital signs are pending — Phase 11
 - [x] Visual indicators for abnormal/critical vital sign values — Phase 12
-- [ ] Session history shows priority badge, patient name, duration
+- [x] Session history shows priority badge, patient name, duration — Phase 13
 - [ ] Keyboard shortcut discoverability (help legend/tooltip)
 - [x] Mobile-friendly blood pressure input layout — Phase 12
 - [x] Shared sensor panel component (desktop/mobile unified) — Phase 10
@@ -159,4 +159,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-10 after Phase 12 (vital-signs-ux) complete*
+*Last updated: 2026-04-10 after Phase 13 (session-history-enrichment) complete*
