@@ -187,4 +187,10 @@
   /* --- Danger — softer red for dark UI chrome --- */
   --color-danger:           #f87171;
   --color-danger-hover:     #ef4444;
+
+  /* --- Vital sign indicator feedback — dark overrides (Phase 12) --- */
+  --color-feedback-warn-bg:    #422006;
+  --color-feedback-warn-text:  #fbbf24;
+  --color-feedback-error-bg:   #450a0a;
+  --color-feedback-error-text: #fca5a5;
 }

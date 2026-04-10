@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { IMaskInput } from 'react-imask';
 import { getAuthHeaders } from '../utils/auth';
 import { useTranscribe } from '../useTranscribe'; // Import hook
@@ -35,6 +35,69 @@ const ProtocolTriage = () => {
     const [pdfLoading, setPdfLoading] = useState(false);
     const [pendingQuestion, setPendingQuestion] = useState(null); // { question, nodeId }
     const [activeShortcut, setActiveShortcut] = useState(null); // 'sim' | 'nao' | 'record' — drives 150ms pulse class
+
+    // -- VITAL SIGN FIELD STATUS (Phase 12 — VITALS-01) --
+    const getFieldStatus = useCallback((key, value) => {
+        // D-05: Empty/unfilled fields return null
+        if (value === undefined || value === null || value === '') return null;
+
+        // D-04: blood_pressure composite — evaluate both sub-fields, worst-case wins
+        if (key === 'blood_pressure') {
+            const sys = parseFloat(sensorInputs.bp_systolic);
+            const dia = parseFloat(sensorInputs.bp_diastolic);
+            let sysStatus = null;
+            let diaStatus = null;
+            if (!isNaN(sys)) {
+                if (sys < 70 || sys > 200) sysStatus = 'critical';
+                else if (sys < 80 || sys > 160) sysStatus = 'warning';
+            }
+            if (!isNaN(dia)) {
+                if (dia < 40 || dia > 120) diaStatus = 'critical';
+                else if (dia < 50 || dia > 100) diaStatus = 'warning';
+            }
+            // Worst-case wins: critical > warning > null
+            if (sysStatus === 'critical' || diaStatus === 'critical') return 'critical';
+            if (sysStatus === 'warning' || diaStatus === 'warning') return 'warning';
+            return null;
+        }
+
+        const num = parseFloat(value);
+        if (isNaN(num)) return null;
+
+        // D-02: Clinical thresholds per vital sign
+        switch (key) {
+            case 'temperature':
+                if (num < 35 || num > 40) return 'critical';
+                if (num < 36 || num > 38) return 'warning';
+                return null;
+            case 'heart_rate':
+                if (num < 40 || num > 130) return 'critical';
+                if (num < 50 || num > 110) return 'warning';
+                return null;
+            case 'oxygen_saturation':
+                if (num < 90) return 'critical';
+                if (num < 95) return 'warning';
+                return null;
+            case 'respiratory_rate':
+                if (num < 8 || num > 30) return 'critical';
+                if (num < 10 || num > 24) return 'warning';
+                return null;
+            case 'blood_glucose':
+                if (num < 40 || num > 400) return 'critical';
+                if (num < 60 || num > 200) return 'warning';
+                return null;
+            case 'gcs':
+                if (num <= 8) return 'critical';
+                if (num <= 14) return 'warning';
+                return null;
+            case 'pain_scale':
+                if (num >= 7) return 'critical';
+                if (num >= 4) return 'warning';
+                return null;
+            default:
+                return null;
+        }
+    }, [sensorInputs]);
 
     // -- AUDIO TRANSCRIPTION --
     const {
@@ -1001,6 +1064,7 @@ const ProtocolTriage = () => {
                     onSensorChange={handleSensorChange}
                     onSubmit={handleSendSensors}
                     loading={loading}
+                    getFieldStatus={getFieldStatus}
                 />
 
             </div>
@@ -1036,6 +1100,7 @@ const ProtocolTriage = () => {
                     onSensorChange={handleSensorChange}
                     onSubmit={handleSendSensors}
                     loading={loading}
+                    getFieldStatus={getFieldStatus}
                 />
             </aside>
 

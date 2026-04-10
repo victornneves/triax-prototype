@@ -70,6 +70,19 @@
   border-color: var(--color-feedback-error-text);
 }
 
+/* --- Vital sign abnormal/critical indicators (Phase 12 — VITALS-01) --- */
+.triage-sensors__item[data-field-status="warning"] {
+  background-color: var(--color-feedback-warn-bg);
+  border-color: var(--color-feedback-warn-text);
+  border-left-width: 4px;
+}
+
+.triage-sensors__item[data-field-status="critical"] {
+  background-color: var(--color-feedback-error-bg);
+  border-color: var(--color-feedback-error-text);
+  border-left-width: 4px;
+}
+
 .triage-sensors__input {
   width: 100%;
   padding: 8px;
