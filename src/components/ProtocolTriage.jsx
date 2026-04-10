@@ -3,6 +3,7 @@ import { IMaskInput } from 'react-imask';
 import { getAuthHeaders } from '../utils/auth';
 import { useTranscribe } from '../useTranscribe'; // Import hook
 import { useToast } from './ui/ToastProvider';
+import { ShortcutLegend } from './ui/ShortcutLegend';
 import PatientForm from './PatientForm';
 import SensorPanel, { SENSOR_CONFIG } from './SensorPanel';
 import './ProtocolTriage.css';
@@ -1024,6 +1025,7 @@ const ProtocolTriage = () => {
                             </svg>
                             <span className="shortcut-hint">(R)</span>
                         </button>
+                        <ShortcutLegend />
                         <button
                             onClick={() => handleSendMessage()}
                             disabled={loading}
