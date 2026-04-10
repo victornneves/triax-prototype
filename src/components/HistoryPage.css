@@ -102,22 +102,47 @@
 
 .history-page__session-date {
   padding: var(--spacing-sm) var(--spacing-md);
-  font-weight: bold;
+  font-weight: 400;
   color: var(--color-text-primary);
   font-size: var(--font-size-sm);
 }
 
-/* Contrast fix: #666 -> text-secondary (7.63:1 PASS) per D-20 */
-.history-page__session-time {
+.history-page__session-patient {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+}
+
+.history-page__session-priority {
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.history-page__session-duration {
   padding: var(--spacing-sm) var(--spacing-md);
   font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
 }
 
-/* Contrast fix: #999 (3.73:1 FAIL) -> text-secondary (7.63:1 PASS) per D-20 */
-.history-page__session-id {
-  padding: var(--spacing-sm) var(--spacing-md);
+/* Compact priority pill for list rows — overrides App.css .priority-badge sizing */
+.history-page__priority-pill {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
   font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  display: inline-block;
+  margin: 0;
+}
+
+/* Yellow badge needs dark text for WCAG contrast — specificity override */
+.history-page__priority-pill.priority-yellow {
+  color: var(--mts-yellow-text);
+}
+
+/* Unknown priority fallback styling */
+.history-page__priority-pill.priority-unknown {
+  background-color: var(--color-surface-muted);
   color: var(--color-text-secondary);
 }
 

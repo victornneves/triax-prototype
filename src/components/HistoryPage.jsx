@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getAuthHeaders } from '../utils/auth';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from './ui/ToastProvider';
+import { resolvePriority, formatDuration } from '../utils/priority';
 import './HistoryPage.css';
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -67,7 +68,12 @@ const HistoryPage = () => {
             if (!response.ok) throw new Error("Failed to fetch history");
 
             const data = await response.json();
-            setSessions(data.sessions || []);
+            const sorted = (data.sessions || []).sort((a, b) => {
+                const dateA = a.created_at ? new Date(a.created_at) : new Date(0);
+                const dateB = b.created_at ? new Date(b.created_at) : new Date(0);
+                return dateB - dateA;
+            });
+            setSessions(sorted);
 
         } catch (error) {
             console.error("Error listing sessions:", error);
@@ -76,13 +82,12 @@ const HistoryPage = () => {
         }
     };
 
-    const handleSelectSession = async (key) => {
+    const handleSelectSession = async (sessionId) => {
         setDetailLoading(true);
         setSelectedSession(null);
         try {
             const headers = await getAuthHeaders();
-            const encodedKey = encodeURIComponent(key);
-            const response = await fetch(`${API_URL}/history?key=${encodedKey}`, {
+            const response = await fetch(`${API_URL}/history/${sessionId}`, {
                 method: 'GET',
                 headers: headers
             });
@@ -123,28 +128,44 @@ const HistoryPage = () => {
                             <caption>Lista de triagens realizadas</caption>
                             <thead>
                                 <tr>
-                                    <th scope="col">Data</th>
-                                    <th scope="col">Hora</th>
-                                    <th scope="col">ID</th>
+                                    <th scope="col">Data/Hora</th>
+                                    <th scope="col">Paciente</th>
+                                    <th scope="col">Prioridade</th>
+                                    <th scope="col">Duração</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {sessions.map((item) => {
-                                    const isActive = selectedSession?.session_id === item.key.split('/').pop().replace('.json', '');
+                                    const priority = resolvePriority(item.triage_result || {});
+                                    const isActive = selectedSession?.session_id === item.session_id;
                                     return (
                                         <tr
-                                            key={item.key}
-                                            onClick={() => handleSelectSession(item.key)}
+                                            key={item.session_id}
+                                            onClick={() => handleSelectSession(item.session_id)}
                                             className={`history-page__session-row${isActive ? ' history-page__session-row--active' : ''}`}
                                         >
                                             <td className="history-page__session-date">
-                                                {new Date(item.lastModified).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' })}
+                                                {item.created_at
+                                                    ? new Date(item.created_at).toLocaleString('pt-BR', {
+                                                        timeZone: 'America/Sao_Paulo',
+                                                        day: '2-digit',
+                                                        month: '2-digit',
+                                                        year: 'numeric',
+                                                        hour: '2-digit',
+                                                        minute: '2-digit',
+                                                      })
+                                                    : '\u2014'}
                                             </td>
-                                            <td className="history-page__session-time">
-                                                {new Date(item.lastModified).toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit' })}
+                                            <td className="history-page__session-patient">
+                                                {item.patient_info?.name || 'Paciente anon.'}
                                             </td>
-                                            <td className="history-page__session-id">
-                                                {item.key.split('/').pop().replace('.json', '').substring(0, 15)}...
+                                            <td className="history-page__session-priority">
+                                                <span className={`${priority.className} history-page__priority-pill`}>
+                                                    {priority.label}
+                                                </span>
+                                            </td>
+                                            <td className="history-page__session-duration">
+                                                {formatDuration(item.stats?.duration_seconds)}
                                             </td>
                                         </tr>
                                     );
