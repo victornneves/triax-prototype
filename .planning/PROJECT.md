@@ -87,10 +87,10 @@ v2.0.0 transformed the functional prototype into a polished, clinician-centric t
 - [x] All requested vital signs correctly highlighted on sensor dock — Phase 11
 - [x] Shift+Enter creates new line in chat input (Enter submits) — Phase 11
 - [x] Yes/no buttons shown even when vital signs are pending — Phase 11
-- [ ] Visual indicators for abnormal/critical vital sign values
+- [x] Visual indicators for abnormal/critical vital sign values — Phase 12
 - [ ] Session history shows priority badge, patient name, duration
 - [ ] Keyboard shortcut discoverability (help legend/tooltip)
-- [ ] Mobile-friendly blood pressure input layout
+- [x] Mobile-friendly blood pressure input layout — Phase 12
 - [x] Shared sensor panel component (desktop/mobile unified) — Phase 10
 - [ ] Triage progress indicator (stepper/progress bar) — deferred from v2.0.0 (depends on /traverse API exposing step data)
 - [ ] Session summary timeline during triage — deferred from v2.0.0
@@ -159,4 +159,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-09 after Phase 11 (triage-interaction-fixes) complete*
+*Last updated: 2026-04-10 after Phase 12 (vital-signs-ux) complete*
