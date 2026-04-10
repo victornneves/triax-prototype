@@ -99,10 +99,24 @@
   border-color: var(--color-primary);
 }
 
+/* --- Blood pressure group — responsive layout (Phase 12 — VITALS-02) --- */
 .triage-sensors__bp-group {
   display: flex;
   gap: 8px;
-  align-items: center;
+  align-items: flex-end;
+}
+
+.triage-sensors__bp-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.triage-sensors__bp-label {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  line-height: 1;
 }
 
 .triage-sensors__bp-input {
@@ -125,6 +139,28 @@
 .triage-sensors__bp-separator {
   color: var(--color-text-secondary);
   font-weight: bold;
+  padding-bottom: 8px;
+}
+
+/* Mobile: stack BP fields vertically, hide separator (D-12, D-14) */
+@media (max-width: 767px) {
+  .triage-sensors__bp-group {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  .triage-sensors__bp-field {
+    width: 100%;
+  }
+
+  .triage-sensors__bp-input {
+    width: 100%;
+  }
+
+  .triage-sensors__bp-separator {
+    display: none;
+  }
 }
 
 .triage-sensors__submit-btn {

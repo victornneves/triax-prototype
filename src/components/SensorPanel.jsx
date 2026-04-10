@@ -163,29 +163,37 @@ const SensorPanel = ({ sensorInputs, missingSensors, onSensorChange, onSubmit, l
                     } else if (conf.composite) {
                         inputComponent = (
                             <div className="triage-sensors__bp-group">
-                                <input
-                                    placeholder="SIS"
-                                    name="bp_systolic"
-                                    type="number"
-                                    maxLength={3}
-                                    min={0}
-                                    max={300}
-                                    value={sensorInputs.bp_systolic || ''}
-                                    onChange={onSensorChange}
-                                    className="triage-sensors__bp-input"
-                                />
+                                <div className="triage-sensors__bp-field">
+                                    <label className="triage-sensors__bp-label" htmlFor="bp-systolic-input">SIS</label>
+                                    <input
+                                        id="bp-systolic-input"
+                                        placeholder="SIS"
+                                        name="bp_systolic"
+                                        type="number"
+                                        maxLength={3}
+                                        min={0}
+                                        max={300}
+                                        value={sensorInputs.bp_systolic || ''}
+                                        onChange={onSensorChange}
+                                        className="triage-sensors__bp-input"
+                                    />
+                                </div>
                                 <span className="triage-sensors__bp-separator">/</span>
-                                <input
-                                    placeholder="DIA"
-                                    name="bp_diastolic"
-                                    type="number"
-                                    maxLength={3}
-                                    min={0}
-                                    max={300}
-                                    value={sensorInputs.bp_diastolic || ''}
-                                    onChange={onSensorChange}
-                                    className="triage-sensors__bp-input"
-                                />
+                                <div className="triage-sensors__bp-field">
+                                    <label className="triage-sensors__bp-label" htmlFor="bp-diastolic-input">DIA</label>
+                                    <input
+                                        id="bp-diastolic-input"
+                                        placeholder="DIA"
+                                        name="bp_diastolic"
+                                        type="number"
+                                        maxLength={3}
+                                        min={0}
+                                        max={300}
+                                        value={sensorInputs.bp_diastolic || ''}
+                                        onChange={onSensorChange}
+                                        className="triage-sensors__bp-input"
+                                    />
+                                </div>
                             </div>
                         );
                     } else {
