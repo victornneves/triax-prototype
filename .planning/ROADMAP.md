@@ -41,7 +41,7 @@ Full details: `.planning/milestones/v2.0.0-ROADMAP.md`
 - [x] **Phase 11: Triage Interaction Fixes** - Fix yes/no button logic, vital sign highlighting, and Shift+Enter input behavior (completed 2026-04-09)
 - [x] **Phase 12: Vital Signs UX** - Add abnormal/critical value indicators and mobile-friendly BP input layout (completed 2026-04-10)
 - [x] **Phase 13: Session History Enrichment** - Add priority badge, patient name preview, and duration to history list (completed 2026-04-10)
-- [ ] **Phase 14: Discoverability** - Surface keyboard shortcut legend so clinicians can find Y/N/R/Esc bindings
+- [x] **Phase 14: Discoverability** - Surface keyboard shortcut legend so clinicians can find Y/N/R/Esc bindings (completed 2026-04-10)
 
 ## Phase Details
 
@@ -103,7 +103,7 @@ Plans:
   2. The legend is accessible via keyboard (no mouse required to reveal it)
 **Plans**: 1 plan
 Plans:
-- [ ] 14-01-PLAN.md — Create ShortcutLegend component and wire into triage chat input bar
+- [x] 14-01-PLAN.md — Create ShortcutLegend component and wire into triage chat input bar
 
 ## Progress
 
@@ -122,4 +122,4 @@ Plans:
 | 11. Triage Interaction Fixes | v2.1.0 | 1/1 | Complete    | 2026-04-09 |
 | 12. Vital Signs UX | v2.1.0 | 1/1 | Complete    | 2026-04-10 |
 | 13. Session History Enrichment | v2.1.0 | 1/1 | Complete    | 2026-04-10 |
-| 14. Discoverability | v2.1.0 | 0/1 | Not started | - |
+| 14. Discoverability | v2.1.0 | 1/1 | Complete   | 2026-04-10 |
