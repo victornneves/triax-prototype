@@ -571,6 +571,7 @@ const ProtocolTriage = () => {
             node_id: forcedProtocolId ? undefined : (overrideNodeId || (currentNode ? currentNode.id : undefined)),
             session_id: sessionId,
             user_input: userInput,
+            batch: true,
             ...finalSensors
         };
 
