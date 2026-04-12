@@ -9,8 +9,8 @@ Requirements for batch traversal milestone. Each maps to roadmap phases.
 
 ### Batch Traversal
 
-- [ ] **BATCH-01**: All `/protocol-traverse` calls send `batch: true` by default, reducing API round-trips by ~65%
-- [ ] **BATCH-02**: The `next_node` sequential handler is flagged as deprecated (code comment + console.warn on entry) and retained as fallback
+- [x] **BATCH-01**: All `/protocol-traverse` calls send `batch: true` by default, reducing API round-trips by ~65%
+- [x] **BATCH-02**: The `next_node` sequential handler is flagged as deprecated (code comment + console.warn on entry) and retained as fallback
 
 ## Future Requirements
 
@@ -37,8 +37,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| BATCH-01 | Phase 15 | Pending |
-| BATCH-02 | Phase 15 | Pending |
+| BATCH-01 | Phase 15 | Complete |
+| BATCH-02 | Phase 15 | Complete |
 
 **Coverage:**
 - v2.2.0 requirements: 2 total

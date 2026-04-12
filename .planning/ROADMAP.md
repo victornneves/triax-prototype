@@ -51,7 +51,7 @@ Full details: `.planning/milestones/v2.1.0-ROADMAP.md`
 
 **Milestone Goal:** Switch protocol traversal from sequential to batch mode, cutting API round-trips by ~65% while preserving the sequential path as a deprecated fallback.
 
-- [ ] **Phase 15: Batch Traversal** - Enable batch mode and deprecate the next_node sequential handler
+- [x] **Phase 15: Batch Traversal** - Enable batch mode and deprecate the next_node sequential handler (completed 2026-04-12)
 
 ## Phase Details
 
@@ -64,9 +64,9 @@ Full details: `.planning/milestones/v2.1.0-ROADMAP.md`
   2. The traversal flow completes correctly for `complete`, `ask_user`, and `missing_sensors` batch response shapes
   3. The `next_node` sequential handler is annotated with a deprecation comment and emits a `console.warn` when entered
   4. Triage sessions that receive a `next_node` response still complete successfully (fallback path intact)
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 Plans:
-- [ ] 15-01-PLAN.md -- Add batch: true to traverseTree payload and deprecate next_node handler
+- [x] 15-01-PLAN.md -- Add batch: true to traverseTree payload and deprecate next_node handler
 
 ## Progress
 
@@ -86,4 +86,4 @@ Plans:
 | 12. Vital Signs UX | v2.1.0 | 1/1 | Complete | 2026-04-10 |
 | 13. Session History Enrichment | v2.1.0 | 1/1 | Complete | 2026-04-10 |
 | 14. Discoverability | v2.1.0 | 1/1 | Complete | 2026-04-10 |
-| 15. Batch Traversal | v2.2.0 | 0/1 | Not started | - |
+| 15. Batch Traversal | v2.2.0 | 1/1 | Complete   | 2026-04-12 |
