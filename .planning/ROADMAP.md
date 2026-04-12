@@ -86,4 +86,4 @@ Plans:
 | 12. Vital Signs UX | v2.1.0 | 1/1 | Complete | 2026-04-10 |
 | 13. Session History Enrichment | v2.1.0 | 1/1 | Complete | 2026-04-10 |
 | 14. Discoverability | v2.1.0 | 1/1 | Complete | 2026-04-10 |
-| 15. Batch Traversal | v2.2.0 | 1/1 | Complete   | 2026-04-12 |
+| 15. Batch Traversal | v2.2.0 | 1/1 | Complete    | 2026-04-12 |
