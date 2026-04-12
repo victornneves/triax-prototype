@@ -8,31 +8,16 @@ React SPA for clinical emergency triage using the Manchester Triage System (MTS)
 
 Clinicians reach a triage priority decision faster and more consistently because the AI traverses the protocol decision tree for them.
 
-## Current Milestone: v2.2.0 Batch Traversal
-
-**Goal:** Switch the triage protocol traversal from sequential mode to batch mode, reducing API round-trips by ~65%.
-
-**Target features:**
-- Enable `batch: true` on `/protocol-traverse` calls by default
-- Remove `next_node` recursive traversal as the primary flow (keep as deprecated fallback)
-- Handle batch-mode response shapes (`complete`, `ask_user`, `missing_sensors`)
-
 ## Current State
 
 **Shipped:** v2.2.0 Batch Traversal (2026-04-12)
 **Branch:** `main`
-**Codebase:** 6,710 LOC (JSX/JS/CSS), 15 phases shipped across 4 milestones
+**Codebase:** 6,718 LOC (JSX/JS/CSS), 15 phases shipped across 4 milestones
 
-v2.1.0 polished the clinical UX for pilot readiness:
-- Shared SensorPanel component replacing duplicated desktop/mobile implementations
-- Yes/no quick-reply buttons work independently of pending vital signs
-- GCS key normalization for correct vital sign highlighting
-- Multiline chat input (Shift+Enter) with auto-resizing textarea
-- Abnormal/critical vital sign indicators (warning/error severity)
-- Mobile-friendly blood pressure input with stacked SIS/DIA layout
-- Session history enriched with MTS priority badges, patient names, and duration
-- Keyboard shortcut legend (? trigger) with Y/N/R/Esc/Shift+Enter bindings
-- Migrated history API from S3-legacy to session-id-based calls
+v2.2.0 switched protocol traversal to batch mode:
+- All `/protocol-traverse` calls send `batch: true` by default (~65% fewer API round-trips)
+- `next_node` sequential handler deprecated with diagnostic `console.warn` (fallback intact)
+- Existing `complete`, `ask_user`, `missing_sensors` response handlers unchanged (already correct for batch)
 
 ## Requirements
 
@@ -83,11 +68,11 @@ v2.1.0 polished the clinical UX for pilot readiness:
 - ✓ Mobile-friendly blood pressure input layout — v2.1.0
 - ✓ Session history shows priority badge, patient name, duration — v2.1.0
 - ✓ Keyboard shortcut discoverability (help legend/tooltip) — v2.1.0
+- ✓ Default batch mode for protocol traversal (`batch: true` on all `/protocol-traverse` calls) — v2.2.0
+- ✓ Deprecate `next_node` sequential handling (keep as fallback, flag as deprecated) — v2.2.0
 
 ### Active
 
-- [x] Default batch mode for protocol traversal (`batch: true` on all `/protocol-traverse` calls) — v2.2.0
-- [x] Deprecate `next_node` sequential handling (keep as fallback, flag as deprecated) — v2.2.0
 - [ ] Triage progress indicator (stepper/progress bar) — deferred from v2.0.0 (depends on /traverse API exposing step data)
 - [ ] Session summary timeline during triage — deferred from v2.0.0
 
@@ -144,6 +129,8 @@ v2.1.0 polished the clinical UX for pilot readiness:
 | Warning/critical indicators via CSS attribute selectors | data-status attributes on sensor items, styled without JS | ✓ Good — zero runtime cost, clean separation |
 | Shared resolvePriority in src/utils/priority.js | Profile.jsx and HistoryPage.jsx both need MTS color resolution | ✓ Good — eliminated duplication |
 | Session-id-based history API migration | S3-legacy endpoints were fragile; session-id is the canonical key | ✓ Good — consistent with backend model |
+| Batch mode always-on (no toggle) | Stateless flag, transparent to clinician, no UI needed | ✓ Good — single payload change covered all call sites |
+| Deprecate next_node with console.warn, not remove | Backend may fall back to sequential; keep path functional | ✓ Good — diagnostic logging without user disruption |
 
 ## Evolution
 
@@ -163,4 +150,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-12 after Phase 15 (Batch Traversal) completion*
+*Last updated: 2026-04-12 after v2.2.0 milestone*

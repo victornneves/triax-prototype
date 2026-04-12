@@ -1,5 +1,15 @@
 # Milestones
 
+## v2.2.0 Batch Traversal (Shipped: 2026-04-12)
+
+**Phases completed:** 1 phases, 1 plans, 2 tasks
+
+**Key accomplishments:**
+
+- batch: true added to all /protocol-traverse calls via single payload change; next_node sequential handler marked @deprecated with console.warn diagnostic
+
+---
+
 ## v2.1.0 UX Polish (Shipped: 2026-04-10)
 
 **Phases completed:** 5 phases, 5 plans, 10 tasks
