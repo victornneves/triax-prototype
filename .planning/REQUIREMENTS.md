@@ -37,14 +37,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| BATCH-01 | — | Pending |
-| BATCH-02 | — | Pending |
+| BATCH-01 | Phase 15 | Pending |
+| BATCH-02 | Phase 15 | Pending |
 
 **Coverage:**
 - v2.2.0 requirements: 2 total
-- Mapped to phases: 0
-- Unmapped: 2 ⚠️
+- Mapped to phases: 2
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-04-12*
-*Last updated: 2026-04-12 after initial definition*
+*Last updated: 2026-04-12 after roadmap creation*

@@ -5,6 +5,7 @@
 - ✅ **v1.1.0 Alignment & Cleanup** -- Phases 1-4 (shipped 2026-04-07)
 - ✅ **v2.0.0 UI/UX Overhaul** -- Phases 5-9 (shipped 2026-04-09)
 - ✅ **v2.1.0 UX Polish** -- Phases 10-14 (shipped 2026-04-10)
+- 🚧 **v2.2.0 Batch Traversal** -- Phase 15 (in progress)
 
 ## Phases
 
@@ -46,6 +47,25 @@ Full details: `.planning/milestones/v2.1.0-ROADMAP.md`
 
 </details>
 
+### 🚧 v2.2.0 Batch Traversal (In Progress)
+
+**Milestone Goal:** Switch protocol traversal from sequential to batch mode, cutting API round-trips by ~65% while preserving the sequential path as a deprecated fallback.
+
+- [ ] **Phase 15: Batch Traversal** - Enable batch mode and deprecate the next_node sequential handler
+
+## Phase Details
+
+### Phase 15: Batch Traversal
+**Goal**: The triage traversal engine sends batch requests by default, handles all batch response shapes, and clearly marks the old sequential path as deprecated
+**Depends on**: Phase 14
+**Requirements**: BATCH-01, BATCH-02
+**Success Criteria** (what must be TRUE):
+  1. Every `/protocol-traverse` call includes `batch: true` in the request body
+  2. The traversal flow completes correctly for `complete`, `ask_user`, and `missing_sensors` batch response shapes
+  3. The `next_node` sequential handler is annotated with a deprecation comment and emits a `console.warn` when entered
+  4. Triage sessions that receive a `next_node` response still complete successfully (fallback path intact)
+**Plans**: TBD
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
@@ -64,3 +84,4 @@ Full details: `.planning/milestones/v2.1.0-ROADMAP.md`
 | 12. Vital Signs UX | v2.1.0 | 1/1 | Complete | 2026-04-10 |
 | 13. Session History Enrichment | v2.1.0 | 1/1 | Complete | 2026-04-10 |
 | 14. Discoverability | v2.1.0 | 1/1 | Complete | 2026-04-10 |
+| 15. Batch Traversal | v2.2.0 | 0/? | Not started | - |
