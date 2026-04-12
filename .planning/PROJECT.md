@@ -19,9 +19,9 @@ Clinicians reach a triage priority decision faster and more consistently because
 
 ## Current State
 
-**Shipped:** v2.1.0 UX Polish (2026-04-10)
+**Shipped:** v2.2.0 Batch Traversal (2026-04-12)
 **Branch:** `main`
-**Codebase:** 6,710 LOC (JSX/JS/CSS), 14 phases shipped across 3 milestones
+**Codebase:** 6,710 LOC (JSX/JS/CSS), 15 phases shipped across 4 milestones
 
 v2.1.0 polished the clinical UX for pilot readiness:
 - Shared SensorPanel component replacing duplicated desktop/mobile implementations
@@ -86,8 +86,8 @@ v2.1.0 polished the clinical UX for pilot readiness:
 
 ### Active
 
-- [ ] Default batch mode for protocol traversal (`batch: true` on all `/protocol-traverse` calls)
-- [ ] Deprecate `next_node` sequential handling (keep as fallback, flag as deprecated)
+- [x] Default batch mode for protocol traversal (`batch: true` on all `/protocol-traverse` calls) — v2.2.0
+- [x] Deprecate `next_node` sequential handling (keep as fallback, flag as deprecated) — v2.2.0
 - [ ] Triage progress indicator (stepper/progress bar) — deferred from v2.0.0 (depends on /traverse API exposing step data)
 - [ ] Session summary timeline during triage — deferred from v2.0.0
 
@@ -163,4 +163,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-12 after v2.2.0 milestone start*
+*Last updated: 2026-04-12 after Phase 15 (Batch Traversal) completion*
