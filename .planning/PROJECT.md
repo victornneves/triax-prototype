@@ -8,6 +8,15 @@ React SPA for clinical emergency triage using the Manchester Triage System (MTS)
 
 Clinicians reach a triage priority decision faster and more consistently because the AI traverses the protocol decision tree for them.
 
+## Current Milestone: v2.2.0 Batch Traversal
+
+**Goal:** Switch the triage protocol traversal from sequential mode to batch mode, reducing API round-trips by ~65%.
+
+**Target features:**
+- Enable `batch: true` on `/protocol-traverse` calls by default
+- Remove `next_node` recursive traversal as the primary flow (keep as deprecated fallback)
+- Handle batch-mode response shapes (`complete`, `ask_user`, `missing_sensors`)
+
 ## Current State
 
 **Shipped:** v2.1.0 UX Polish (2026-04-10)
@@ -77,6 +86,8 @@ v2.1.0 polished the clinical UX for pilot readiness:
 
 ### Active
 
+- [ ] Default batch mode for protocol traversal (`batch: true` on all `/protocol-traverse` calls)
+- [ ] Deprecate `next_node` sequential handling (keep as fallback, flag as deprecated)
 - [ ] Triage progress indicator (stepper/progress bar) — deferred from v2.0.0 (depends on /traverse API exposing step data)
 - [ ] Session summary timeline during triage — deferred from v2.0.0
 
@@ -152,4 +163,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-10 after v2.1.0 milestone*
+*Last updated: 2026-04-12 after v2.2.0 milestone start*
