@@ -11,7 +11,7 @@ info:
     - `GET /protocol_names`
     - `GET /protocol/{protocol_name}`
     - `POST /session-features`
-  version: 1.1.0
+  version: 1.2.0
   contact:
     name: Triax Backend Team
 
@@ -179,21 +179,34 @@ paths:
       tags: [Triage]
       summary: Traverse a protocol decision tree (priority evaluation)
       description: |
-        Evaluates a single priority level in the selected protocol's decision tree.
+        Evaluates priority levels in the selected protocol's decision tree.
         The caller must supply the protocol name and optionally sensor readings or free-text.
 
-        The orchestrator processes priority levels from highest (red) to lowest (blue).
+        ## Sequential mode (default)
+
+        The orchestrator processes priority levels one at a time from highest (red) to lowest (blue).
         Use `node_id` returned as `next_node_id` from the previous response to advance.
-        Start at `node_id: "root"` (or omit it) for the first call.
+        Start at `node_id: "0"` (or omit it) for the first call.
+
+        ## Batch mode (`batch: true`)
+
+        When `batch` is set to `true`, the backend evaluates **all remaining priority levels
+        in a single LLM call** instead of one level per request. This dramatically reduces
+        round-trips (65% fewer traverse calls on average).
+
+        In batch mode the `next_node` status is **never returned** — the LLM resolves all
+        levels internally. The only possible responses are `complete`, `ask_user`, or
+        `missing_sensors`. If the LLM returns `ask_user`, send the clinician's answer back
+        with `node_id` and `user_input` as usual — the next batch call resumes from that level.
 
         **Response shapes (discriminated by `status`):**
 
-        | status | Meaning |
-        |--------|---------|
-        | `complete` | Priority assigned — triage finished. `result` and `report` fields present. |
-        | `next_node` | Current level not matched — advance to `next_node_id`. |
-        | `ask_user` | LLM cannot decide — a question must be shown to the clinician. |
-        | `missing_sensors` | Mandatory sensor values absent — list provided in `missing_sensors`. |
+        | status | Meaning | Batch mode |
+        |--------|---------|------------|
+        | `complete` | Priority assigned — triage finished. `result` and `report` fields present. | Yes |
+        | `next_node` | Current level not matched — advance to `next_node_id`. | **Sequential only** |
+        | `ask_user` | LLM cannot decide — a question must be shown to the clinician. | Yes |
+        | `missing_sensors` | Mandatory sensor values absent — list provided in `missing_sensors`. | Yes |
 
         **Sensor field aliases:** Both `gsc`/`gcs` and `oxigen_sat`/`oxygen_saturation` are
         accepted; the backend normalizes them internally.
@@ -204,16 +217,31 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ProtocolTraverseRequest'
-            example:
-              decision_tree_protocol: dor_toracica
-              node_id: "0"
-              session_id: sess_abc123
-              heart_rate: 110
-              blood_pressure: "90/60"
-              oxygen_saturation: 94
-              respiratory_rate: 22
-              temperature: 36.8
-              pain_scale: 8
+            examples:
+              sequential:
+                summary: Sequential mode (one level per call)
+                value:
+                  decision_tree_protocol: dor_toracica
+                  node_id: "0"
+                  session_id: sess_abc123
+                  heart_rate: 110
+                  blood_pressure: "90/60"
+                  oxygen_saturation: 94
+                  respiratory_rate: 22
+                  temperature: 36.8
+                  pain_scale: 8
+              batched:
+                summary: Batch mode (all levels in one call)
+                value:
+                  decision_tree_protocol: dor_toracica
+                  session_id: sess_abc123
+                  batch: true
+                  heart_rate: 110
+                  blood_pressure: "90/60"
+                  oxygen_saturation: 94
+                  respiratory_rate: 22
+                  temperature: 36.8
+                  pain_scale: 8
       responses:
         '200':
           description: One of four traversal outcome shapes.
@@ -241,9 +269,11 @@ paths:
                         sex: M
                       triage_result:
                         fluxograma_sintoma: dor_toracica
+                        fluxograma_nome: "Dor Toracica"
                         prioridade: "LARANJA - MUITO URGENTE"
                         cor: ORANGE
                         discriminador: "Dor torácica com instabilidade hemodinâmica"
+                        discriminador_id: "criteria_dor_toracica_com_instabilidade_hemodinamica"
                       clinical_data:
                         queixa_principal: "Dor no peito com irradiação para o braço esquerdo"
                         medicamentos: "AAS 100mg"
@@ -617,9 +647,11 @@ paths:
                       sex: M
                     triage_result:
                       fluxograma_sintoma: dor_toracica
+                      fluxograma_nome: "Dor Toracica"
                       prioridade: "LARANJA - MUITO URGENTE"
                       cor: ORANGE
                       discriminador: "Dor torácica com instabilidade hemodinâmica"
+                      discriminador_id: "criteria_dor_toracica_com_instabilidade_hemodinamica"
                     reasoning: "FC elevada e hipotensão confirmam critério laranja."
                     stats:
                       start_time: "2026-03-23T14:00:00"
@@ -674,9 +706,11 @@ paths:
                   sex: M
                 triage_result:
                   fluxograma_sintoma: dor_toracica
+                  fluxograma_nome: "Dor Toracica"
                   prioridade: "LARANJA - MUITO URGENTE"
                   cor: ORANGE
                   discriminador: "Dor torácica com instabilidade hemodinâmica"
+                  discriminador_id: "criteria_dor_toracica_com_instabilidade_hemodinamica"
                 reasoning: "FC elevada e hipotensão confirmam critério laranja."
                 stats:
                   start_time: "2026-03-23T14:00:00"
@@ -989,6 +1023,14 @@ components:
           type: string
           description: Session ID. Used to load stored transcription and sensor history from DynamoDB.
           example: sess_abc123
+        batch:
+          type: boolean
+          default: false
+          description: |
+            When `true`, evaluates all remaining priority levels in a single LLM call
+            instead of one level per request. Reduces round-trips by ~65%.
+            In batch mode, the `next_node` status is never returned.
+          example: true
         user_input:
           type: string
           description: Free-text answer from the clinician (for `ask_user` follow-ups).
@@ -1495,6 +1537,16 @@ components:
           type: string
           description: Discriminator criterion text that triggered the priority assignment.
           example: "Dor torácica com instabilidade hemodinâmica"
+        fluxograma_nome:
+          type: string
+          nullable: true
+          description: Human-readable flowchart name resolved from protocol_names.json. Added in v1.2.
+          example: "Feridas"
+        discriminador_id:
+          type: string
+          nullable: true
+          description: Machine-readable criteria ID of the matched discriminator node. Added in v1.2.
+          example: "criteria_evento_recente"
         status:
           type: string
           description: Present only for in-progress sessions reconstructed from step history.
