@@ -134,19 +134,55 @@ Living document — updated after each milestone.
 
 ---
 
+## Milestone: v2.2.0 — Batch Traversal
+
+**Shipped:** 2026-04-12
+**Phases:** 1 | **Plans:** 1 | **Tasks:** 2
+
+### What Was Built
+- Batch traversal mode enabled by default (`batch: true` on all `/protocol-traverse` calls, ~65% fewer API round-trips)
+- Sequential `next_node` handler deprecated with `@deprecated` comment and diagnostic `console.warn('[batch_fallback_detected]')`
+
+### What Worked
+- **Narrow scope** — Single phase, single plan, 2 tasks. Entire milestone completed in one session (~15 min execution)
+- **discuss-phase efficiency** — Only 2 gray areas identified, both resolved in minutes. Phase was well-defined by openapi.yaml and requirements
+- **Skip research** — Correct call for a narrow, well-documented change. No wasted tokens on research that would have confirmed what the spec already says
+- **Auto-advance pipeline** — discuss→plan→execute→verify ran continuously with no manual intervention needed
+
+### What Was Inefficient
+- **No milestone audit** — Third milestone in a row without `/gsd:audit-milestone`. For a 1-phase milestone this is acceptable, but the pattern should not carry forward
+- **Nyquist validation skipped** — Research was skipped (correctly), which meant VALIDATION.md couldn't be generated. Acceptable for narrow scope but highlights coupling between research and validation
+
+### Patterns Established
+- `batch: true` as stateless flag in payload — no per-call variation, no toggle UI
+- `console.warn('[batch_fallback_detected]', { context })` as diagnostic pattern for deprecated code paths
+- `@deprecated` JSDoc comment for code paths kept as fallback
+
+### Key Lessons
+1. Well-defined API contracts (openapi.yaml) make discuss-phase and research nearly trivial — invest in specs
+2. Single-phase milestones are fast but still benefit from the full GSD ceremony (planning, verification, archival)
+3. Skipping research is the right call when the spec is authoritative — saves ~2 min and avoids noise
+
+### Cost Observations
+- Model mix: ~40% opus (planning, orchestration), ~60% sonnet (execution, verification)
+- 5 commits in 1 session
+- Notable: Entire milestone from discuss to completion in a single conversation
+
+---
+
 ## Cross-Milestone Trends
 
-| Metric | v1.1.0 | v2.0.0 | v2.1.0 |
-|--------|--------|--------|--------|
-| Phases | 4 | 5 | 5 |
-| Plans | 10 | 17 | 5 |
-| Tasks | 11 | 34 | 10 |
-| Avg plans/phase | 2.5 | 3.4 | 1.0 |
-| Research used | 1/4 phases | 5/5 phases | 3/5 phases |
-| Verification pass rate | 4/4 first-pass | 4/5 first-pass | 5/5 first-pass |
-| Timeline | ~10 days | 3 days | 2 days |
-| Commits | ~35 | 83 | 28 |
-| LOC delta | — | +17,221 | +302 |
+| Metric | v1.1.0 | v2.0.0 | v2.1.0 | v2.2.0 |
+|--------|--------|--------|--------|--------|
+| Phases | 4 | 5 | 5 | 1 |
+| Plans | 10 | 17 | 5 | 1 |
+| Tasks | 11 | 34 | 10 | 2 |
+| Avg plans/phase | 2.5 | 3.4 | 1.0 | 1.0 |
+| Research used | 1/4 phases | 5/5 phases | 3/5 phases | 0/1 phases |
+| Verification pass rate | 4/4 first-pass | 4/5 first-pass | 5/5 first-pass | 1/1 first-pass |
+| Timeline | ~10 days | 3 days | 2 days | 1 session |
+| Commits | ~35 | 83 | 28 | 5 |
+| LOC delta | — | +17,221 | +302 | +8 |
 
 ### Top Lessons (Verified Across Milestones)
 
