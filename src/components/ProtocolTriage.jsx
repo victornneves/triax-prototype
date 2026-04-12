@@ -647,7 +647,14 @@ const ProtocolTriage = () => {
             // Finalize session on backend (fire-and-forget)
             finishSession();
 
+        // @deprecated — Sequential next_node path. With batch: true, the backend resolves all
+        // priority levels in a single call and never returns next_node. This branch is retained
+        // as a fallback for backend compatibility. Remove once batch mode is confirmed stable.
         } else if (data.status === 'next_node') {
+            console.warn(
+                '[batch_fallback_detected] Received next_node response despite batch mode.',
+                { batch: true, next_node_id: data.next_node_id || data.next_node?.id || null }
+            );
             const next = data.next_node;
             const nextId = data.next_node_id || (next ? next.id : null);
 
